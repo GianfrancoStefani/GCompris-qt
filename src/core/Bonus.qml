@@ -143,6 +143,12 @@ Image {
         source = url + "bonus/" + name + "_good.svg"
         isWin = true
         timer.restart()
+        if (typeof telemetryManager !== 'undefined' && telemetryManager) {
+            var actName = (typeof activityInfo !== 'undefined' && activityInfo) ? activityInfo.name : 'unknown';
+            var lvl = (typeof currentLevel !== 'undefined') ? currentLevel : 0;
+            var diff = (typeof activityInfo !== 'undefined' && activityInfo) ? activityInfo.difficulty : null;
+            telemetryManager.recordEvent('positive_feedback', actName, lvl, diff, '', { 'bonus_animation': name, 'feedback_type': 'visual_bonus_good' });
+        }
     }
 
     /**
@@ -163,6 +169,12 @@ Image {
         }
         else {
             nextAudioIndex = bonus.tryAgain
+        }
+        if (typeof telemetryManager !== 'undefined' && telemetryManager) {
+            var actName = (typeof activityInfo !== 'undefined' && activityInfo) ? activityInfo.name : 'unknown';
+            var lvl = (typeof currentLevel !== 'undefined') ? currentLevel : 0;
+            var diff = (typeof activityInfo !== 'undefined' && activityInfo) ? activityInfo.difficulty : null;
+            telemetryManager.recordEvent('negative_feedback', actName, lvl, diff, '', { 'bonus_animation': name, 'feedback_type': 'visual_bonus_bad' });
         }
     }
 

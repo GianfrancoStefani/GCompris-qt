@@ -484,7 +484,14 @@ Item {
             source: "qrc:/gcompris/src/core/resource/bar_reload.svg"
             width: bar.buttonSize
             visible: barRow.isHidden === false
-            onClicked: bar.reloadClicked();
+            onClicked: {
+                if (typeof telemetryManager !== 'undefined' && telemetryManager) {
+                    var actName = (typeof activityInfo !== 'undefined' && activityInfo) ? activityInfo.name : 'activity';
+                    var diff = (typeof activityInfo !== 'undefined' && activityInfo) ? activityInfo.difficulty : null;
+                    telemetryManager.recordEvent('activity_restarted', actName, 0, diff, '', { 'trigger': 'bar_reload_button' });
+                }
+                bar.reloadClicked();
+            }
         }
     }
     Component {

@@ -98,7 +98,7 @@ endif()
 
 set(QT_MAJOR Qt6)
 
-set(QT_COMPONENTS Qml Quick Gui Multimedia Core Svg Network LinguistTools Sensors QuickControls2 QuickTemplates2 QmlWorkerScript)
+set(QT_COMPONENTS Qml Quick Gui Multimedia Core Svg Network LinguistTools Sensors QuickControls2 QuickTemplates2 QmlWorkerScript Sql)
 
 find_package(QT NAMES Qt6)
 find_package(${QT_MAJOR} ${QT_REQUIRED_VERSION} COMPONENTS

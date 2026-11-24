@@ -27,6 +27,18 @@ DialogBackground {
     visible: false
     title: activityInfo.title
 
+    onVisibleChanged: {
+        if (typeof telemetryManager !== 'undefined' && telemetryManager) {
+            var actName = activityInfo ? activityInfo.name : 'unknown';
+            var diff = activityInfo ? activityInfo.difficulty : null;
+            if (visible) {
+                telemetryManager.recordEvent('help_opened', actName, 0, diff, '', { 'help_dialog': 'DialogHelp' });
+            } else {
+                telemetryManager.recordEvent('help_closed', actName, 0, diff, '', { 'help_dialog': 'DialogHelp' });
+            }
+        }
+    }
+
     property QtObject activityInfo: ActivityInfoTree.currentActivity
 
     function getIcon() {

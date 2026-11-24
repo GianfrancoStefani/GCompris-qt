@@ -1,3 +1,4 @@
+#include "TelemetryManager.h"
 /* GCompris - ActivityInfoTree.cpp
  *
  * SPDX-FileCopyrightText: 2014 Bruno Coudoin <bruno.coudoin@gcompris.net>
@@ -105,8 +106,40 @@ void ActivityInfoTree::setCurrentActivityFromName(const QString &name)
 
 void ActivityInfoTree::setCurrentActivity(ActivityInfo *currentActivity)
 {
+    if (m_currentActivity && m_currentActivity != currentActivity && !m_currentActivity->name().isEmpty()) {
+        if (m_currentActivity->name() != QStringLiteral("menu/Menu.qml")) {
+            QVariantMap exitPayload;
+            exitPayload[QStringLiteral("exit_type")] = QStringLiteral("activity_switch");
+            TelemetryManager::getInstance()->recordEvent(QStringLiteral("activity_exited"),
+                                                        m_currentActivity->name(),
+                                                        0,
+                                                        m_currentActivity->difficulty(),
+                                                        QStringLiteral(""),
+                                                        exitPayload);
+        }
+    }
+
     m_currentActivity = currentActivity;
     Q_EMIT currentActivityChanged();
+
+    if (m_currentActivity && !m_currentActivity->name().isEmpty() && m_currentActivity->name() != QStringLiteral("menu/Menu.qml")) {
+        TelemetryManager::getInstance()->startNewAttempt();
+        QVariantMap startPayload;
+        startPayload[QStringLiteral("activity_name")] = m_currentActivity->name();
+        startPayload[QStringLiteral("difficulty")] = m_currentActivity->difficulty();
+        TelemetryManager::getInstance()->recordEvent(QStringLiteral("activity_started"),
+                                                    m_currentActivity->name(),
+                                                    0,
+                                                    m_currentActivity->difficulty(),
+                                                    QStringLiteral(""),
+                                                    startPayload);
+        TelemetryManager::getInstance()->recordEvent(QStringLiteral("level_started"),
+                                                    m_currentActivity->name(),
+                                                    0,
+                                                    m_currentActivity->difficulty(),
+                                                    QStringLiteral(""),
+                                                    startPayload);
+    }
 }
 
 ActivityInfo *ActivityInfoTree::getCurrentActivity() const

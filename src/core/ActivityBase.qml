@@ -200,6 +200,28 @@ Item {
 
     Component.onCompleted: {
         page.stop.connect(stopSounds);
+        if (typeof telemetryManager !== 'undefined' && telemetryManager && !isMenu) {
+            var actName = (activityInfo && activityInfo.name) ? activityInfo.name : 'activity';
+            var diff = (activityInfo && activityInfo.difficulty) ? activityInfo.difficulty : 1;
+            if (actName.indexOf('menu') === -1) {
+                telemetryManager.startNewAttempt();
+                var payload = { 'activity_name': actName, 'difficulty': diff };
+                telemetryManager.recordEvent('activity_started', actName, currentLevel, diff, '', payload);
+                telemetryManager.recordEvent('level_started', actName, currentLevel, diff, '', { 'level': currentLevel });
+            }
+        }
+    }
+
+    onCurrentLevelChanged: {
+        if (typeof telemetryManager !== 'undefined' && telemetryManager && !isMenu) {
+            var actName = (activityInfo && activityInfo.name) ? activityInfo.name : 'activity';
+            var diff = (activityInfo && activityInfo.difficulty) ? activityInfo.difficulty : 1;
+            if (actName.indexOf('menu') === -1) {
+                telemetryManager.startNewAttempt();
+                telemetryManager.recordEvent('level_changed', actName, currentLevel, diff, '', { 'new_level': currentLevel });
+                telemetryManager.recordEvent('level_started', actName, currentLevel, diff, '', { 'level': currentLevel });
+            }
+        }
     }
     onStopSounds: {
         if(!isMenu) {
@@ -226,6 +248,9 @@ Item {
             );
         }
         else {
+            if (typeof telemetryManager !== 'undefined' && telemetryManager && activityInfo && activityInfo.name && activityInfo.name !== 'menu' && !isMenu && activityInfo.name.indexOf('menu') === -1) {
+                telemetryManager.recordEvent('activity_exited', activityInfo.name, currentLevel, activityInfo.difficulty, '', { 'exit_type': 'user_home' });
+            }
             if(menu) menu.home()
         }
     }
