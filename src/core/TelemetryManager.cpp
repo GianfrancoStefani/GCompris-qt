@@ -27,10 +27,12 @@ TelemetryManager::TelemetryManager(QObject *parent)
     : QObject(parent),
       m_isEnabled(true),
       m_sequenceNumber(0),
+      m_problemActionCount(0),
       m_dbInitialized(false)
 {
     m_sessionId = QUuid::createUuid().toString(QUuid::WithoutBraces);
     m_attemptId = QUuid::createUuid().toString(QUuid::WithoutBraces);
+    m_problemInstanceId.clear();
     m_userId = QStringLiteral("std_k4e_synth_default");
     m_organizationId = QStringLiteral("org_k4e_default");
 
@@ -99,7 +101,139 @@ void TelemetryManager::endSession()
 void TelemetryManager::startNewAttempt()
 {
     m_attemptId = QUuid::createUuid().toString(QUuid::WithoutBraces);
+    m_problemInstanceId.clear();
+    m_problemActionCount = 0;
     Q_EMIT attemptIdChanged();
+    Q_EMIT problemInstanceIdChanged();
+}
+
+QString TelemetryManager::startNewProblem(const QString &instanceId)
+{
+    if (!instanceId.isEmpty()) {
+        m_problemInstanceId = instanceId;
+    } else {
+        m_problemInstanceId = QUuid::createUuid().toString(QUuid::WithoutBraces);
+    }
+    m_problemMonotonicTimer.restart();
+    m_problemActionCount = 0;
+    Q_EMIT problemInstanceIdChanged();
+    return m_problemInstanceId;
+}
+
+void TelemetryManager::clearProblem()
+{
+    m_problemInstanceId.clear();
+    m_problemActionCount = 0;
+    Q_EMIT problemInstanceIdChanged();
+}
+
+QString TelemetryManager::recordProblemPresented(const QString &activityId,
+                                                int nativeLevel,
+                                                const QVariant &normalizedDifficulty,
+                                                const QString &datasetId,
+                                                const QVariantMap &difficultyParams,
+                                                const QVariantMap &stimulusConfig,
+                                                const QString &problemId)
+{
+    QString pId = startNewProblem(problemId);
+    QVariantMap payload;
+    payload[QStringLiteral("problem_instance_id")] = pId;
+    payload[QStringLiteral("difficulty_parameters")] = difficultyParams;
+    payload[QStringLiteral("stimulus_configuration")] = stimulusConfig;
+    recordEvent(QStringLiteral("problem_presented"), activityId, nativeLevel, normalizedDifficulty, datasetId, payload, pId);
+    return pId;
+}
+
+void TelemetryManager::recordAction(const QString &activityId,
+                                    int nativeLevel,
+                                    const QString &actionType,
+                                    const QVariantMap &actionDetails)
+{
+    m_problemActionCount++;
+    qint64 actionElapsed = m_problemMonotonicTimer.isValid() ? m_problemMonotonicTimer.elapsed() : 0;
+
+    if (m_problemActionCount == 1) {
+        QVariantMap firstActionPayload;
+        firstActionPayload[QStringLiteral("action_type")] = actionType;
+        firstActionPayload[QStringLiteral("time_to_first_action_ms")] = actionElapsed;
+        firstActionPayload[QStringLiteral("action_details")] = actionDetails;
+        recordEvent(QStringLiteral("first_action"), activityId, nativeLevel, QVariant(), QStringLiteral(""), firstActionPayload, m_problemInstanceId);
+    }
+
+    QVariantMap payload = actionDetails;
+    payload[QStringLiteral("action_type")] = actionType;
+    payload[QStringLiteral("action_index")] = m_problemActionCount;
+    payload[QStringLiteral("elapsed_ms_in_problem")] = actionElapsed;
+    recordEvent(QStringLiteral("action_performed"), activityId, nativeLevel, QVariant(), QStringLiteral(""), payload, m_problemInstanceId);
+}
+
+void TelemetryManager::recordInvalidAction(const QString &activityId,
+                                           int nativeLevel,
+                                           const QString &actionType,
+                                           const QString &reason,
+                                           const QVariantMap &actionDetails)
+{
+    qint64 actionElapsed = m_problemMonotonicTimer.isValid() ? m_problemMonotonicTimer.elapsed() : 0;
+    QVariantMap payload = actionDetails;
+    payload[QStringLiteral("action_type")] = actionType;
+    payload[QStringLiteral("reason")] = reason;
+    payload[QStringLiteral("elapsed_ms_in_problem")] = actionElapsed;
+    recordEvent(QStringLiteral("invalid_action"), activityId, nativeLevel, QVariant(), QStringLiteral(""), payload, m_problemInstanceId);
+}
+
+void TelemetryManager::recordAnswerEvaluated(const QString &activityId,
+                                            int nativeLevel,
+                                            bool isCorrect,
+                                            const QVariant &submittedAnswer,
+                                            const QVariant &expectedAnswer,
+                                            const QVariantMap &evalDetails)
+{
+    qint64 actionElapsed = m_problemMonotonicTimer.isValid() ? m_problemMonotonicTimer.elapsed() : 0;
+    QVariantMap payload = evalDetails;
+    payload[QStringLiteral("is_correct")] = isCorrect;
+    payload[QStringLiteral("submitted_answer")] = submittedAnswer;
+    payload[QStringLiteral("expected_answer")] = expectedAnswer;
+    payload[QStringLiteral("elapsed_ms_in_problem")] = actionElapsed;
+    recordEvent(QStringLiteral("answer_evaluated"), activityId, nativeLevel, QVariant(), QStringLiteral(""), payload, m_problemInstanceId);
+
+    if (isCorrect) {
+        QVariantMap fbPayload;
+        fbPayload[QStringLiteral("feedback_type")] = QStringLiteral("success_bonus");
+        recordEvent(QStringLiteral("positive_feedback"), activityId, nativeLevel, QVariant(), QStringLiteral(""), fbPayload, m_problemInstanceId);
+    } else {
+        QVariantMap fbPayload;
+        fbPayload[QStringLiteral("feedback_type")] = QStringLiteral("error_feedback");
+        recordEvent(QStringLiteral("negative_feedback"), activityId, nativeLevel, QVariant(), QStringLiteral(""), fbPayload, m_problemInstanceId);
+    }
+}
+
+void TelemetryManager::recordProblemCompleted(const QString &activityId,
+                                             int nativeLevel,
+                                             bool isSuccess,
+                                             const QVariantMap &summaryStats)
+{
+    qint64 totalElapsed = m_problemMonotonicTimer.isValid() ? m_problemMonotonicTimer.elapsed() : 0;
+    QVariantMap payload = summaryStats;
+    payload[QStringLiteral("is_success")] = isSuccess;
+    payload[QStringLiteral("total_actions")] = m_problemActionCount;
+    payload[QStringLiteral("total_duration_ms")] = totalElapsed;
+
+    recordEvent(QStringLiteral("problem_completed"), activityId, nativeLevel, QVariant(), QStringLiteral(""), payload, m_problemInstanceId);
+    clearProblem();
+}
+
+void TelemetryManager::recordProblemAbandoned(const QString &activityId,
+                                             int nativeLevel,
+                                             const QString &reason,
+                                             const QVariantMap &details)
+{
+    qint64 totalElapsed = m_problemMonotonicTimer.isValid() ? m_problemMonotonicTimer.elapsed() : 0;
+    QVariantMap payload = details;
+    payload[QStringLiteral("reason")] = reason;
+    payload[QStringLiteral("total_actions")] = m_problemActionCount;
+    payload[QStringLiteral("total_duration_ms")] = totalElapsed;
+    recordEvent(QStringLiteral("problem_abandoned"), activityId, nativeLevel, QVariant(), QStringLiteral(""), payload, m_problemInstanceId);
+    clearProblem();
 }
 
 void TelemetryManager::initDatabase()
@@ -156,7 +290,10 @@ void TelemetryManager::initDatabase()
         "  payload_json TEXT NOT NULL,"
         "  sync_status TEXT DEFAULT 'PENDING',"
         "  retry_count INTEGER DEFAULT 0,"
-        "  created_at DATETIME DEFAULT CURRENT_TIMESTAMP"
+        "  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,"
+        "  last_error TEXT,"
+        "  synced_at TEXT,"
+        "  problem_instance_id TEXT"
         ");"
     );
 
@@ -164,10 +301,15 @@ void TelemetryManager::initDatabase()
         qWarning() << "Kids4Edu: Error creating telemetry_events table:" << q.lastError().text();
         m_dbInitialized = false;
     } else {
+        // Defensive column migration for existing databases
+        q.exec(QStringLiteral("ALTER TABLE telemetry_events ADD COLUMN problem_instance_id TEXT;"));
+        q.finish();
+
         // Create indexes for efficient querying and syncing
         q.exec(QStringLiteral("CREATE INDEX IF NOT EXISTS idx_telemetry_session ON telemetry_events (session_id);"));
         q.exec(QStringLiteral("CREATE INDEX IF NOT EXISTS idx_telemetry_sync ON telemetry_events (sync_status);"));
         q.exec(QStringLiteral("CREATE INDEX IF NOT EXISTS idx_telemetry_activity ON telemetry_events (activity_id);"));
+        q.exec(QStringLiteral("CREATE INDEX IF NOT EXISTS idx_telemetry_problem ON telemetry_events (problem_instance_id);"));
         m_dbInitialized = true;
 
         // Check for interrupted previous sessions (missing session_ended)
@@ -181,7 +323,6 @@ void TelemetryManager::initDatabase()
                 QString prevSession = qInterrupted.value(0).toString();
                 QString prevUser = qInterrupted.value(1).toString();
                 QString prevOrg = qInterrupted.value(2).toString();
-                // We note the unclosed session
                 qDebug() << "Kids4Edu: Recovered prior unclosed/interrupted session:" << prevSession;
             }
         }
@@ -210,7 +351,8 @@ void TelemetryManager::recordEvent(const QString &eventType,
                                    int nativeLevel,
                                    const QVariant &normalizedDifficulty,
                                    const QString &datasetId,
-                                   const QVariantMap &payload)
+                                   const QVariantMap &payload,
+                                   const QString &problemInstanceId)
 {
     if (!m_isEnabled) {
         return;
@@ -228,6 +370,8 @@ void TelemetryManager::recordEvent(const QString &eventType,
     QString runtimeType = QStringLiteral("desktop_native");
     QString deliveryMode = QStringLiteral("offline_local");
     QString platformName = QSysInfo::prettyProductName();
+
+    QString effProblemId = problemInstanceId.isEmpty() ? m_problemInstanceId : problemInstanceId;
 
     QJsonObject payloadObj = QJsonObject::fromVariantMap(payload);
     QJsonDocument payloadDoc(payloadObj);
@@ -250,12 +394,12 @@ void TelemetryManager::recordEvent(const QString &eventType,
         "  event_id, session_id, attempt_id, pseudonymous_user_id, organization_id,"
         "  activity_id, activity_version, dataset_id, dataset_version, native_level,"
         "  normalized_difficulty, runtime_type, delivery_mode, platform, client_version,"
-        "  event_type, sequence_number, occurred_at, elapsed_ms, payload_json, sync_status"
+        "  event_type, sequence_number, occurred_at, elapsed_ms, payload_json, problem_instance_id, sync_status"
         ") VALUES ("
         "  :event_id, :session_id, :attempt_id, :user_id, :org_id,"
         "  :activity_id, :activity_version, :dataset_id, :dataset_version, :native_level,"
         "  :normalized_difficulty, :runtime_type, :delivery_mode, :platform, :client_version,"
-        "  :event_type, :sequence_number, :occurred_at, :elapsed_ms, :payload_json, 'PENDING'"
+        "  :event_type, :sequence_number, :occurred_at, :elapsed_ms, :payload_json, :problem_instance_id, 'PENDING'"
         ");"
     ));
 
@@ -285,6 +429,12 @@ void TelemetryManager::recordEvent(const QString &eventType,
     q.bindValue(QStringLiteral(":occurred_at"), occurredAt);
     q.bindValue(QStringLiteral(":elapsed_ms"), elapsedMs);
     q.bindValue(QStringLiteral(":payload_json"), payloadJson);
+
+    if (!effProblemId.isEmpty()) {
+        q.bindValue(QStringLiteral(":problem_instance_id"), effProblemId);
+    } else {
+        q.bindValue(QStringLiteral(":problem_instance_id"), QVariant(QMetaType(QMetaType::QString)));
+    }
 
     if (!q.exec()) {
         qWarning() << "Kids4Edu: Failed to insert telemetry event:" << q.lastError().text();

@@ -43,6 +43,7 @@ ActivityBase {
         // Add here the QML items you need to access in javascript
         QtObject {
             id: items
+            property var telemetry: typeof telemetryManager !== 'undefined' ? telemetryManager : null
             property Item main: activity.main
             property alias questionTray: questionTray
             property alias answerTray: answerTray
@@ -64,7 +65,10 @@ ActivityBase {
             property bool blockClicks: false
         }
 
-        onStart: { Activity.start(items) }
+        onStart: {
+            activityBackground.forceActiveFocus()
+            Activity.start(items)
+        }
         onStop: { Activity.stop() }
 
         readonly property bool isHorizontal: width >= height
@@ -73,6 +77,13 @@ ActivityBase {
         Keys.enabled: !items.blockClicks
         Keys.onPressed: (event) => {
             keyNavigationVisible = true
+            if(event.key >= Qt.Key_1 && event.key <= Qt.Key_8) {
+                var selectIdx = event.key - Qt.Key_1
+                if(selectIdx < choiceGridView.count) {
+                    choiceGridView.currentIndex = selectIdx
+                    choiceGridView.currentItem.clicked()
+                }
+            }
             if(event.key === Qt.Key_Left)
                 choiceGridView.moveCurrentIndexLeft()
             if(event.key === Qt.Key_Right)

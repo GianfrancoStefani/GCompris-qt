@@ -149,6 +149,36 @@ function initLevel() {
     items.doory = Math.floor(Math.random() * mazeRows)
 
     items.fastMode = (items.currentLevel + 1 >= 14)
+
+    if (items && items.telemetry) {
+        var diffParams = {
+            "rows": mazeRows,
+            "columns": mazeColumns,
+            "start_pos": [items.playerx, items.playery],
+            "target_pos": [mazeColumns - 1, items.doory]
+        };
+        var stimConfig = {
+            "maze_cells": maze
+        };
+        items.telemetry.recordProblemPresented("maze", items.currentLevel, 1, "", diffParams, stimConfig);
+    }
+}
+
+function reportMove(dir, oldx, oldy, newx, newy, hitWall) {
+    if (items && items.telemetry) {
+        if (hitWall) {
+            items.telemetry.recordInvalidAction("maze", items.currentLevel, "wall_collision", "wall_obstacle", {
+                "direction": dir,
+                "pos": [oldx, oldy]
+            });
+        } else {
+            items.telemetry.recordAction("maze", items.currentLevel, "move_step", {
+                "direction": dir,
+                "from_pos": [oldx, oldy],
+                "to_pos": [newx, newy]
+            });
+        }
+    }
 }
 
 function getId(x, y) {
@@ -318,6 +348,16 @@ function getPlayerRotation() {
 function checkSuccess() {
     if (items.playery === items.doory && items.playerx === mazeColumns - 1) {
         items.win = true
+        if (items && items.telemetry) {
+            items.telemetry.recordAnswerEvaluated("maze", items.currentLevel, true,
+                [items.playerx, items.playery],
+                [mazeColumns - 1, items.doory],
+                { "final_pos": [items.playerx, items.playery] }
+            );
+            items.telemetry.recordProblemCompleted("maze", items.currentLevel, true, {
+                "target_reached": true
+            });
+        }
         items.bonus.good("lion")
     }
 }
@@ -365,10 +405,14 @@ function clickRight() {
             /* Absolute mode */
             var curpos = getPlayerRotation()
             items.playerr = items.playerr - (curpos === 0 ? 90 : curpos - 270)
+            var oldx = items.playerx;
+            var oldy = items.playery;
             if (!(maze[getId(items.playerx, items.playery)] & EAST)) {
                 ++items.playerx
+                reportMove("east", oldx, oldy, items.playerx, items.playery, false)
             } else {
                 items.brickSound.play()
+                reportMove("east", oldx, oldy, items.playerx, items.playery, true)
             }
         }
     }
@@ -390,10 +434,14 @@ function clickLeft() {
             /* Absolute mode */
             var curpos = getPlayerRotation()
             items.playerr = items.playerr - curpos + 90
+            var oldx = items.playerx;
+            var oldy = items.playery;
             if (!(maze[getId(items.playerx, items.playery)] & WEST)) {
                 --items.playerx
+                reportMove("west", oldx, oldy, items.playerx, items.playery, false)
             } else {
                 items.brickSound.play()
+                reportMove("west", oldx, oldy, items.playerx, items.playery, true)
             }
         }
     }
@@ -419,10 +467,14 @@ function clickDown() {
             /* Absolute mode */
             var curpos = getPlayerRotation()
             items.playerr = items.playerr - (curpos === 270 ? -90 : curpos)
+            var oldx = items.playerx;
+            var oldy = items.playery;
             if (!(maze[getId(items.playerx, items.playery)] & SOUTH)) {
                 ++items.playery
+                reportMove("south", oldx, oldy, items.playerx, items.playery, false)
             } else {
                 items.brickSound.play()
+                reportMove("south", oldx, oldy, items.playerx, items.playery, true)
             }
         }
     }
@@ -467,10 +519,14 @@ function clickUp() {
             /* Absolute mode */
             var curpos = getPlayerRotation()
             items.playerr = items.playerr - curpos + 180
+            var oldx = items.playerx;
+            var oldy = items.playery;
             if (!(maze[getId(items.playerx, items.playery)] & NORTH)) {
                 --items.playery
+                reportMove("north", oldx, oldy, items.playerx, items.playery, false)
             } else {
                 items.brickSound.play()
+                reportMove("north", oldx, oldy, items.playerx, items.playery, true)
             }
         }
     }

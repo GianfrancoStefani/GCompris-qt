@@ -59,6 +59,7 @@ ActivityBase {
 
         QtObject {
             id: items
+            property var telemetry: typeof telemetryManager !== 'undefined' ? telemetryManager : null
             property int currentLevel: activity.currentLevel
             onCurrentLevelChanged: activity.currentLevel = currentLevel
             property int numberOfLevel: 0
@@ -84,6 +85,7 @@ ActivityBase {
         }
 
         onStart: {
+            activityBackground.forceActiveFocus();
             Activity.start(items);
             if(activity.needsVoices === true) {
                 if(!ApplicationSettings.isAudioVoicesEnabled || !ApplicationSettings.isAudioEffectsEnabled)
@@ -313,6 +315,14 @@ ActivityBase {
         Keys.enabled: !items.blockClicks
         Keys.onPressed: (event) => {
             activityBackground.keyNavigationVisible = true
+            if(event.key >= Qt.Key_1 && event.key <= Qt.Key_9) {
+                var cardIdx = event.key - Qt.Key_1
+                if(cardIdx < cardGrid.count) {
+                    cardGrid.currentIndex = cardIdx
+                    if(cardGrid.currentCard.isBack && !cardGrid.currentCard.isFound && !cardGrid.currentCard.tuxTurn && items.selectionCount < 2)
+                        cardGrid.currentCard.selected()
+                }
+            }
             if(event.key === Qt.Key_Left) {
                 do {
                     if(cardGrid.currentIndex <= 0) {

@@ -488,6 +488,9 @@ Item {
                 if (typeof telemetryManager !== 'undefined' && telemetryManager) {
                     var actName = (typeof activityInfo !== 'undefined' && activityInfo) ? activityInfo.name : 'activity';
                     var diff = (typeof activityInfo !== 'undefined' && activityInfo) ? activityInfo.difficulty : null;
+                    if (telemetryManager.problemInstanceId) {
+                        telemetryManager.recordProblemAbandoned(actName, 0, 'activity_restarted', { 'trigger': 'bar_reload_button' });
+                    }
                     telemetryManager.recordEvent('activity_restarted', actName, 0, diff, '', { 'trigger': 'bar_reload_button' });
                 }
                 bar.reloadClicked();

@@ -198,28 +198,47 @@ Item {
     //Initially hide it to avoid components appearing on the menu while the activity is loading.
     visible: false
 
+    function getCanonicalActivityId() {
+        if (activityInfo && typeof activityInfo.shortName === 'function') {
+            return activityInfo.shortName();
+        }
+        if (activityInfo && activityInfo.name) {
+            return activityInfo.name.split('/')[0];
+        }
+        return 'activity';
+    }
+
     Component.onCompleted: {
         page.stop.connect(stopSounds);
         if (typeof telemetryManager !== 'undefined' && telemetryManager && !isMenu) {
-            var actName = (activityInfo && activityInfo.name) ? activityInfo.name : 'activity';
+            var rawName = (activityInfo && activityInfo.name) ? activityInfo.name : 'activity';
+            var canonId = getCanonicalActivityId();
             var diff = (activityInfo && activityInfo.difficulty) ? activityInfo.difficulty : 1;
-            if (actName.indexOf('menu') === -1) {
+            if (rawName.indexOf('menu') === -1) {
                 telemetryManager.startNewAttempt();
-                var payload = { 'activity_name': actName, 'difficulty': diff };
-                telemetryManager.recordEvent('activity_started', actName, currentLevel, diff, '', payload);
-                telemetryManager.recordEvent('level_started', actName, currentLevel, diff, '', { 'level': currentLevel });
+                var payload = {
+                    'activity_name': canonId,
+                    'source_qml': rawName,
+                    'difficulty': diff
+                };
+                telemetryManager.recordEvent('activity_started', canonId, currentLevel, diff, '', payload);
+                telemetryManager.recordEvent('level_started', canonId, currentLevel, diff, '', { 'level': currentLevel, 'source_qml': rawName });
             }
         }
     }
 
     onCurrentLevelChanged: {
         if (typeof telemetryManager !== 'undefined' && telemetryManager && !isMenu) {
-            var actName = (activityInfo && activityInfo.name) ? activityInfo.name : 'activity';
+            var rawName = (activityInfo && activityInfo.name) ? activityInfo.name : 'activity';
+            var canonId = getCanonicalActivityId();
             var diff = (activityInfo && activityInfo.difficulty) ? activityInfo.difficulty : 1;
-            if (actName.indexOf('menu') === -1) {
+            if (rawName.indexOf('menu') === -1) {
+                if (telemetryManager.problemInstanceId) {
+                    telemetryManager.recordProblemAbandoned(canonId, currentLevel, 'level_changed', { 'source_qml': rawName });
+                }
                 telemetryManager.startNewAttempt();
-                telemetryManager.recordEvent('level_changed', actName, currentLevel, diff, '', { 'new_level': currentLevel });
-                telemetryManager.recordEvent('level_started', actName, currentLevel, diff, '', { 'level': currentLevel });
+                telemetryManager.recordEvent('level_changed', canonId, currentLevel, diff, '', { 'new_level': currentLevel, 'source_qml': rawName });
+                telemetryManager.recordEvent('level_started', canonId, currentLevel, diff, '', { 'level': currentLevel, 'source_qml': rawName });
             }
         }
     }
@@ -249,7 +268,11 @@ Item {
         }
         else {
             if (typeof telemetryManager !== 'undefined' && telemetryManager && activityInfo && activityInfo.name && activityInfo.name !== 'menu' && !isMenu && activityInfo.name.indexOf('menu') === -1) {
-                telemetryManager.recordEvent('activity_exited', activityInfo.name, currentLevel, activityInfo.difficulty, '', { 'exit_type': 'user_home' });
+                var canonId = getCanonicalActivityId();
+                if (telemetryManager.problemInstanceId) {
+                    telemetryManager.recordProblemAbandoned(canonId, currentLevel, 'user_exited_activity', { 'source_qml': activityInfo.name });
+                }
+                telemetryManager.recordEvent('activity_exited', canonId, currentLevel, activityInfo.difficulty, '', { 'exit_type': 'user_home', 'source_qml': activityInfo.name });
             }
             if(menu) menu.home()
         }

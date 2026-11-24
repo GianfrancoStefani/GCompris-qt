@@ -92,6 +92,22 @@ function setUp() {
 
     choiceCount = matchesVisible
     items.blockClicks = false
+
+    if (items && items.telemetry) {
+        var diffParams = {
+            "pattern_index": number,
+            "level": items.currentLevel,
+            "pattern_rule": sample[items.currentLevel][number],
+            "max_items": max,
+            "visible_items": matchesVisible
+        };
+        var stimConfig = {
+            "question_sequence": index,
+            "target_sequence": answerIndex,
+            "missing_slots": [4, 5, 6, 7]
+        };
+        items.telemetry.recordProblemPresented("algorithm", items.currentLevel, 1, "", diffParams, stimConfig);
+    }
 }
 
 // Returns a set of images that is used to set either the Sample algorithm or the Answer tray.
@@ -127,9 +143,22 @@ var choiceCount = matchesVisible
 
 function clickHandler(id){
     var tempIndex = []
+    var isCorrect = (id === answerIndex[choiceCount]);
+
+    if (items && items.telemetry) {
+        items.telemetry.recordAction("algorithm", items.currentLevel, "symbol_selected", {
+            "selected_symbol": id,
+            "slot_index": choiceCount
+        });
+        items.telemetry.recordAnswerEvaluated("algorithm", items.currentLevel, isCorrect,
+            id,
+            answerIndex[choiceCount],
+            { "slot_index": choiceCount }
+        );
+    }
 
     // Correct answer
-    if(id === answerIndex[choiceCount]) {
+    if(isCorrect) {
         tempIndex = items.answer.model
         choiceCount++;
 
@@ -145,6 +174,11 @@ function clickHandler(id){
             items.currentSubLevel++
             items.score.playWinAnimation();
             items.goodAnswerSound.play();
+            if (items && items.telemetry) {
+                items.telemetry.recordProblemCompleted("algorithm", items.currentLevel, true, {
+                    "sublevel": items.currentSubLevel
+                });
+            }
         } else {
             items.bleepSound.play();
         }

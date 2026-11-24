@@ -71,6 +71,23 @@ function initLevel() {
         }
     }
     items.buttonsBlocked = false
+
+    if (items && items.telemetry) {
+        var perm = [];
+        for (var p = 0; p < items.model.count; ++p) {
+            perm.push(items.model.get(p).value);
+        }
+        var diffParams = {
+            "scramble_steps": items.currentLevel + 2,
+            "grid_size": 4,
+            "mode": items.mode
+        };
+        var stimConfig = {
+            "initial_tiles": perm,
+            "empty_spot": getEmptySpot()
+        };
+        items.telemetry.recordProblemPresented("fifteen", items.currentLevel, 1, "", diffParams, stimConfig);
+    }
 }
 
 function resetHints() {
@@ -170,6 +187,7 @@ function isCorrectAnswer() {
 }
 
 function onClick(value) {
+    var oldEmpty = getEmptySpot();
     // Find the value in the model
     var done = false
     for(var x = 0; x < 4 && !done; x++) {
@@ -194,6 +212,25 @@ function onClick(value) {
             }
         }
     }
+
+    if (items && items.telemetry) {
+        if (done) {
+            items.telemetry.recordAction("fifteen", items.currentLevel, "tile_slide", {
+                "tile_value": value,
+                "from_spot": oldEmpty,
+                "to_spot": getEmptySpot()
+            });
+            if (isCorrectAnswer()) {
+                items.telemetry.recordAnswerEvaluated("fifteen", items.currentLevel, true, 0, 0, { "solved": true });
+                items.telemetry.recordProblemCompleted("fifteen", items.currentLevel, true, { "solved": true });
+            }
+        } else {
+            items.telemetry.recordInvalidAction("fifteen", items.currentLevel, "illegal_tile_slide", "not_adjacent_to_empty", {
+                "tile_value": value,
+                "empty_spot": oldEmpty
+            });
+        }
+    }
 }
 
 // Return the index in the model of the empty spot
@@ -207,23 +244,31 @@ function getEmptySpot()
 
 function processPressedKey(event) {
     var emptySpot = getEmptySpot()
+    var movedValue = null;
+    var movedFrom = -1;
 
     /* Move the player */
     switch (event.key) {
     case Qt.Key_Right:
         if(emptySpot % 4 != 0) {
+            movedFrom = emptySpot - 1;
+            movedValue = items.model.get(movedFrom).value;
             items.model.move(emptySpot - 1, emptySpot, 1)
             event.accepted = true
         }
         break
     case Qt.Key_Left:
         if(emptySpot % 4 != 3) {
+            movedFrom = emptySpot + 1;
+            movedValue = items.model.get(movedFrom).value;
             items.model.move(emptySpot + 1, emptySpot, 1)
             event.accepted = true
         }
         break
     case Qt.Key_Up:
         if(emptySpot < items.model.count - 4) {
+            movedFrom = emptySpot + 4;
+            movedValue = items.model.get(movedFrom).value;
             items.model.move(emptySpot + 4, emptySpot, 1)
             items.model.move(emptySpot + 1, emptySpot + 4, 1)
             event.accepted = true
@@ -231,15 +276,39 @@ function processPressedKey(event) {
         break
     case Qt.Key_Down:
         if(emptySpot >= 4) {
+            movedFrom = emptySpot - 4;
+            movedValue = items.model.get(movedFrom).value;
             items.model.move(emptySpot, emptySpot - 4, 1)
             items.model.move(emptySpot - 3, emptySpot, 1)
             event.accepted = true
         }
         break
     }
+
+    if (movedValue !== null && items && items.telemetry) {
+        items.telemetry.recordAction("fifteen", items.currentLevel, "tile_slide", {
+            "tile_value": movedValue,
+            "from_spot": movedFrom,
+            "to_spot": emptySpot,
+            "direction": (event.key === Qt.Key_Right ? "right" : (event.key === Qt.Key_Left ? "left" : (event.key === Qt.Key_Up ? "up" : "down"))),
+            "input_method": "keyboard"
+        });
+    } else if (event.key === Qt.Key_Right || event.key === Qt.Key_Left || event.key === Qt.Key_Up || event.key === Qt.Key_Down) {
+        if (items && items.telemetry) {
+            items.telemetry.recordInvalidAction("fifteen", items.currentLevel, "blocked_slide", "boundary", {
+                "direction": (event.key === Qt.Key_Right ? "right" : (event.key === Qt.Key_Left ? "left" : (event.key === Qt.Key_Up ? "up" : "down"))),
+                "empty_spot": emptySpot
+            });
+        }
+    }
+
     /* Check if success */
     if(isCorrectAnswer()) {
         items.buttonsBlocked = true
+        if (items && items.telemetry) {
+            items.telemetry.recordAnswerEvaluated("fifteen", items.currentLevel, true, 0, 0, { "solved": true });
+            items.telemetry.recordProblemCompleted("fifteen", items.currentLevel, true, { "solved": true });
+        }
         items.bonus.good('flower')
     }
     else {

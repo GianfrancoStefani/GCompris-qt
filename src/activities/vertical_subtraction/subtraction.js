@@ -226,6 +226,27 @@ function checkResult() {
     }
 
     items.client.sendToServer(ok)
+    var actName = (items.operation === items.operationType.Addition) ? "vertical_addition" : "vertical_subtraction";
+    if (items && items.telemetry) {
+        var submittedDigits = [];
+        for (var d = 0; d < items.resultNumber.digitRepeater.count; d++) {
+            submittedDigits.push(items.resultNumber.digitRepeater.itemAt(d).computedValue);
+        }
+        items.telemetry.recordAction(actName, items.currentLevel, "submit_answer", {
+            "submitted_digits": submittedDigits
+        });
+        items.telemetry.recordAnswerEvaluated(actName, items.currentLevel, ok,
+            submittedDigits,
+            sums,
+            { "columns_count": items.board.digitCount }
+        );
+        if (ok) {
+            items.telemetry.recordProblemCompleted(actName, items.currentLevel, true, {
+                "sublevel": items.currentSubLevel
+            });
+        }
+    }
+
     if (ok) {
         items.currentSubLevel++
         items.score.playWinAnimation()
@@ -237,6 +258,7 @@ function checkResult() {
 }
 
 function initLevel() {
+    inputDigitCol = 0
     items.errorRectangle.resetState()
     level = items.levels[items.currentLevel]
     if (!level.hasOwnProperty("doItYourself"))
@@ -263,6 +285,20 @@ function initLevel() {
     items.inputLocked = false
 
     items.client.startTiming()
+
+    if (items && items.telemetry) {
+        var actName = (items.operation === items.operationType.Addition) ? "vertical_addition" : "vertical_subtraction";
+        var diffParams = {
+            "operation": (items.operation === items.operationType.Addition) ? "addition" : "subtraction",
+            "nbLines": items.nbLines,
+            "nbDigits": items.nbDigits,
+            "withCarry": items.withCarry
+        };
+        var stimConfig = {
+            "values": values ? values : []
+        };
+        items.telemetry.recordProblemPresented(actName, items.currentLevel, 1, "", diffParams, stimConfig);
+    }
 }
 
 function nextLevel() {
@@ -283,8 +319,25 @@ function nextSubLevel() {
         initLevel()
 }
 
+var inputDigitCol = 0;
+
 function handleKeys(key) {
+    if (key >= Qt.Key_0 && key <= Qt.Key_9) {
+        var digitVal = key - Qt.Key_0;
+        if (items && items.resultNumber && items.resultNumber.digitRepeater) {
+            if (inputDigitCol < items.resultNumber.digitRepeater.count) {
+                items.resultNumber.digitRepeater.itemAt(inputDigitCol).value = digitVal;
+                inputDigitCol++;
+            }
+        }
+    }
     switch (key) {
+    case Qt.Key_Backspace:
+        if (items && items.resultNumber && items.resultNumber.digitRepeater && inputDigitCol > 0) {
+            inputDigitCol--;
+            items.resultNumber.digitRepeater.itemAt(inputDigitCol).value = -1;
+        }
+        break;
     case Qt.Key_Return:
     case Qt.Key_Enter:
         if (items.okButton.visible)

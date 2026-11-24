@@ -100,6 +100,25 @@ function initLevel() {
         items.containerModel.append( { pairData_: cardList[i] } )
     }
 
+    if (items && items.telemetry) {
+        var stimCards = [];
+        for (var c = 0; c < cardList.length; ++c) {
+            stimCards.push({
+                "position": c,
+                "match_code": cardList[c].matchCode,
+                "image": cardList[c].image || "",
+                "text": cardList[c].text || ""
+            });
+        }
+        var diffParams = {
+            "rows": rows,
+            "columns": columns,
+            "total_cards": rows * columns,
+            "pairs_count": nbOfPair
+        };
+        items.telemetry.recordProblemPresented("memory", items.currentLevel, 1, "", diffParams, { "cards": stimCards });
+    }
+
     if(items.withTux || items.playerCount === 2) {
         items.player2Score.endTurn();
         items.player1Score.beginTurn();
@@ -170,6 +189,15 @@ function reverseCardsIfNeeded() {
         var item1 = items.playQueue.shift()
         var item2 = items.playQueue.shift()
         var tuxTurn = item1.tuxTurn
+
+        var isMatch = (item1.card.pairData.matchCode === item2.card.pairData.matchCode);
+        if (items && items.telemetry) {
+            items.telemetry.recordAnswerEvaluated("memory", items.currentLevel, isMatch,
+                [item1.card.pairData.matchCode, item2.card.pairData.matchCode],
+                [item1.card.pairData.matchCode, item1.card.pairData.matchCode],
+                { "card1_code": item1.card.pairData.matchCode, "card2_code": item2.card.pairData.matchCode }
+            );
+        }
 
         if (item1.card.pairData.matchCode ===
             item2.card.pairData.matchCode) {
@@ -260,11 +288,23 @@ function tuxPlay() {
 
 function youWon() {
     items.blockClicks = true
+    if (items && items.telemetry) {
+        items.telemetry.recordProblemCompleted("memory", items.currentLevel, true, {
+            "total_pairs": nbOfPair,
+            "player_score": items.player1Score ? items.player1Score.playerScore : 0
+        });
+    }
     items.bonus.good("flower")
 }
 
 function youLoose() {
     items.blockClicks = true
+    if (items && items.telemetry) {
+        items.telemetry.recordProblemCompleted("memory", items.currentLevel, false, {
+            "total_pairs": nbOfPair,
+            "player_score": items.player1Score ? items.player1Score.playerScore : 0
+        });
+    }
     items.bonus.bad("flower")
 }
 

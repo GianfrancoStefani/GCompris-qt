@@ -56,6 +56,7 @@ ActivityBase {
         // Add here the QML items you need to access in javascript
         QtObject {
             id: items
+            property var telemetry: typeof telemetryManager !== 'undefined' ? telemetryManager : null
             property Item main: activity.main
             property alias flipSound: flipSound
             property alias activityBackground: activityBackground
@@ -92,7 +93,10 @@ ActivityBase {
             }
         }
 
-        onStart: { Activity.start(items) }
+        onStart: {
+            activityBackground.forceActiveFocus()
+            Activity.start(items)
+        }
         onStop: { Activity.stop() }
         
         property int pieceSize: Math.round(blueFrame.width * 0.222)
