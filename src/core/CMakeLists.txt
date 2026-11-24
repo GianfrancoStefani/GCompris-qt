@@ -42,6 +42,8 @@ set(gcompris_SRCS
   Sequence.h
   TelemetryManager.cpp
   TelemetryManager.h
+  SyncAgent.cpp
+  SyncAgent.h
   synth/ADSRenvelope.cpp
   synth/ADSRenvelope.h
   GSynth.cpp
@@ -81,9 +83,9 @@ elseif(CMAKE_HOST_APPLE)
   set_source_files_properties(${gcompris_RES} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 endif()
 
-set(used_qt_modules ${QT_MAJOR}::Qml ${QT_MAJOR}::Quick ${QT_MAJOR}::Gui ${QT_MAJOR}::Multimedia ${QT_MAJOR}::Core ${QT_MAJOR}::Svg ${QT_MAJOR}::Sensors ${QT_MAJOR}::QuickControls2 ${QT_MAJOR}::QuickTemplates2 ${QT_MAJOR}::QmlWorkerScript ${QT_MAJOR}::Sql)
+set(used_qt_modules ${QT_MAJOR}::Qml ${QT_MAJOR}::Quick ${QT_MAJOR}::Gui ${QT_MAJOR}::Multimedia ${QT_MAJOR}::Core ${QT_MAJOR}::Svg ${QT_MAJOR}::Sensors ${QT_MAJOR}::QuickControls2 ${QT_MAJOR}::QuickTemplates2 ${QT_MAJOR}::QmlWorkerScript ${QT_MAJOR}::Sql ${QT_MAJOR}::Network)
 
-if(TARGET ${QT_MAJOR}::CorePrivate)
+if(ANDROID AND TARGET ${QT_MAJOR}::CorePrivate)
   set(used_qt_modules ${used_qt_modules} ${QT_MAJOR}::CorePrivate)
 endif()
 
@@ -93,7 +95,7 @@ else()
   set(used_qt_modules ${used_qt_modules} ${QT_MAJOR}::Graphs ${QT_MAJOR}::Quick3D)
 endif()
 
-if(TARGET ${QT_MAJOR}::QuickControls2Basic)
+if(WIN32 AND TARGET ${QT_MAJOR}::QuickControls2Basic)
   set(used_qt_modules ${used_qt_modules} ${QT_MAJOR}::QuickControls2Basic)
   if(TARGET ${QT_MAJOR}::QuickControls2BasicPrivate)
     set(used_qt_modules ${used_qt_modules} ${QT_MAJOR}::QuickControls2BasicPrivate)

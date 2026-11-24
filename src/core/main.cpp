@@ -33,6 +33,7 @@
 
 #include "ClientNetworkMessages.h"
 #include "TelemetryManager.h"
+#include "SyncAgent.h"
 #include "netconst.h"
 
 int main(int argc, char *argv[])
@@ -328,6 +329,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("clientNetworkMessages", &clientNetworkMessages);
     engine.rootContext()->setContextProperty("activityInfoTree", ActivityInfoTree::getInstance());
     engine.rootContext()->setContextProperty("telemetryManager", TelemetryManager::getInstance());
+    engine.rootContext()->setContextProperty("syncAgent", SyncAgent::getInstance());
 
     QObject::connect(&engine, &QQmlApplicationEngine::quit, DownloadManager::getInstance(),
                      &DownloadManager::shutdown);
@@ -344,6 +346,7 @@ int main(int argc, char *argv[])
     ApplicationInfo::getInstance()->setEngine(engine);
     ApplicationInfo::getInstance()->setBox2DInstalled();
     TelemetryManager::getInstance()->startNewSession();
+    SyncAgent::getInstance()->start();
 
     // We load the main file after checking for box2d to avoid computing multiple times the menu
     engine.load(QUrl("qrc:/gcompris/src/core/main.qml"));
