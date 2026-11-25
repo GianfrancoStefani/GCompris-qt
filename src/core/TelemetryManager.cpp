@@ -33,8 +33,8 @@ TelemetryManager::TelemetryManager(QObject *parent)
     m_sessionId = QUuid::createUuid().toString(QUuid::WithoutBraces);
     m_attemptId = QUuid::createUuid().toString(QUuid::WithoutBraces);
     m_problemInstanceId.clear();
-    m_userId = QStringLiteral("std_k4e_synth_default");
-    m_organizationId = QStringLiteral("org_k4e_default");
+    m_userId = qEnvironmentVariable("K4E_USER_ID", QStringLiteral("std_k4e_synth_default"));
+    m_organizationId = qEnvironmentVariable("K4E_ORGANIZATION_ID", QStringLiteral("org_k4e_default"));
 
     m_monotonicTimer.start();
     m_sessionStartUtc = QDateTime::currentDateTimeUtc();
@@ -72,6 +72,37 @@ void TelemetryManager::setOrganizationId(const QString &orgId)
         m_organizationId = orgId;
         Q_EMIT organizationIdChanged();
     }
+}
+
+void TelemetryManager::switchLearner(const QString &newUserId, const QString &orgId)
+{
+    if (!orgId.isEmpty() && m_organizationId != orgId) {
+        m_organizationId = orgId;
+        Q_EMIT organizationIdChanged();
+    }
+
+    // 1. If a session is currently active, cleanly end the previous session for the old learner
+    if (!m_sessionId.isEmpty()) {
+        QVariantMap payload;
+        payload[QStringLiteral("action")] = QStringLiteral("learner_switched");
+        payload[QStringLiteral("previous_user_id")] = m_userId;
+        payload[QStringLiteral("next_user_id")] = newUserId;
+        recordEvent(QStringLiteral("session_ended"), QStringLiteral("system"), 0, QVariant(), QStringLiteral(""), payload);
+        flush();
+    }
+
+    // 2. Clear any active problem instance or attempt
+    m_problemInstanceId.clear();
+    m_problemActionCount = 0;
+    Q_EMIT problemInstanceIdChanged();
+
+    // 3. Set the new user id
+    m_userId = newUserId;
+    Q_EMIT userIdChanged();
+
+    // 4. Start fresh session for the new learner
+    startNewSession();
+    qDebug() << "Kids4Edu: TelemetryManager switched learner to:" << m_userId << "in org:" << m_organizationId;
 }
 
 void TelemetryManager::startNewSession()

@@ -46,6 +46,9 @@ public:
     QString organizationId() const { return m_organizationId; }
     void setOrganizationId(const QString &orgId);
 
+    // Learner identity switching
+    Q_INVOKABLE void switchLearner(const QString &newUserId, const QString &orgId = QString());
+
     // Q_INVOKABLE methods callable directly from QML
     Q_INVOKABLE void startNewSession();
     Q_INVOKABLE void endSession();
