@@ -60,6 +60,16 @@ DialogBackground {
         "<center style='color:#00000000'>.<img width='" +
         320 * ApplicationInfo.ratio + "' height='" + 114 * ApplicationInfo.ratio +
         "' src='qrc:/gcompris/src/core/resource/gcompris-logo-full.svg'/>.</center>
+        <center><h2>Kids4Edu Desktop v2.1.0</h2></center>
+        <div style='background-color:#ffffff; padding:10px; border-radius:8px; border:1px solid #cbd5e1; margin-bottom:12px;'>
+        <b>Kids4Edu Desktop — Piattaforma di Osservazione Comportamentale e Telemetria</b><br/>
+        Questo applicativo integra e distribuisce una versione strumentata del software didattico libero <b>GCompris</b> (GPLv3/AGPLv3), originariamente sviluppato da Bruno Coudoin, Timothée Giet, Johnny Jazeix e dalla comunità internazionale KDE.<br/><br/>
+        <b>Conformità alle Licenze Open Source:</b><br/>
+        • <b>Codice Upstream GCompris:</b> Rilasciato con licenza GPLv3 / AGPLv3. Tutti i diritti appartengono agli autori originali.<br/>
+        • <b>Moduli Kids4Edu:</b> TelemetryManager, SyncAgent C++/Qt, WorkstationManager e tracciamento semantico sono rilasciati in piena conformità ai termini GPLv3 del repository fork.<br/>
+        • <b>Non-Affiliazione:</b> Kids4Edu è un progetto di ricerca e sviluppo indipendente e non è affiliato né sponsorizzato da KDE e.V.<br/>
+        • <b>Sorgenti completi e documentazione:</b> <a href='https://github.com/GianfrancoStefani/Kids4edu'>Kids4Edu Core</a> | <a href='https://github.com/GianfrancoStefani/GCompris-qt'>GCompris-qt Fork</a>
+        </div>
         <center><b><a href='https://gcompris.net'>" +
         qsTr("GCompris Home Page: https://gcompris.net") + "</a></b></center>
         <center>" + gcVersionTxt + " " + qtVersionTxt + "</center><br/>" +

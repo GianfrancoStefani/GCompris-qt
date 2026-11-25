@@ -84,6 +84,21 @@ void SyncAgent::setBackendUrl(const QString &url)
     }
 }
 
+QString SyncAgent::authToken() const
+{
+    QMutexLocker locker(&m_mutex);
+    return m_apiAuthToken;
+}
+
+void SyncAgent::setAuthToken(const QString &token)
+{
+    QMutexLocker locker(&m_mutex);
+    if (m_apiAuthToken != token) {
+        m_apiAuthToken = token;
+        Q_EMIT authTokenChanged();
+    }
+}
+
 void SyncAgent::start()
 {
     if (!m_isRunning) {
@@ -115,25 +130,39 @@ void SyncAgent::triggerSyncNow()
 void SyncAgent::initDatabaseConnection()
 {
     QMutexLocker locker(&m_mutex);
-    QString dataDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-    if (dataDir.isEmpty()) {
-        dataDir = QDir::homePath() + QStringLiteral("/.kids4edu");
+    QString dataDir;
+    QByteArray envDataDir = qgetenv("KIDS4EDU_DATA_DIR");
+    if (envDataDir.isEmpty()) {
+        envDataDir = qgetenv("K4E_DATA_DIR");
     }
+    if (!envDataDir.isEmpty()) {
+        dataDir = QString::fromUtf8(envDataDir);
+    } else {
+        dataDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+        if (dataDir.isEmpty()) {
+            dataDir = QDir::homePath() + QStringLiteral("/.kids4edu");
+        }
+    }
+    QDir().mkpath(dataDir);
     QString dbPath = dataDir + QStringLiteral("/telemetry_offline.sqlite");
 
     if (!QSqlDatabase::contains(m_dbConnectionName)) {
         QSqlDatabase db = QSqlDatabase::addDatabase(QStringLiteral("QSQLITE"), m_dbConnectionName);
         db.setDatabaseName(dbPath);
+    }
+    QSqlDatabase db = QSqlDatabase::database(m_dbConnectionName);
+    if (!db.isOpen()) {
         if (!db.open()) {
-            qWarning() << "Kids4Edu: SyncAgent could not open database:" << db.lastError().text();
-        } else {
-            // Ensure columns for robust queue management
-            QSqlQuery q(db);
-            q.exec(QStringLiteral("ALTER TABLE telemetry_events ADD COLUMN last_error TEXT;"));
-            q.exec(QStringLiteral("ALTER TABLE telemetry_events ADD COLUMN synced_at TEXT;"));
-            q.exec(QStringLiteral("PRAGMA journal_mode = WAL;"));
+            qWarning() << "Kids4Edu: SyncAgent could not open database at" << dbPath << ":" << db.lastError().text();
+            return;
         }
     }
+
+    // Ensure columns for robust queue management
+    QSqlQuery q(db);
+    q.exec(QStringLiteral("ALTER TABLE telemetry_events ADD COLUMN last_error TEXT;"));
+    q.exec(QStringLiteral("ALTER TABLE telemetry_events ADD COLUMN synced_at TEXT;"));
+    q.exec(QStringLiteral("PRAGMA journal_mode = WAL;"));
 }
 
 void SyncAgent::recoverInFlightEvents()
@@ -188,6 +217,10 @@ void SyncAgent::sendPendingBatch()
     {
         QMutexLocker locker(&m_mutex);
         QSqlDatabase db = QSqlDatabase::database(m_dbConnectionName);
+        if (!db.isOpen()) {
+            initDatabaseConnection();
+            db = QSqlDatabase::database(m_dbConnectionName);
+        }
         if (!db.isOpen()) {
             qWarning() << "Kids4Edu: SyncAgent sendPendingBatch: db NOT open!";
             return;
@@ -295,7 +328,13 @@ void SyncAgent::sendPendingBatch()
 void SyncAgent::onNetworkReplyFinished(QNetworkReply *reply)
 {
     m_batchInFlight = false;
-    qDebug() << "Kids4Edu: SyncAgent onNetworkReplyFinished! HTTP:" << reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() << "Error:" << reply->error();
+    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    qDebug() << "Kids4Edu: SyncAgent onNetworkReplyFinished! HTTP:" << statusCode << "Error:" << reply->error();
+
+    if (statusCode == 401 || statusCode == 403) {
+        qWarning() << "Kids4Edu: SyncAgent received HTTP" << statusCode << "- Workstation token unauthorized or revoked!";
+        Q_EMIT workstationUnauthorized();
+    }
 
     if (reply->error() != QNetworkReply::NoError) {
         qWarning() << "Kids4Edu: SyncAgent network transmission error:" << reply->errorString();

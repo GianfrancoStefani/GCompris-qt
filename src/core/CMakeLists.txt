@@ -44,6 +44,8 @@ set(gcompris_SRCS
   TelemetryManager.h
   SyncAgent.cpp
   SyncAgent.h
+  WorkstationManager.cpp
+  WorkstationManager.h
   synth/ADSRenvelope.cpp
   synth/ADSRenvelope.h
   GSynth.cpp

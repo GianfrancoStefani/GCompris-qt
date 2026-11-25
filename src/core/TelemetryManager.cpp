@@ -271,9 +271,15 @@ void TelemetryManager::initDatabase()
 {
     QMutexLocker locker(&m_dbMutex);
 
-    QString dataDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-    if (dataDir.isEmpty()) {
-        dataDir = QDir::homePath() + QStringLiteral("/.kids4edu");
+    QString dataDir;
+    QByteArray envDataDir = qgetenv("KIDS4EDU_DATA_DIR");
+    if (!envDataDir.isEmpty()) {
+        dataDir = QString::fromUtf8(envDataDir);
+    } else {
+        dataDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+        if (dataDir.isEmpty()) {
+            dataDir = QDir::homePath() + QStringLiteral("/.kids4edu");
+        }
     }
     QDir().mkpath(dataDir);
     m_dbPath = dataDir + QStringLiteral("/telemetry_offline.sqlite");
@@ -290,6 +296,15 @@ void TelemetryManager::initDatabase()
         qWarning() << "Kids4Edu: Failed to open SQLite telemetry database at" << m_dbPath << ":" << db.lastError().text();
         m_dbInitialized = false;
         return;
+    }
+
+    // Restrict permissions to owner only (0600) on shared workstations
+    QFile::setPermissions(m_dbPath, QFileDevice::ReadOwner | QFileDevice::WriteOwner);
+    if (QFile::exists(m_dbPath + QStringLiteral("-wal"))) {
+        QFile::setPermissions(m_dbPath + QStringLiteral("-wal"), QFileDevice::ReadOwner | QFileDevice::WriteOwner);
+    }
+    if (QFile::exists(m_dbPath + QStringLiteral("-shm"))) {
+        QFile::setPermissions(m_dbPath + QStringLiteral("-shm"), QFileDevice::ReadOwner | QFileDevice::WriteOwner);
     }
 
     QSqlQuery q(db);

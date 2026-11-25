@@ -95,6 +95,24 @@ Window {
             }
         }
     }
+    Shortcut {
+        sequence: "Ctrl+d"
+        onActivated: showDiagnostics();
+    }
+    Shortcut {
+        sequence: "Ctrl+l"
+        onActivated: showLearnerLogin();
+    }
+
+    function showLearnerLogin() {
+        learnerLoginDialog.visible = true;
+    }
+    function showEnrollment() {
+        enrollmentDialog.visible = true;
+    }
+    function showDiagnostics() {
+        diagnosticsDialog.visible = true;
+    }
 
     /**
      * type: bool
@@ -902,6 +920,20 @@ Window {
                 resetActivitiesWithoutDatasets(true);
             }
         }
+    }
+
+    LearnerLoginDialog {
+        id: learnerLoginDialog
+    }
+
+    EnrollmentDialog {
+        id: enrollmentDialog
+    }
+
+    DiagnosticsDialog {
+        id: diagnosticsDialog
+        onRequestEnrollment: showEnrollment()
+        onRequestSwitchLearner: showLearnerLogin()
     }
     /// @endcond
 }

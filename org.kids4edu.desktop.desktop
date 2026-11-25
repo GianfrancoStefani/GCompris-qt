@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=Kids4Edu Desktop
+Comment=Piattaforma di osservazione comportamentale e suite educativa per la scuola primaria
+GenericName=Educational Suite
+Exec=kids4edu-desktop %U
+Icon=org.kids4edu.desktop
+Terminal=false
+Type=Application
+Categories=Education;Game;KidsGame;
+StartupNotify=true
+StartupWMClass=kids4edu-desktop
+Keywords=educational;kids;school;learning;telemetry;
+X-Kids4Edu-Version=2.1.0

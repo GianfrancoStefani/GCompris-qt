@@ -118,4 +118,20 @@ QtObject {
      * Used for displaying the server status of teacher's admin tool.
      */
     readonly property int serverStatus: 2048
+
+    /**
+     * type:int
+     * Representation of the learner profile button.
+     *
+     * Used for student login, PIN authentication and profile switching.
+     */
+    readonly property int learnerProfile: 4096
+
+    /**
+     * type:int
+     * Representation of the IT diagnostics button.
+     *
+     * Used for workstation enrollment, sync queue monitoring and diagnostics.
+     */
+    readonly property int diagnostics: 8192
 }

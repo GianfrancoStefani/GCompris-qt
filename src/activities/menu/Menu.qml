@@ -1034,10 +1034,10 @@ ActivityBase {
             // BUG: on Windows, dynamic values in BarEnumContent are not working, so using intermediate properties as workaround to display serverStatus button
             property bool connectionAccepted: ApplicationInfo.serverConnectionAccepted
             property BarEnumContent defaultContent: BarEnumContent {
-                value: help | config | activityConfig | about | (ApplicationInfo.isMobile ? 0 : exit)
+                value: help | config | activityConfig | about | (ApplicationInfo.isMobile ? 0 : exit) | learnerProfile | diagnostics
             }
             property BarEnumContent contentWithServerStatus: BarEnumContent {
-                value: help | config | activityConfig | about | (ApplicationInfo.isMobile ? 0 : exit) | serverStatus
+                value: help | config | activityConfig | about | (ApplicationInfo.isMobile ? 0 : exit) | serverStatus | learnerProfile | diagnostics
             }
             onConnectionAcceptedChanged: {
                 if(connectionAccepted) {
@@ -1056,6 +1056,16 @@ ActivityBase {
             onHelpClicked: {
                 searchTextField.focus = false
                 displayDialog(dialogHelp)
+            }
+
+            onLearnerProfileClicked: {
+                searchTextField.focus = false
+                main.showLearnerLogin()
+            }
+
+            onDiagnosticsClicked: {
+                searchTextField.focus = false
+                main.showDiagnostics()
             }
 
             onServerStatusClicked: {

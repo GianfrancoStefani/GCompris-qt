@@ -34,6 +34,7 @@
 #include "ClientNetworkMessages.h"
 #include "TelemetryManager.h"
 #include "SyncAgent.h"
+#include "WorkstationManager.h"
 #include "netconst.h"
 
 int main(int argc, char *argv[])
@@ -50,17 +51,11 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 #endif
 
-#if defined(UBUNTUTOUCH)
-    app.setOrganizationName("org.kde.gcompris");
-#else
-    app.setOrganizationName("KDE");
-#endif
-    app.setApplicationName(GCOMPRIS_APPLICATION_NAME);
-    app.setOrganizationDomain("kde.org");
-    app.setApplicationVersion(ApplicationInfo::GCVersion());
-    // Set desktop file name, as the built-in (orgDomain + appName) is not
-    // the one we use (because appName is gcompris-qt, not gcompris)
-    QGuiApplication::setDesktopFileName("org.kde.gcompris");
+    app.setOrganizationName("Kids4Edu");
+    app.setApplicationName("Kids4Edu");
+    app.setOrganizationDomain("kids4edu.org");
+    app.setApplicationVersion(QStringLiteral("2.1.0"));
+    QGuiApplication::setDesktopFileName("org.kids4edu.desktop");
 
     // add a variable to disable default fullscreen on Mac, see below..
 #if defined(Q_OS_MACOS)
@@ -330,6 +325,7 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("activityInfoTree", ActivityInfoTree::getInstance());
     engine.rootContext()->setContextProperty("telemetryManager", TelemetryManager::getInstance());
     engine.rootContext()->setContextProperty("syncAgent", SyncAgent::getInstance());
+    engine.rootContext()->setContextProperty("workstationManager", WorkstationManager::getInstance());
 
     QObject::connect(&engine, &QQmlApplicationEngine::quit, DownloadManager::getInstance(),
                      &DownloadManager::shutdown);
@@ -345,6 +341,7 @@ int main(int argc, char *argv[])
 
     ApplicationInfo::getInstance()->setEngine(engine);
     ApplicationInfo::getInstance()->setBox2DInstalled();
+    WorkstationManager::getInstance()->initialize();
     TelemetryManager::getInstance()->startNewSession();
     SyncAgent::getInstance()->start();
 

@@ -26,6 +26,7 @@ class SyncAgent : public QObject
     Q_OBJECT
     Q_PROPERTY(bool isRunning READ isRunning NOTIFY isRunningChanged)
     Q_PROPERTY(QString backendUrl READ backendUrl WRITE setBackendUrl NOTIFY backendUrlChanged)
+    Q_PROPERTY(QString authToken READ authToken WRITE setAuthToken NOTIFY authTokenChanged)
     Q_PROPERTY(int pendingCount READ pendingCount NOTIFY countsChanged)
     Q_PROPERTY(int inFlightCount READ inFlightCount NOTIFY countsChanged)
     Q_PROPERTY(int syncedCount READ syncedCount NOTIFY countsChanged)
@@ -39,6 +40,9 @@ public:
     bool isRunning() const { return m_isRunning; }
     QString backendUrl() const { return m_backendUrl; }
     void setBackendUrl(const QString &url);
+
+    QString authToken() const;
+    void setAuthToken(const QString &token);
 
     int pendingCount() const { return m_pendingCount; }
     int inFlightCount() const { return m_inFlightCount; }
@@ -54,10 +58,12 @@ public:
 Q_SIGNALS:
     void isRunningChanged();
     void backendUrlChanged();
+    void authTokenChanged();
     void countsChanged();
     void lastSyncTimeChanged();
     void syncBatchCompleted(int accepted, int duplicates, int conflicts);
     void syncError(const QString &errorMsg);
+    void workstationUnauthorized();
 
 private Q_SLOTS:
     void onSyncTimer();

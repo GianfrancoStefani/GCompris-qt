@@ -148,6 +148,8 @@ Item {
      * To display the server status dialog.
      */
     signal serverStatusClicked
+    signal learnerProfileClicked
+    signal diagnosticsClicked
 
     /// @cond INTERNAL_DOCS
 
@@ -226,6 +228,16 @@ Item {
         {
             'bid': serverStatus,
             'contentId': content.serverStatus,
+            'allowed': true
+        },
+        {
+            'bid': learnerProfile,
+            'contentId': content.learnerProfile,
+            'allowed': true
+        },
+        {
+            'bid': diagnostics,
+            'contentId': content.diagnostics,
             'allowed': true
         }
     ]
@@ -551,6 +563,57 @@ Item {
             }
             onClicked: {
                 bar.serverStatusClicked();
+            }
+        }
+    }
+    Component {
+        id: learnerProfile
+        BarButton {
+            source: "qrc:/gcompris/src/core/resource/bar_server.svg"
+            width: bar.buttonSize
+            visible: barRow.isHidden === false
+            Rectangle {
+                z: -1
+                width: bar.buttonSize * 0.97
+                height: width
+                radius: width / 2
+                color: workstationManager.currentLearnerId !== "anonymous" ? "#16a34a" : "#2563eb"
+                anchors.centerIn: parent
+                Text {
+                    anchors.centerIn: parent
+                    text: workstationManager.currentLearnerName.length > 0 ? workstationManager.currentLearnerName.charAt(0) : "👤"
+                    font.pixelSize: parent.width * 0.48
+                    font.weight: Font.Bold
+                    color: "#ffffff"
+                }
+            }
+            onClicked: {
+                bar.learnerProfileClicked();
+            }
+        }
+    }
+    Component {
+        id: diagnostics
+        BarButton {
+            source: "qrc:/gcompris/src/core/resource/bar_config.svg"
+            width: bar.buttonSize
+            visible: barRow.isHidden === false
+            Rectangle {
+                z: -1
+                width: bar.buttonSize * 0.97
+                height: width
+                radius: width / 2
+                color: syncAgent.pendingCount > 0 ? "#f59e0b" : "#475569"
+                anchors.centerIn: parent
+                Text {
+                    anchors.centerIn: parent
+                    text: "⚙"
+                    font.pixelSize: parent.width * 0.48
+                    color: "#ffffff"
+                }
+            }
+            onClicked: {
+                bar.diagnosticsClicked();
             }
         }
     }
