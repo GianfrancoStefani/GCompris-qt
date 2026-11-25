@@ -74,6 +74,15 @@ void TelemetryManager::setOrganizationId(const QString &orgId)
     }
 }
 
+void TelemetryManager::setTeachingSessionId(const QString &sessionId)
+{
+    if (m_teachingSessionId != sessionId) {
+        m_teachingSessionId = sessionId;
+        Q_EMIT teachingSessionIdChanged();
+        qDebug() << "Kids4Edu: TelemetryManager teachingSessionId set to:" << m_teachingSessionId;
+    }
+}
+
 void TelemetryManager::switchLearner(const QString &newUserId, const QString &orgId)
 {
     if (!orgId.isEmpty() && m_organizationId != orgId) {
@@ -339,7 +348,8 @@ void TelemetryManager::initDatabase()
         "  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,"
         "  last_error TEXT,"
         "  synced_at TEXT,"
-        "  problem_instance_id TEXT"
+        "  problem_instance_id TEXT,"
+        "  teaching_session_id TEXT"
         ");"
     );
 
@@ -349,6 +359,7 @@ void TelemetryManager::initDatabase()
     } else {
         // Defensive column migration for existing databases
         q.exec(QStringLiteral("ALTER TABLE telemetry_events ADD COLUMN problem_instance_id TEXT;"));
+        q.exec(QStringLiteral("ALTER TABLE telemetry_events ADD COLUMN teaching_session_id TEXT;"));
         q.finish();
 
         // Create indexes for efficient querying and syncing
@@ -356,6 +367,7 @@ void TelemetryManager::initDatabase()
         q.exec(QStringLiteral("CREATE INDEX IF NOT EXISTS idx_telemetry_sync ON telemetry_events (sync_status);"));
         q.exec(QStringLiteral("CREATE INDEX IF NOT EXISTS idx_telemetry_activity ON telemetry_events (activity_id);"));
         q.exec(QStringLiteral("CREATE INDEX IF NOT EXISTS idx_telemetry_problem ON telemetry_events (problem_instance_id);"));
+        q.exec(QStringLiteral("CREATE INDEX IF NOT EXISTS idx_telemetry_teaching ON telemetry_events (teaching_session_id);"));
         m_dbInitialized = true;
 
         // Check for interrupted previous sessions (missing session_ended)
@@ -440,12 +452,12 @@ void TelemetryManager::recordEvent(const QString &eventType,
         "  event_id, session_id, attempt_id, pseudonymous_user_id, organization_id,"
         "  activity_id, activity_version, dataset_id, dataset_version, native_level,"
         "  normalized_difficulty, runtime_type, delivery_mode, platform, client_version,"
-        "  event_type, sequence_number, occurred_at, elapsed_ms, payload_json, problem_instance_id, sync_status"
+        "  event_type, sequence_number, occurred_at, elapsed_ms, payload_json, problem_instance_id, teaching_session_id, sync_status"
         ") VALUES ("
         "  :event_id, :session_id, :attempt_id, :user_id, :org_id,"
         "  :activity_id, :activity_version, :dataset_id, :dataset_version, :native_level,"
         "  :normalized_difficulty, :runtime_type, :delivery_mode, :platform, :client_version,"
-        "  :event_type, :sequence_number, :occurred_at, :elapsed_ms, :payload_json, :problem_instance_id, 'PENDING'"
+        "  :event_type, :sequence_number, :occurred_at, :elapsed_ms, :payload_json, :problem_instance_id, :teaching_session_id, 'PENDING'"
         ");"
     ));
 
@@ -480,6 +492,12 @@ void TelemetryManager::recordEvent(const QString &eventType,
         q.bindValue(QStringLiteral(":problem_instance_id"), effProblemId);
     } else {
         q.bindValue(QStringLiteral(":problem_instance_id"), QVariant(QMetaType(QMetaType::QString)));
+    }
+
+    if (!m_teachingSessionId.isEmpty()) {
+        q.bindValue(QStringLiteral(":teaching_session_id"), m_teachingSessionId);
+    } else {
+        q.bindValue(QStringLiteral(":teaching_session_id"), QVariant(QMetaType(QMetaType::QString)));
     }
 
     if (!q.exec()) {

@@ -150,6 +150,7 @@ Item {
     signal serverStatusClicked
     signal learnerProfileClicked
     signal diagnosticsClicked
+    signal teacherHelpClicked
 
     /// @cond INTERNAL_DOCS
 
@@ -239,6 +240,11 @@ Item {
             'bid': diagnostics,
             'contentId': content.diagnostics,
             'allowed': true
+        },
+        {
+            'bid': teacherHelp,
+            'contentId': content.teacherHelp,
+            'allowed': true
         }
     ]
 
@@ -290,8 +296,15 @@ Item {
     function updateContent() {
         var newButtonModel = [];
         numberOfButtons = 0;
+
+        // Automatically inject teacherHelp in the bar when workstation has an active teaching session or is enrolled
+        var effectiveContentValue = content.value;
+        if (workstationManager.activeSessionId !== "" || (workstationManager.isEnrolled && workstationManager.currentLearnerId !== "anonymous")) {
+            effectiveContentValue |= content.teacherHelp;
+        }
+
         for(var def in buttonList) {
-            if((content.value & buttonList[def].contentId) && buttonList[def].allowed) {
+            if((effectiveContentValue & buttonList[def].contentId) && buttonList[def].allowed) {
                 newButtonModel.push(buttonList[def]);
                 if(buttonList[def].bid === previous || buttonList[def].bid === next) {
                     numberOfButtons += 0.5;
@@ -614,6 +627,44 @@ Item {
             }
             onClicked: {
                 bar.diagnosticsClicked();
+            }
+        }
+    }
+    Component {
+        id: teacherHelp
+        BarButton {
+            source: "qrc:/gcompris/src/core/resource/bar_help.svg"
+            width: bar.buttonSize
+            visible: barRow.isHidden === false
+            Rectangle {
+                z: -1
+                width: bar.buttonSize * 0.97
+                height: width
+                radius: width / 2
+                color: {
+                    if (workstationManager.assistanceStatus === "REQUESTED") return "#ef4444"; // Pulsing red
+                    if (workstationManager.assistanceStatus === "ACKNOWLEDGED") return "#f59e0b"; // Amber (Teacher is coming)
+                    return "#0284c7"; // Sky blue default
+                }
+                anchors.centerIn: parent
+                Text {
+                    anchors.centerIn: parent
+                    text: {
+                        if (workstationManager.assistanceStatus === "REQUESTED") return "✋";
+                        if (workstationManager.assistanceStatus === "ACKNOWLEDGED") return "🏃";
+                        return "🙋";
+                    }
+                    font.pixelSize: parent.width * 0.48
+                    color: "#ffffff"
+                }
+            }
+            onClicked: {
+                if (workstationManager.assistanceStatus === "REQUESTED") {
+                    workstationManager.cancelAssistance();
+                } else {
+                    workstationManager.requestAssistance("Richiesta di aiuto per l'attività corrente");
+                }
+                bar.teacherHelpClicked();
             }
         }
     }

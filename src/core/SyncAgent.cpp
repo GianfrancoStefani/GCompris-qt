@@ -231,7 +231,7 @@ void SyncAgent::sendPendingBatch()
             "SELECT event_id, session_id, attempt_id, pseudonymous_user_id, organization_id, "
             "       activity_id, activity_version, dataset_id, dataset_version, native_level, "
             "       normalized_difficulty, runtime_type, delivery_mode, platform, client_version, "
-            "       event_type, sequence_number, occurred_at, elapsed_ms, payload_json, problem_instance_id "
+            "       event_type, sequence_number, occurred_at, elapsed_ms, payload_json, problem_instance_id, teaching_session_id "
             "FROM telemetry_events "
             "WHERE sync_status IN ('PENDING', 'RETRY') "
             "ORDER BY sequence_number ASC "
@@ -259,6 +259,11 @@ void SyncAgent::sendPendingBatch()
                 evtObj[QStringLiteral("problem_instance_id")] = probId;
             } else {
                 evtObj[QStringLiteral("problem_instance_id")] = QJsonValue::Null;
+            }
+
+            QString teachId = q.value(21).toString();
+            if (!teachId.isEmpty()) {
+                evtObj[QStringLiteral("teaching_session_id")] = teachId;
             }
 
             evtObj[QStringLiteral("pseudonymous_user_id")] = q.value(3).toString();

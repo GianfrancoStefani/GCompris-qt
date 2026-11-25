@@ -27,6 +27,7 @@ class TelemetryManager : public QObject
     Q_PROPERTY(QString sessionId READ sessionId NOTIFY sessionIdChanged)
     Q_PROPERTY(QString attemptId READ attemptId NOTIFY attemptIdChanged)
     Q_PROPERTY(QString problemInstanceId READ problemInstanceId NOTIFY problemInstanceIdChanged)
+    Q_PROPERTY(QString teachingSessionId READ teachingSessionId WRITE setTeachingSessionId NOTIFY teachingSessionIdChanged)
     Q_PROPERTY(QString userId READ userId WRITE setUserId NOTIFY userIdChanged)
     Q_PROPERTY(QString organizationId READ organizationId WRITE setOrganizationId NOTIFY organizationIdChanged)
 
@@ -40,6 +41,9 @@ public:
     QString sessionId() const { return m_sessionId; }
     QString attemptId() const { return m_attemptId; }
     QString problemInstanceId() const { return m_problemInstanceId; }
+    QString teachingSessionId() const { return m_teachingSessionId; }
+    void setTeachingSessionId(const QString &sessionId);
+
     QString userId() const { return m_userId; }
     void setUserId(const QString &userId);
 
@@ -111,6 +115,7 @@ Q_SIGNALS:
     void sessionIdChanged();
     void attemptIdChanged();
     void problemInstanceIdChanged();
+    void teachingSessionIdChanged();
     void userIdChanged();
     void organizationIdChanged();
     void eventRecorded(const QString &eventId, const QString &eventType);
@@ -126,6 +131,7 @@ private:
     QString m_sessionId;
     QString m_attemptId;
     QString m_problemInstanceId;
+    QString m_teachingSessionId;
     QString m_userId;
     QString m_organizationId;
     qint64 m_sequenceNumber;

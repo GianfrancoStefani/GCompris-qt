@@ -134,4 +134,12 @@ QtObject {
      * Used for workstation enrollment, sync queue monitoring and diagnostics.
      */
     readonly property int diagnostics: 8192
+
+    /**
+     * type:int
+     * Representation of the Teacher Assistance button ('Chiedi aiuto').
+     *
+     * Used by learners to request in-person teacher assistance during a teaching session.
+     */
+    readonly property int teacherHelp: 16384
 }

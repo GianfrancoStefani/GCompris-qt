@@ -72,6 +72,10 @@ WorkstationManager::WorkstationManager(QObject *parent)
       m_lastSyncTime(QStringLiteral("Mai")),
       m_statusMessage(QStringLiteral("")),
       m_lastOnlineTimestamp(QDateTime::currentDateTimeUtc()),
+      m_activeSessionId(QStringLiteral("")),
+      m_activeSessionTitle(QStringLiteral("")),
+      m_assistanceStatus(QStringLiteral("NONE")),
+      m_assistanceMessage(QStringLiteral("")),
       m_networkManager(new QNetworkAccessManager(this))
 {
 }
@@ -763,5 +767,201 @@ QVariantMap WorkstationManager::getDiagnosticsInfo() const
     diag[QStringLiteral("sync_agent_running")] = SyncAgent::getInstance()->isRunning();
     diag[QStringLiteral("client_version")] = QStringLiteral("2.1.0");
     diag[QStringLiteral("operating_system")] = QSysInfo::prettyProductName();
+    diag[QStringLiteral("active_session_id")] = m_activeSessionId;
+    diag[QStringLiteral("active_session_title")] = m_activeSessionTitle;
+    diag[QStringLiteral("assistance_status")] = m_assistanceStatus;
     return diag;
+}
+
+void WorkstationManager::queryActiveSession()
+{
+    QMutexLocker locker(&m_mutex);
+    if (!m_isEnrolled || m_apiToken.isEmpty()) {
+        return;
+    }
+
+    QString basePath = m_backendUrl;
+    while (basePath.endsWith(QLatin1Char('/'))) {
+        basePath.chop(1);
+    }
+    QUrl url(basePath + QStringLiteral("/v1/workstations/active-session"));
+    QNetworkRequest request(url);
+    request.setRawHeader("Authorization", QStringLiteral("Bearer %1").arg(m_apiToken).toUtf8());
+
+    QNetworkReply *reply = m_networkManager->get(request);
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+        onActiveSessionReplyFinished(reply);
+    });
+}
+
+void WorkstationManager::onActiveSessionReplyFinished(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    QMutexLocker locker(&m_mutex);
+
+    if (reply->error() != QNetworkReply::NoError) {
+        qWarning() << "Kids4Edu: Failed to query active session:" << reply->errorString();
+        return;
+    }
+
+    QByteArray data = reply->readAll();
+    QJsonDocument doc = QJsonDocument::fromJson(data);
+    if (!doc.isObject()) return;
+
+    QJsonObject obj = doc.object();
+    bool hasActive = obj.value(QStringLiteral("has_active_session")).toBool();
+
+    if (hasActive) {
+        QJsonObject sess = obj.value(QStringLiteral("session")).toObject();
+        QString sessId = sess.value(QStringLiteral("id")).toString();
+        QString sessTitle = sess.value(QStringLiteral("title")).toString();
+
+        if (m_activeSessionId != sessId) {
+            m_activeSessionId = sessId;
+            m_activeSessionTitle = sessTitle;
+            TelemetryManager::getInstance()->setTeachingSessionId(m_activeSessionId);
+            Q_EMIT activeSessionChanged();
+            qDebug() << "Kids4Edu: Joined active teaching session:" << m_activeSessionTitle << "(" << m_activeSessionId << ")";
+        }
+    } else {
+        if (!m_activeSessionId.isEmpty()) {
+            m_activeSessionId.clear();
+            m_activeSessionTitle.clear();
+            TelemetryManager::getInstance()->setTeachingSessionId(QStringLiteral(""));
+            Q_EMIT activeSessionChanged();
+            qDebug() << "Kids4Edu: No active teaching session for workstation.";
+        }
+    }
+}
+
+void WorkstationManager::sendHeartbeat(const QString &activityId, int level, const QString &activityStatus, int attempts, int errors, int durationSeconds)
+{
+    QMutexLocker locker(&m_mutex);
+    if (!m_isEnrolled || m_apiToken.isEmpty()) {
+        return;
+    }
+
+    QString basePath = m_backendUrl;
+    while (basePath.endsWith(QLatin1Char('/'))) {
+        basePath.chop(1);
+    }
+    QUrl url(basePath + QStringLiteral("/v1/workstations/heartbeat"));
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/json"));
+    request.setRawHeader("Authorization", QStringLiteral("Bearer %1").arg(m_apiToken).toUtf8());
+
+    QJsonObject payload;
+    if (!m_activeSessionId.isEmpty()) {
+        payload[QStringLiteral("teaching_session_id")] = m_activeSessionId;
+    }
+    payload[QStringLiteral("learner_id")] = m_currentLearnerId;
+    payload[QStringLiteral("current_activity_id")] = activityId;
+    payload[QStringLiteral("current_level")] = level;
+    payload[QStringLiteral("activity_status")] = activityStatus.isEmpty() ? QStringLiteral("WAITING") : activityStatus;
+    payload[QStringLiteral("attempts_count")] = attempts;
+    payload[QStringLiteral("errors_count")] = errors;
+    payload[QStringLiteral("duration_seconds")] = durationSeconds;
+    payload[QStringLiteral("assistance_status")] = m_assistanceStatus;
+    payload[QStringLiteral("assistance_message")] = m_assistanceMessage;
+    payload[QStringLiteral("client_timestamp")] = QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs);
+
+    QNetworkReply *reply = m_networkManager->post(request, QJsonDocument(payload).toJson(QJsonDocument::Compact));
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+        onHeartbeatReplyFinished(reply);
+    });
+}
+
+void WorkstationManager::onHeartbeatReplyFinished(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    QMutexLocker locker(&m_mutex);
+
+    if (reply->error() != QNetworkReply::NoError) {
+        return;
+    }
+
+    QByteArray data = reply->readAll();
+    QJsonDocument doc = QJsonDocument::fromJson(data);
+    if (!doc.isObject()) return;
+
+    QJsonObject obj = doc.object();
+    QString serverAssistanceStatus = obj.value(QStringLiteral("assistance_status")).toString();
+    if (!serverAssistanceStatus.isEmpty() && m_assistanceStatus != serverAssistanceStatus) {
+        m_assistanceStatus = serverAssistanceStatus;
+        Q_EMIT assistanceStatusChanged();
+    }
+
+    // Check for pending command
+    QJsonValue cmdVal = obj.value(QStringLiteral("pending_command"));
+    if (!cmdVal.isNull() && !cmdVal.toString().isEmpty()) {
+        QString cmd = cmdVal.toString();
+        QJsonObject cmdPayload = obj.value(QStringLiteral("pending_command_payload")).toObject();
+        qDebug() << "Kids4Edu: Workstation received command:" << cmd;
+        Q_EMIT commandReceived(cmd, cmdPayload);
+    }
+}
+
+void WorkstationManager::requestAssistance(const QString &message)
+{
+    QMutexLocker locker(&m_mutex);
+    if (!m_isEnrolled || m_apiToken.isEmpty()) {
+        return;
+    }
+
+    m_assistanceStatus = QStringLiteral("REQUESTED");
+    m_assistanceMessage = message.isEmpty() ? QStringLiteral("Richiesta di assistenza didattica") : message;
+    Q_EMIT assistanceStatusChanged();
+
+    QString basePath = m_backendUrl;
+    while (basePath.endsWith(QLatin1Char('/'))) {
+        basePath.chop(1);
+    }
+    QUrl url(basePath + QStringLiteral("/v1/workstations/assistance-request"));
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/json"));
+    request.setRawHeader("Authorization", QStringLiteral("Bearer %1").arg(m_apiToken).toUtf8());
+
+    QJsonObject payload;
+    if (!m_activeSessionId.isEmpty()) {
+        payload[QStringLiteral("teaching_session_id")] = m_activeSessionId;
+    }
+    payload[QStringLiteral("learner_id")] = m_currentLearnerId;
+    payload[QStringLiteral("message")] = m_assistanceMessage;
+
+    QNetworkReply *reply = m_networkManager->post(request, QJsonDocument(payload).toJson(QJsonDocument::Compact));
+    connect(reply, &QNetworkReply::finished, this, [reply]() {
+        reply->deleteLater();
+    });
+}
+
+void WorkstationManager::cancelAssistance()
+{
+    QMutexLocker locker(&m_mutex);
+    if (!m_isEnrolled || m_apiToken.isEmpty()) {
+        return;
+    }
+
+    m_assistanceStatus = QStringLiteral("NONE");
+    m_assistanceMessage.clear();
+    Q_EMIT assistanceStatusChanged();
+
+    QString basePath = m_backendUrl;
+    while (basePath.endsWith(QLatin1Char('/'))) {
+        basePath.chop(1);
+    }
+    QUrl url(basePath + QStringLiteral("/v1/workstations/assistance-cancel"));
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/json"));
+    request.setRawHeader("Authorization", QStringLiteral("Bearer %1").arg(m_apiToken).toUtf8());
+
+    QJsonObject payload;
+    if (!m_activeSessionId.isEmpty()) {
+        payload[QStringLiteral("teaching_session_id")] = m_activeSessionId;
+    }
+    payload[QStringLiteral("learner_id")] = m_currentLearnerId;
+
+    QNetworkReply *reply = m_networkManager->post(request, QJsonDocument(payload).toJson(QJsonDocument::Compact));
+    connect(reply, &QNetworkReply::finished, this, [reply]() {
+        reply->deleteLater();
+    });
 }

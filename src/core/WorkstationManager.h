@@ -35,6 +35,10 @@ class WorkstationManager : public QObject
     Q_PROPERTY(int offlineAllowanceHours READ offlineAllowanceHours NOTIFY offlinePolicyChanged)
     Q_PROPERTY(QString lastSyncTime READ lastSyncTime NOTIFY lastSyncTimeChanged)
     Q_PROPERTY(QString statusMessage READ statusMessage NOTIFY statusMessageChanged)
+    Q_PROPERTY(QString activeSessionId READ activeSessionId NOTIFY activeSessionChanged)
+    Q_PROPERTY(QString activeSessionTitle READ activeSessionTitle NOTIFY activeSessionChanged)
+    Q_PROPERTY(QString assistanceStatus READ assistanceStatus NOTIFY assistanceStatusChanged)
+    Q_PROPERTY(QString assistanceMessage READ assistanceMessage NOTIFY assistanceStatusChanged)
 
 public:
     static WorkstationManager* getInstance();
@@ -56,6 +60,11 @@ public:
     QString lastSyncTime() const { return m_lastSyncTime; }
     QString statusMessage() const { return m_statusMessage; }
 
+    QString activeSessionId() const { return m_activeSessionId; }
+    QString activeSessionTitle() const { return m_activeSessionTitle; }
+    QString assistanceStatus() const { return m_assistanceStatus; }
+    QString assistanceMessage() const { return m_assistanceMessage; }
+
     void initialize();
 
     Q_INVOKABLE void enroll(const QString &backendUrl, const QString &enrollmentToken, const QString &workstationName);
@@ -67,6 +76,12 @@ public:
     Q_INVOKABLE void checkConnectivity();
     Q_INVOKABLE QVariantMap getDiagnosticsInfo() const;
 
+    // Phase 2G-B: Active Session Query, Heartbeat & Assistance Request
+    Q_INVOKABLE void queryActiveSession();
+    Q_INVOKABLE void sendHeartbeat(const QString &activityId, int level, const QString &activityStatus, int attempts, int errors, int durationSeconds);
+    Q_INVOKABLE void requestAssistance(const QString &message = QString());
+    Q_INVOKABLE void cancelAssistance();
+
 Q_SIGNALS:
     void enrollmentChanged();
     void backendUrlChanged();
@@ -76,6 +91,9 @@ Q_SIGNALS:
     void offlinePolicyChanged();
     void lastSyncTimeChanged();
     void statusMessageChanged();
+    void activeSessionChanged();
+    void assistanceStatusChanged();
+    void commandReceived(const QString &command, const QJsonObject &payload);
     void enrollmentSucceeded(const QString &workstationName);
     void enrollmentFailed(const QString &errorMessage);
     void loginSucceeded(const QString &learnerId, const QString &displayName);
@@ -86,6 +104,8 @@ private Q_SLOTS:
     void onProfilesReplyFinished(QNetworkReply *reply);
     void onVerifyPinReplyFinished(QNetworkReply *reply, const QString &learnerId, const QString &pin);
     void onWorkstationUnauthorized();
+    void onHeartbeatReplyFinished(QNetworkReply *reply);
+    void onActiveSessionReplyFinished(QNetworkReply *reply);
 
     friend class WorkstationManagerTest;
 
@@ -118,6 +138,11 @@ private:
     QString m_lastSyncTime;
     QString m_statusMessage;
     QDateTime m_lastOnlineTimestamp;
+
+    QString m_activeSessionId;
+    QString m_activeSessionTitle;
+    QString m_assistanceStatus;
+    QString m_assistanceMessage;
 
     QVariantList m_cachedProfiles;
     QJsonObject m_offlinePinHashes; // learnerId -> { "hash": "...", "salt": "...", "cached_at": "..." }
