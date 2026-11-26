@@ -18,9 +18,12 @@ public:
     static bool deleteSecret(const QString &service, const QString &account);
 
     static bool isNativeKeyringAvailable();
+    static bool isSessionOnly();
+    static void setSessionSecret(const QString &service, const QString &account, const QString &secret);
 
 private:
     static QString getVaultPath();
+    static QString getKeyFilePath();
     static QByteArray getDerivationKey();
     static QByteArray encryptData(const QByteArray &plain, const QByteArray &key);
     static QByteArray decryptData(const QByteArray &cipher, const QByteArray &key);

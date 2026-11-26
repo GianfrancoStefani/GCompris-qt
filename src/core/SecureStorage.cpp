@@ -20,6 +20,24 @@
 #include <QHostInfo>
 #include <QSysInfo>
 #include <QDebug>
+#include <QMap>
+
+static QMap<QString, QString> s_sessionSecrets;
+
+bool SecureStorage::isSessionOnly()
+{
+    return qEnvironmentVariableIsSet("KIDS4EDU_SESSION_ONLY");
+}
+
+void SecureStorage::setSessionSecret(const QString &service, const QString &account, const QString &secret)
+{
+    QString entryKey = service + QStringLiteral(":") + account;
+    if (secret.isEmpty()) {
+        s_sessionSecrets.remove(entryKey);
+    } else {
+        s_sessionSecrets[entryKey] = secret;
+    }
+}
 
 bool SecureStorage::isNativeKeyringAvailable()
 {
@@ -35,6 +53,11 @@ bool SecureStorage::storeSecret(const QString &service, const QString &account, 
 {
     if (service.isEmpty() || account.isEmpty()) {
         return false;
+    }
+
+    if (isSessionOnly()) {
+        setSessionSecret(service, account, secret);
+        return true;
     }
 
 #if defined(Q_OS_MACOS)
@@ -64,6 +87,11 @@ QString SecureStorage::getSecret(const QString &service, const QString &account)
         return QString();
     }
 
+    if (isSessionOnly()) {
+        QString entryKey = service + QStringLiteral(":") + account;
+        return s_sessionSecrets.value(entryKey);
+    }
+
 #if defined(Q_OS_MACOS)
     if (isNativeKeyringAvailable()) {
         QProcess proc;
@@ -90,6 +118,11 @@ bool SecureStorage::deleteSecret(const QString &service, const QString &account)
 {
     if (service.isEmpty() || account.isEmpty()) {
         return false;
+    }
+
+    if (isSessionOnly()) {
+        setSessionSecret(service, account, QString());
+        return true;
     }
 
     bool success = false;
@@ -129,34 +162,72 @@ QString SecureStorage::getVaultPath()
     return dataDir + QStringLiteral("/.secure_vault");
 }
 
+QString SecureStorage::getKeyFilePath()
+{
+    QString dataDir;
+    QByteArray envDataDir = qgetenv("KIDS4EDU_DATA_DIR");
+    if (!envDataDir.isEmpty()) {
+        dataDir = QString::fromUtf8(envDataDir);
+    } else {
+        dataDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+        if (dataDir.isEmpty()) {
+            dataDir = QDir::homePath() + QStringLiteral("/.kids4edu");
+        }
+    }
+    QDir().mkpath(dataDir);
+    return dataDir + QStringLiteral("/.vault_key");
+}
+
 QByteArray SecureStorage::getDerivationKey()
 {
-    // Derive machine unique identifier
-    QByteArray machineIdentity;
+    // High-security key management:
+    // Generate an independent, cryptographically random master key stored in an isolated 0600 file (.vault_key).
+    // The master key is combined with host-specific material and derived via PBKDF2 (SHA-256, 50,000 iterations).
+    // This ensures that knowing the machine-id, hardware serial or OS environment ALONE is insufficient
+    // to reconstruct the encryption key.
+    QString keyFile = getKeyFilePath();
+    QByteArray randomMasterSecret;
 
+    QFile readKey(keyFile);
+    if (readKey.open(QIODevice::ReadOnly)) {
+        randomMasterSecret = readKey.readAll();
+        readKey.close();
+    }
+
+    if (randomMasterSecret.size() < 32) {
+        randomMasterSecret.resize(32);
+        for (int i = 0; i < 32; ++i) {
+            randomMasterSecret[i] = static_cast<char>(QRandomGenerator::securelySeeded().bounded(256));
+        }
+        QFile writeKey(keyFile);
+        if (writeKey.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+            writeKey.write(randomMasterSecret);
+            writeKey.close();
+            QFile::setPermissions(keyFile, QFileDevice::ReadOwner | QFileDevice::WriteOwner);
+        }
+    }
+
+    // Machine-specific component
+    QByteArray machineIdentity;
     QFile machineIdFile(QStringLiteral("/etc/machine-id"));
     if (machineIdFile.open(QIODevice::ReadOnly)) {
         machineIdentity = machineIdFile.readAll().trimmed();
         machineIdFile.close();
     }
     if (machineIdentity.isEmpty()) {
-        QFile dbusIdFile(QStringLiteral("/var/lib/dbus/machine-id"));
-        if (dbusIdFile.open(QIODevice::ReadOnly)) {
-            machineIdentity = dbusIdFile.readAll().trimmed();
-            dbusIdFile.close();
-        }
-    }
-    if (machineIdentity.isEmpty()) {
         machineIdentity = QSysInfo::machineUniqueId();
     }
     if (machineIdentity.isEmpty()) {
-        machineIdentity = (QHostInfo::localHostName() + QStringLiteral("_k4e_salt_") + qgetenv("USER")).toUtf8();
+        machineIdentity = (QHostInfo::localHostName() + QStringLiteral("_salt_") + qgetenv("USER")).toUtf8();
     }
 
-    QByteArray masterSalt = QByteArrayLiteral("kids4edu_native_vault_salt_v1");
+    // Combine random isolated master secret with machine salt
+    QByteArray combinedEntropy = randomMasterSecret + machineIdentity;
+    QByteArray masterSalt = QByteArrayLiteral("kids4edu_native_vault_salt_v2");
+
     return QPasswordDigestor::deriveKeyPbkdf2(
         QCryptographicHash::Sha256,
-        machineIdentity,
+        combinedEntropy,
         masterSalt,
         50000,
         32
