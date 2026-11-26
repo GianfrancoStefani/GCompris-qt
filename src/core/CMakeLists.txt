@@ -46,6 +46,8 @@ set(gcompris_SRCS
   SyncAgent.h
   WorkstationManager.cpp
   WorkstationManager.h
+  SecureStorage.cpp
+  SecureStorage.h
   synth/ADSRenvelope.cpp
   synth/ADSRenvelope.h
   GSynth.cpp

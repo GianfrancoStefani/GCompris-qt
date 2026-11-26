@@ -7,6 +7,7 @@
 #include "WorkstationManager.h"
 #include "TelemetryManager.h"
 #include "SyncAgent.h"
+#include "SecureStorage.h"
 
 #include <QDir>
 #include <QFile>
@@ -82,6 +83,8 @@ WorkstationManager::WorkstationManager(QObject *parent)
       m_assistanceMessage(QStringLiteral("")),
       m_isSessionPaused(false),
       m_isObserved(false),
+      m_isClassroomMode(true),
+      m_isLockedNavigation(true),
       m_observerTeacherName(QStringLiteral("")),
       m_currentObservationId(QStringLiteral("")),
       m_observationStreamToken(QStringLiteral("")),
@@ -89,6 +92,7 @@ WorkstationManager::WorkstationManager(QObject *parent)
       m_appliedCommand(QStringLiteral("")),
       m_window(nullptr),
       m_observationTimer(new QTimer(this)),
+      m_studentDeskData(QJsonObject()),
       m_networkManager(new QNetworkAccessManager(this))
 {
     m_observationTimer->setInterval(1000); // 1 fps observation rate
@@ -129,6 +133,40 @@ QString WorkstationManager::getCacheFilePath() const
     }
     QDir().mkpath(dataDir);
     return dataDir + QStringLiteral("/learner_cache.json");
+}
+
+QString WorkstationManager::getDeskCacheFilePath(const QString &learnerId) const
+{
+    QString dataDir;
+    QByteArray envDataDir = qgetenv("KIDS4EDU_DATA_DIR");
+    if (!envDataDir.isEmpty()) {
+        dataDir = QString::fromUtf8(envDataDir);
+    } else {
+        dataDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+        if (dataDir.isEmpty()) {
+            dataDir = QDir::homePath() + QStringLiteral("/.kids4edu");
+        }
+    }
+    QDir().mkpath(dataDir);
+    return dataDir + QStringLiteral("/student_desk_") + learnerId + QStringLiteral(".json");
+}
+
+void WorkstationManager::setClassroomMode(bool mode)
+{
+    QMutexLocker locker(&m_mutex);
+    if (m_isClassroomMode != mode) {
+        m_isClassroomMode = mode;
+        Q_EMIT classroomModeChanged();
+    }
+}
+
+void WorkstationManager::setLockedNavigation(bool locked)
+{
+    QMutexLocker locker(&m_mutex);
+    if (m_isLockedNavigation != locked) {
+        m_isLockedNavigation = locked;
+        Q_EMIT lockedNavigationChanged();
+    }
 }
 
 void WorkstationManager::initialize()
@@ -232,7 +270,17 @@ void WorkstationManager::loadConfiguration()
     m_workstationName = obj.value(QStringLiteral("workstation_name")).toString();
     m_organizationId = obj.value(QStringLiteral("organization_id")).toString();
     m_organizationName = obj.value(QStringLiteral("organization_name")).toString();
-    m_apiToken = obj.value(QStringLiteral("api_token")).toString();
+
+    // Secure Storage Token Migration & Retrieval
+    bool migratedToken = false;
+    if (obj.contains(QStringLiteral("api_token")) && !obj.value(QStringLiteral("api_token")).toString().isEmpty()) {
+        m_apiToken = obj.value(QStringLiteral("api_token")).toString();
+        SecureStorage::storeSecret(QStringLiteral("kids4edu"), QStringLiteral("api_token"), m_apiToken);
+        migratedToken = true;
+    } else {
+        m_apiToken = SecureStorage::getSecret(QStringLiteral("kids4edu"), QStringLiteral("api_token"));
+    }
+
     if (obj.contains(QStringLiteral("backend_url"))) {
         m_backendUrl = obj.value(QStringLiteral("backend_url")).toString();
     }
@@ -243,10 +291,19 @@ void WorkstationManager::loadConfiguration()
         m_lastOnlineTimestamp = QDateTime::fromString(obj.value(QStringLiteral("last_online_timestamp")).toString(), Qt::ISODate);
     }
     Q_EMIT enrollmentChanged();
+
+    if (migratedToken) {
+        // Scrub plaintext credentials from disk immediately
+        saveConfiguration();
+    }
 }
 
 void WorkstationManager::saveConfiguration()
 {
+    if (!m_apiToken.isEmpty()) {
+        SecureStorage::storeSecret(QStringLiteral("kids4edu"), QStringLiteral("api_token"), m_apiToken);
+    }
+
     QString path = getConfigFilePath();
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
@@ -260,7 +317,7 @@ void WorkstationManager::saveConfiguration()
     obj[QStringLiteral("workstation_name")] = m_workstationName;
     obj[QStringLiteral("organization_id")] = m_organizationId;
     obj[QStringLiteral("organization_name")] = m_organizationName;
-    obj[QStringLiteral("api_token")] = m_apiToken;
+    // Do NOT write plaintext api_token to JSON file (persisted in SecureStorage)
     obj[QStringLiteral("backend_url")] = m_backendUrl;
     obj[QStringLiteral("offline_allowance_hours")] = m_offlineAllowanceHours;
     obj[QStringLiteral("last_online_timestamp")] = m_lastOnlineTimestamp.toString(Qt::ISODate);
@@ -611,9 +668,12 @@ void WorkstationManager::verifyPinAndLogin(const QString &learnerId, const QStri
     if (verifyOfflinePin(learnerId, pin)) {
         m_currentLearnerId = learnerId;
         m_currentLearnerName = displayName;
+        m_studentDeskData = QJsonObject();
         TelemetryManager::getInstance()->switchLearner(learnerId, m_organizationId);
         Q_EMIT learnerChanged();
+        Q_EMIT studentDeskChanged();
         Q_EMIT loginSucceeded(learnerId, displayName);
+        fetchStudentDesk();
     } else {
         Q_EMIT loginFailed(QStringLiteral("PIN non valido o credenziali offline non disponibili."));
     }
@@ -643,9 +703,12 @@ void WorkstationManager::onVerifyPinReplyFinished(QNetworkReply *reply, const QS
                 }
                 m_currentLearnerId = learnerId;
                 m_currentLearnerName = displayName;
+                m_studentDeskData = QJsonObject();
                 TelemetryManager::getInstance()->switchLearner(learnerId, m_organizationId);
                 Q_EMIT learnerChanged();
+                Q_EMIT studentDeskChanged();
                 Q_EMIT loginSucceeded(learnerId, displayName);
+                fetchStudentDesk();
                 return;
             }
         }
@@ -687,10 +750,13 @@ void WorkstationManager::onVerifyPinReplyFinished(QNetworkReply *reply, const QS
 
     m_currentLearnerId = learnerId;
     m_currentLearnerName = displayName;
+    m_studentDeskData = QJsonObject();
     TelemetryManager::getInstance()->switchLearner(learnerId, m_organizationId);
 
     Q_EMIT learnerChanged();
+    Q_EMIT studentDeskChanged();
     Q_EMIT loginSucceeded(learnerId, displayName);
+    fetchStudentDesk();
 }
 
 void WorkstationManager::loginAsGuest()
@@ -698,8 +764,10 @@ void WorkstationManager::loginAsGuest()
     QMutexLocker locker(&m_mutex);
     m_currentLearnerId = QStringLiteral("anonymous");
     m_currentLearnerName = QStringLiteral("Ospite");
+    m_studentDeskData = QJsonObject();
     TelemetryManager::getInstance()->switchLearner(m_currentLearnerId, m_organizationId);
     Q_EMIT learnerChanged();
+    Q_EMIT studentDeskChanged();
     Q_EMIT loginSucceeded(m_currentLearnerId, m_currentLearnerName);
 }
 
@@ -708,8 +776,10 @@ void WorkstationManager::logoutLearner()
     QMutexLocker locker(&m_mutex);
     m_currentLearnerId = QStringLiteral("anonymous");
     m_currentLearnerName = QStringLiteral("Ospite");
+    m_studentDeskData = QJsonObject();
     TelemetryManager::getInstance()->switchLearner(m_currentLearnerId, m_organizationId);
     Q_EMIT learnerChanged();
+    Q_EMIT studentDeskChanged();
 }
 
 void WorkstationManager::unenroll()
@@ -723,6 +793,9 @@ void WorkstationManager::unenroll()
     m_apiToken.clear();
     m_cachedProfiles.clear();
     m_offlinePinHashes = QJsonObject();
+    m_studentDeskData = QJsonObject();
+
+    SecureStorage::deleteSecret(QStringLiteral("kids4edu"), QStringLiteral("api_token"));
 
     QFile::remove(getConfigFilePath());
     QFile::remove(getCacheFilePath());
@@ -735,6 +808,7 @@ void WorkstationManager::unenroll()
     Q_EMIT enrollmentChanged();
     Q_EMIT profilesChanged();
     Q_EMIT learnerChanged();
+    Q_EMIT studentDeskChanged();
 }
 
 void WorkstationManager::checkConnectivity()
@@ -1109,4 +1183,145 @@ void WorkstationManager::uploadObservationFrame(const QByteArray &jpegData)
     connect(reply, &QNetworkReply::finished, this, [reply]() {
         reply->deleteLater();
     });
+}
+
+void WorkstationManager::fetchStudentDesk()
+{
+    QMutexLocker locker(&m_mutex);
+    if (!m_isEnrolled || m_apiToken.isEmpty() || m_currentLearnerId.isEmpty() || m_currentLearnerId == QStringLiteral("anonymous")) {
+        return;
+    }
+
+    if (!m_isOnline) {
+        // Read from offline cache
+        QString cachePath = getDeskCacheFilePath(m_currentLearnerId);
+        QFile file(cachePath);
+        if (file.open(QIODevice::ReadOnly)) {
+            QByteArray data = file.readAll();
+            file.close();
+            QJsonDocument doc = QJsonDocument::fromJson(data);
+            if (doc.isObject()) {
+                m_studentDeskData = doc.object();
+                Q_EMIT studentDeskDataReady(m_studentDeskData);
+                Q_EMIT studentDeskChanged();
+                return;
+            }
+        }
+        Q_EMIT studentDeskFetchFailed(QStringLiteral("Offline e nessuna scrivania salvata in cache"));
+        return;
+    }
+
+    QString basePath = m_backendUrl;
+    while (basePath.endsWith(QLatin1Char('/'))) {
+        basePath.chop(1);
+    }
+    QUrl url(basePath + QStringLiteral("/v1/organizations/%1/learning-desks/my-desk?learner_id=%2")
+             .arg(m_organizationId, m_currentLearnerId));
+    QNetworkRequest request(url);
+    request.setRawHeader("Authorization", QStringLiteral("Bearer %1").arg(m_apiToken).toUtf8());
+
+    QNetworkReply *reply = m_networkManager->get(request);
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+        onStudentDeskReplyFinished(reply);
+    });
+}
+
+void WorkstationManager::onStudentDeskReplyFinished(QNetworkReply *reply)
+{
+    reply->deleteLater();
+    QMutexLocker locker(&m_mutex);
+
+    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    if (reply->error() != QNetworkReply::NoError || statusCode != 200) {
+        // Attempt offline cache fallback
+        QString cachePath = getDeskCacheFilePath(m_currentLearnerId);
+        QFile file(cachePath);
+        if (file.open(QIODevice::ReadOnly)) {
+            QByteArray data = file.readAll();
+            file.close();
+            QJsonDocument doc = QJsonDocument::fromJson(data);
+            if (doc.isObject()) {
+                m_studentDeskData = doc.object();
+                Q_EMIT studentDeskDataReady(m_studentDeskData);
+                Q_EMIT studentDeskChanged();
+                return;
+            }
+        }
+        QString err = reply->errorString();
+        QByteArray resp = reply->readAll();
+        QJsonDocument doc = QJsonDocument::fromJson(resp);
+        if (doc.isObject() && doc.object().contains(QStringLiteral("detail"))) {
+            err = doc.object().value(QStringLiteral("detail")).toString();
+        }
+        qWarning() << "Kids4Edu: Failed to fetch student desk:" << err;
+        Q_EMIT studentDeskFetchFailed(err);
+        return;
+    }
+
+    QByteArray data = reply->readAll();
+    QJsonDocument doc = QJsonDocument::fromJson(data);
+    if (!doc.isObject()) {
+        Q_EMIT studentDeskFetchFailed(QStringLiteral("Risposta scrivania non valida"));
+        return;
+    }
+
+    m_studentDeskData = doc.object();
+
+    // Cache desk locally for offline resilience (0600 permissions)
+    QString cachePath = getDeskCacheFilePath(m_currentLearnerId);
+    QFile file(cachePath);
+    if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        file.write(doc.toJson(QJsonDocument::Compact));
+        file.close();
+        QFile::setPermissions(cachePath, QFileDevice::ReadOwner | QFileDevice::WriteOwner);
+    }
+
+    Q_EMIT studentDeskDataReady(m_studentDeskData);
+    Q_EMIT studentDeskChanged();
+}
+
+void WorkstationManager::recordStepProgress(const QString &assignmentId, const QString &stepId, const QString &status, int score, int durationSeconds)
+{
+    QMutexLocker locker(&m_mutex);
+    if (!m_isEnrolled || m_apiToken.isEmpty() || m_currentLearnerId.isEmpty() || m_currentLearnerId == QStringLiteral("anonymous")) {
+        return;
+    }
+
+    QString basePath = m_backendUrl;
+    while (basePath.endsWith(QLatin1Char('/'))) {
+        basePath.chop(1);
+    }
+    QUrl url(basePath + QStringLiteral("/v1/organizations/%1/learning-desks/progress?learner_id=%2")
+             .arg(m_organizationId, m_currentLearnerId));
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/json"));
+    request.setRawHeader("Authorization", QStringLiteral("Bearer %1").arg(m_apiToken).toUtf8());
+
+    QJsonObject payload;
+    payload[QStringLiteral("assignment_id")] = assignmentId;
+    payload[QStringLiteral("step_id")] = stepId;
+    payload[QStringLiteral("status")] = status;
+    payload[QStringLiteral("score")] = score;
+    payload[QStringLiteral("duration_seconds")] = durationSeconds;
+
+    QNetworkReply *reply = m_networkManager->post(request, QJsonDocument(payload).toJson(QJsonDocument::Compact));
+    connect(reply, &QNetworkReply::finished, this, [this, reply, stepId, status]() {
+        onRecordProgressReplyFinished(reply, stepId, status);
+    });
+}
+
+void WorkstationManager::onRecordProgressReplyFinished(QNetworkReply *reply, const QString &stepId, const QString &status)
+{
+    reply->deleteLater();
+    QMutexLocker locker(&m_mutex);
+
+    int statusCode = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    if (reply->error() != QNetworkReply::NoError || statusCode != 200) {
+        qWarning() << "Kids4Edu: Failed to record step progress for" << stepId << ":" << reply->errorString();
+        return;
+    }
+
+    Q_EMIT stepProgressRecorded(stepId, status);
+    // Refresh student desk state
+    fetchStudentDesk();
 }

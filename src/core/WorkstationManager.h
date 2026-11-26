@@ -46,6 +46,9 @@ class WorkstationManager : public QObject
     Q_PROPERTY(bool isObserved READ isObserved NOTIFY observationChanged)
     Q_PROPERTY(QString observerTeacherName READ observerTeacherName NOTIFY observationChanged)
     Q_PROPERTY(QString currentObservationId READ currentObservationId NOTIFY observationChanged)
+    Q_PROPERTY(QJsonObject studentDeskData READ getStudentDeskData NOTIFY studentDeskChanged)
+    Q_PROPERTY(bool isClassroomMode READ isClassroomMode WRITE setClassroomMode NOTIFY classroomModeChanged)
+    Q_PROPERTY(bool isLockedNavigation READ isLockedNavigation WRITE setLockedNavigation NOTIFY lockedNavigationChanged)
 
 public:
     static WorkstationManager* getInstance();
@@ -77,6 +80,12 @@ public:
     QString currentObservationId() const { return m_currentObservationId; }
     void setWindow(QQuickWindow *win) { m_window = win; }
 
+    bool isClassroomMode() const { return m_isClassroomMode; }
+    void setClassroomMode(bool mode);
+    bool isLockedNavigation() const { return m_isLockedNavigation; }
+    void setLockedNavigation(bool locked);
+    QJsonObject getStudentDeskData() const { return m_studentDeskData; }
+
     void initialize();
 
     Q_INVOKABLE void enroll(const QString &backendUrl, const QString &enrollmentToken, const QString &workstationName);
@@ -99,6 +108,10 @@ public:
     Q_INVOKABLE void uploadObservationFrame(const QByteArray &jpegData);
     Q_INVOKABLE QByteArray captureCurrentFrame();
 
+    // Phase 3A.2: Native Learning Desk & Progress Tracking
+    Q_INVOKABLE void fetchStudentDesk();
+    Q_INVOKABLE void recordStepProgress(const QString &assignmentId, const QString &stepId, const QString &status, int score = 0, int durationSeconds = 0);
+
 Q_SIGNALS:
     void enrollmentChanged();
     void backendUrlChanged();
@@ -117,6 +130,12 @@ Q_SIGNALS:
     void enrollmentFailed(const QString &errorMessage);
     void loginSucceeded(const QString &learnerId, const QString &displayName);
     void loginFailed(const QString &errorMessage);
+    void studentDeskChanged();
+    void studentDeskDataReady(const QJsonObject &deskData);
+    void studentDeskFetchFailed(const QString &errorMessage);
+    void classroomModeChanged();
+    void lockedNavigationChanged();
+    void stepProgressRecorded(const QString &stepId, const QString &status);
 
 private Q_SLOTS:
     void onEnrollReplyFinished(QNetworkReply *reply);
@@ -126,6 +145,8 @@ private Q_SLOTS:
     void onHeartbeatReplyFinished(QNetworkReply *reply);
     void onActiveSessionReplyFinished(QNetworkReply *reply);
     void onObservationTimerTick();
+    void onStudentDeskReplyFinished(QNetworkReply *reply);
+    void onRecordProgressReplyFinished(QNetworkReply *reply, const QString &stepId, const QString &status);
 
     friend class WorkstationManagerTest;
 
@@ -134,6 +155,7 @@ private:
 
     QString getConfigFilePath() const;
     QString getCacheFilePath() const;
+    QString getDeskCacheFilePath(const QString &learnerId) const;
     void loadConfiguration();
     void saveConfiguration();
     void loadCachedProfiles();
@@ -166,6 +188,8 @@ private:
 
     bool m_isSessionPaused;
     bool m_isObserved;
+    bool m_isClassroomMode;
+    bool m_isLockedNavigation;
     QString m_observerTeacherName;
     QString m_currentObservationId;
     QString m_observationStreamToken;
@@ -175,6 +199,7 @@ private:
     QQuickWindow *m_window;
     QTimer *m_observationTimer;
 
+    QJsonObject m_studentDeskData;
     QVariantList m_cachedProfiles;
     QJsonObject m_offlinePinHashes; // learnerId -> { "hash": "...", "salt": "...", "cached_at": "..." }
 

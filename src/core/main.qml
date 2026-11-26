@@ -916,14 +916,64 @@ Window {
                     enterItem.start();
             }
 
-            if (pageView.depth == 1 && activitiesWithoutDatasets.length != 0) {
-                resetActivitiesWithoutDatasets(true);
+            if (pageView.depth == 1) {
+                if (activitiesWithoutDatasets.length != 0) {
+                    resetActivitiesWithoutDatasets(true);
+                }
+                if (isConfinedToDesk) {
+                    studentDeskDialog.visible = true;
+                    workstationManager.fetchStudentDesk();
+                }
             }
         }
     }
 
+    property bool isConfinedToDesk: false
+    property var activeDeskStepContext: null
+
     LearnerLoginDialog {
         id: learnerLoginDialog
+    }
+
+    StudentDeskDialog {
+        id: studentDeskDialog
+        visible: false
+        deskData: workstationManager.studentDeskData
+        isClassroomMode: workstationManager.isClassroomMode
+
+        onActivityLaunchRequested: function(activityId, level, stepContext) {
+            print("Kids4Edu Native: Launching confined activity from desk:", activityId, "level:", level);
+            studentDeskDialog.visible = false;
+            isConfinedToDesk = true;
+            activeDeskStepContext = stepContext;
+
+            if (pageView.currentItem && pageView.currentItem.startActivity) {
+                pageView.currentItem.startActivity(activityId, level);
+            }
+        }
+
+        onLogoutRequested: {
+            isConfinedToDesk = false;
+            activeDeskStepContext = null;
+            workstationManager.logoutLearner();
+            showLearnerLogin();
+        }
+
+        onAssistanceRequested: function(msg) {
+            workstationManager.requestAssistance(msg);
+        }
+    }
+
+    Connections {
+        target: workstationManager
+        function onLoginSucceeded(learnerId, displayName) {
+            if (learnerId !== "anonymous") {
+                studentDeskDialog.visible = true;
+                workstationManager.fetchStudentDesk();
+            } else {
+                studentDeskDialog.visible = false;
+            }
+        }
     }
 
     EnrollmentDialog {
