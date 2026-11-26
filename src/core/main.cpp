@@ -355,6 +355,7 @@ int main(int argc, char *argv[])
         return -1;
     }
     ApplicationInfo::setWindow(window);
+    WorkstationManager::getInstance()->setWindow(window);
 
     if (QQuickWindow::sceneGraphBackend() == QLatin1String("software")) {
         ApplicationInfo::getInstance()->setUseSoftwareRenderer(true);

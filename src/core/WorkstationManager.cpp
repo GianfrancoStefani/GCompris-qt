@@ -24,6 +24,10 @@
 #include <QSysInfo>
 #include <QDebug>
 #include <QMutexLocker>
+#include <QQuickWindow>
+#include <QImage>
+#include <QBuffer>
+#include <QTimer>
 
 static QString resolveBatchEndpoint(const QString &baseUrl)
 {
@@ -76,8 +80,19 @@ WorkstationManager::WorkstationManager(QObject *parent)
       m_activeSessionTitle(QStringLiteral("")),
       m_assistanceStatus(QStringLiteral("NONE")),
       m_assistanceMessage(QStringLiteral("")),
+      m_isSessionPaused(false),
+      m_isObserved(false),
+      m_observerTeacherName(QStringLiteral("")),
+      m_currentObservationId(QStringLiteral("")),
+      m_observationStreamToken(QStringLiteral("")),
+      m_appliedCommandId(QStringLiteral("")),
+      m_appliedCommand(QStringLiteral("")),
+      m_window(nullptr),
+      m_observationTimer(new QTimer(this)),
       m_networkManager(new QNetworkAccessManager(this))
 {
+    m_observationTimer->setInterval(1000); // 1 fps observation rate
+    connect(m_observationTimer, &QTimer::timeout, this, &WorkstationManager::onObservationTimerTick);
 }
 
 WorkstationManager::~WorkstationManager()
@@ -865,6 +880,15 @@ void WorkstationManager::sendHeartbeat(const QString &activityId, int level, con
     payload[QStringLiteral("assistance_message")] = m_assistanceMessage;
     payload[QStringLiteral("client_timestamp")] = QDateTime::currentDateTimeUtc().toString(Qt::ISODateWithMs);
 
+    // Attach applied command acknowledgment if present
+    if (!m_appliedCommandId.isEmpty()) {
+        payload[QStringLiteral("applied_command_id")] = m_appliedCommandId;
+        payload[QStringLiteral("applied_command")] = m_appliedCommand;
+        payload[QStringLiteral("applied_command_status")] = QStringLiteral("APPLIED");
+        m_appliedCommandId.clear();
+        m_appliedCommand.clear();
+    }
+
     QNetworkReply *reply = m_networkManager->post(request, QJsonDocument(payload).toJson(QJsonDocument::Compact));
     connect(reply, &QNetworkReply::finished, this, [this, reply]() {
         onHeartbeatReplyFinished(reply);
@@ -891,12 +915,64 @@ void WorkstationManager::onHeartbeatReplyFinished(QNetworkReply *reply)
         Q_EMIT assistanceStatusChanged();
     }
 
+    // Process Live Activity View observation status
+    bool serverObserved = obj.value(QStringLiteral("is_observed")).toBool(false);
+    QString obsId = obj.value(QStringLiteral("active_observation_id")).toString();
+    QString streamToken = obj.value(QStringLiteral("observation_stream_token")).toString();
+    QString teacherName = obj.value(QStringLiteral("observation_teacher_name")).toString();
+
+    if (m_isObserved != serverObserved || m_currentObservationId != obsId) {
+        m_isObserved = serverObserved;
+        m_currentObservationId = obsId;
+        m_observationStreamToken = streamToken;
+        m_observerTeacherName = teacherName.isEmpty() ? QStringLiteral("Docente") : teacherName;
+        if (m_isObserved && !m_currentObservationId.isEmpty()) {
+            if (!m_observationTimer->isActive()) {
+                m_observationTimer->start();
+            }
+            // Push first frame immediately
+            QByteArray frame = captureCurrentFrame();
+            if (!frame.isEmpty()) {
+                uploadObservationFrame(frame);
+            }
+        } else {
+            if (m_observationTimer->isActive()) {
+                m_observationTimer->stop();
+            }
+        }
+        Q_EMIT observationChanged();
+    }
+
     // Check for pending command
     QJsonValue cmdVal = obj.value(QStringLiteral("pending_command"));
     if (!cmdVal.isNull() && !cmdVal.toString().isEmpty()) {
         QString cmd = cmdVal.toString();
+        QString cmdId = obj.value(QStringLiteral("pending_command_id")).toString();
         QJsonObject cmdPayload = obj.value(QStringLiteral("pending_command_payload")).toObject();
-        qDebug() << "Kids4Edu: Workstation received command:" << cmd;
+        qDebug() << "Kids4Edu: Workstation received command:" << cmd << "id:" << cmdId;
+
+        if (cmd == QStringLiteral("PAUSE") || cmd == QStringLiteral("pause")) {
+            setSessionPaused(true);
+        } else if (cmd == QStringLiteral("RESUME") || cmd == QStringLiteral("resume")) {
+            setSessionPaused(false);
+        } else if (cmd == QStringLiteral("START_OBSERVATION")) {
+            m_isObserved = true;
+            m_currentObservationId = cmdId;
+            if (!m_observationTimer->isActive()) {
+                m_observationTimer->start();
+            }
+            Q_EMIT observationChanged();
+        } else if (cmd == QStringLiteral("STOP_OBSERVATION")) {
+            m_isObserved = false;
+            m_currentObservationId.clear();
+            if (m_observationTimer->isActive()) {
+                m_observationTimer->stop();
+            }
+            Q_EMIT observationChanged();
+        }
+
+        m_appliedCommandId = cmdId;
+        m_appliedCommand = cmd;
         Q_EMIT commandReceived(cmd, cmdPayload);
     }
 }
@@ -961,6 +1037,75 @@ void WorkstationManager::cancelAssistance()
     payload[QStringLiteral("learner_id")] = m_currentLearnerId;
 
     QNetworkReply *reply = m_networkManager->post(request, QJsonDocument(payload).toJson(QJsonDocument::Compact));
+    connect(reply, &QNetworkReply::finished, this, [reply]() {
+        reply->deleteLater();
+    });
+}
+
+void WorkstationManager::setSessionPaused(bool paused)
+{
+    QMutexLocker locker(&m_mutex);
+    if (m_isSessionPaused != paused) {
+        m_isSessionPaused = paused;
+        Q_EMIT sessionPauseChanged();
+        qDebug() << "Kids4Edu: Session pause state changed to:" << m_isSessionPaused;
+    }
+}
+
+QByteArray WorkstationManager::captureCurrentFrame()
+{
+    QMutexLocker locker(&m_mutex);
+    if (!m_window) {
+        return QByteArray();
+    }
+
+    // Only grab the GCompris window content (NO desktop, NO webcam, NO audio)
+    QImage img = m_window->grabWindow();
+    if (img.isNull()) {
+        return QByteArray();
+    }
+
+    // Scaled down to max 640x360 with aspect ratio preservation
+    QImage scaled = img.scaled(640, 360, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QByteArray ba;
+    QBuffer buffer(&ba);
+    buffer.open(QIODevice::WriteOnly);
+    scaled.save(&buffer, "JPEG", 60); // 60% quality JPEG
+    return ba;
+}
+
+void WorkstationManager::onObservationTimerTick()
+{
+    QMutexLocker locker(&m_mutex);
+    if (!m_isObserved || m_currentObservationId.isEmpty() || m_apiToken.isEmpty()) {
+        return;
+    }
+
+    QByteArray frameData = captureCurrentFrame();
+    if (!frameData.isEmpty()) {
+        uploadObservationFrame(frameData);
+    }
+}
+
+void WorkstationManager::uploadObservationFrame(const QByteArray &jpegData)
+{
+    if (m_currentObservationId.isEmpty() || m_apiToken.isEmpty() || jpegData.isEmpty()) {
+        return;
+    }
+
+    QString basePath = m_backendUrl;
+    while (basePath.endsWith(QLatin1Char('/'))) {
+        basePath.chop(1);
+    }
+    QUrl url(basePath + QStringLiteral("/v1/workstations/observations/%1/frame").arg(m_currentObservationId));
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("image/jpeg"));
+    request.setRawHeader("Authorization", QStringLiteral("Bearer %1").arg(m_apiToken).toUtf8());
+    if (!m_observationStreamToken.isEmpty()) {
+        request.setRawHeader("X-Observation-Token", m_observationStreamToken.toUtf8());
+    }
+
+    QNetworkReply *reply = m_networkManager->post(request, jpegData);
     connect(reply, &QNetworkReply::finished, this, [reply]() {
         reply->deleteLater();
     });

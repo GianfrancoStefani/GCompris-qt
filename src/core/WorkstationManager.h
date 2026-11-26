@@ -18,6 +18,9 @@
 #include <QJsonArray>
 #include <QRecursiveMutex>
 
+class QQuickWindow;
+class QTimer;
+
 class WorkstationManager : public QObject
 {
     Q_OBJECT
@@ -39,6 +42,10 @@ class WorkstationManager : public QObject
     Q_PROPERTY(QString activeSessionTitle READ activeSessionTitle NOTIFY activeSessionChanged)
     Q_PROPERTY(QString assistanceStatus READ assistanceStatus NOTIFY assistanceStatusChanged)
     Q_PROPERTY(QString assistanceMessage READ assistanceMessage NOTIFY assistanceStatusChanged)
+    Q_PROPERTY(bool isSessionPaused READ isSessionPaused NOTIFY sessionPauseChanged)
+    Q_PROPERTY(bool isObserved READ isObserved NOTIFY observationChanged)
+    Q_PROPERTY(QString observerTeacherName READ observerTeacherName NOTIFY observationChanged)
+    Q_PROPERTY(QString currentObservationId READ currentObservationId NOTIFY observationChanged)
 
 public:
     static WorkstationManager* getInstance();
@@ -64,6 +71,11 @@ public:
     QString activeSessionTitle() const { return m_activeSessionTitle; }
     QString assistanceStatus() const { return m_assistanceStatus; }
     QString assistanceMessage() const { return m_assistanceMessage; }
+    bool isSessionPaused() const { return m_isSessionPaused; }
+    bool isObserved() const { return m_isObserved; }
+    QString observerTeacherName() const { return m_observerTeacherName; }
+    QString currentObservationId() const { return m_currentObservationId; }
+    void setWindow(QQuickWindow *win) { m_window = win; }
 
     void initialize();
 
@@ -82,6 +94,11 @@ public:
     Q_INVOKABLE void requestAssistance(const QString &message = QString());
     Q_INVOKABLE void cancelAssistance();
 
+    // Phase 2G-C: Remote Commands & Live Activity View Observation
+    Q_INVOKABLE void setSessionPaused(bool paused);
+    Q_INVOKABLE void uploadObservationFrame(const QByteArray &jpegData);
+    Q_INVOKABLE QByteArray captureCurrentFrame();
+
 Q_SIGNALS:
     void enrollmentChanged();
     void backendUrlChanged();
@@ -93,6 +110,8 @@ Q_SIGNALS:
     void statusMessageChanged();
     void activeSessionChanged();
     void assistanceStatusChanged();
+    void sessionPauseChanged();
+    void observationChanged();
     void commandReceived(const QString &command, const QJsonObject &payload);
     void enrollmentSucceeded(const QString &workstationName);
     void enrollmentFailed(const QString &errorMessage);
@@ -106,6 +125,7 @@ private Q_SLOTS:
     void onWorkstationUnauthorized();
     void onHeartbeatReplyFinished(QNetworkReply *reply);
     void onActiveSessionReplyFinished(QNetworkReply *reply);
+    void onObservationTimerTick();
 
     friend class WorkstationManagerTest;
 
@@ -143,6 +163,17 @@ private:
     QString m_activeSessionTitle;
     QString m_assistanceStatus;
     QString m_assistanceMessage;
+
+    bool m_isSessionPaused;
+    bool m_isObserved;
+    QString m_observerTeacherName;
+    QString m_currentObservationId;
+    QString m_observationStreamToken;
+    QString m_appliedCommandId;
+    QString m_appliedCommand;
+
+    QQuickWindow *m_window;
+    QTimer *m_observationTimer;
 
     QVariantList m_cachedProfiles;
     QJsonObject m_offlinePinHashes; // learnerId -> { "hash": "...", "salt": "...", "cached_at": "..." }

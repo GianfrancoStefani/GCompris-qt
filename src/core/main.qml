@@ -935,5 +935,106 @@ Window {
         onRequestEnrollment: showEnrollment()
         onRequestSwitchLearner: showLearnerLogin()
     }
+
+    // Phase 2G-C: Observation Notification Banner (Teacher Live Activity View active)
+    Rectangle {
+        id: observationBanner
+        z: 9998
+        visible: workstationManager.isObserved
+        anchors.top: parent.top
+        anchors.topMargin: 12 * ApplicationInfo.ratio
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: Math.min(parent.width * 0.85, 480 * ApplicationInfo.ratio)
+        height: 42 * ApplicationInfo.ratio
+        radius: 21 * ApplicationInfo.ratio
+        color: "#2C3E50"
+        opacity: visible ? 0.95 : 0.0
+        border.color: "#3498DB"
+        border.width: 2 * ApplicationInfo.ratio
+
+        Behavior on opacity {
+            NumberAnimation { duration: 300 }
+        }
+
+        Row {
+            anchors.centerIn: parent
+            spacing: 8 * ApplicationInfo.ratio
+
+            Text {
+                text: "👁️"
+                font.pixelSize: 18 * ApplicationInfo.ratio
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            Text {
+                text: qsTr("Attività osservata dal docente: %1").arg(workstationManager.observerTeacherName ? workstationManager.observerTeacherName : qsTr("Docente"))
+                color: "#FFFFFF"
+                font.bold: true
+                font.pixelSize: 13 * ApplicationInfo.ratio
+                verticalAlignment: Text.AlignVCenter
+            }
+        }
+    }
+
+    // Phase 2G-C: Remote Pause Overlay (Teacher pauses classroom / workstation)
+    Rectangle {
+        id: remotePauseOverlay
+        z: 9999
+        visible: workstationManager.isSessionPaused
+        anchors.fill: parent
+        color: Qt.rgba(0, 0, 0, 0.75)
+        opacity: visible ? 1.0 : 0.0
+
+        Behavior on opacity {
+            NumberAnimation { duration: 250 }
+        }
+
+        // Intercept all mouse/touch events while paused
+        MouseArea {
+            anchors.fill: parent
+            hoverEnabled: true
+            preventStealing: true
+            onClicked: {}
+        }
+
+        Rectangle {
+            anchors.centerIn: parent
+            width: Math.min(parent.width * 0.8, 520 * ApplicationInfo.ratio)
+            height: 220 * ApplicationInfo.ratio
+            radius: 16 * ApplicationInfo.ratio
+            color: "#FFFFFF"
+            border.color: "#E67E22"
+            border.width: 3 * ApplicationInfo.ratio
+
+            Column {
+                anchors.centerIn: parent
+                spacing: 16 * ApplicationInfo.ratio
+                width: parent.width - (40 * ApplicationInfo.ratio)
+
+                Text {
+                    text: "⏸️"
+                    font.pixelSize: 48 * ApplicationInfo.ratio
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+
+                Text {
+                    text: qsTr("Lezione temporaneamente sospesa")
+                    font.bold: true
+                    font.pixelSize: 20 * ApplicationInfo.ratio
+                    color: "#2C3E50"
+                    anchors.horizontalCenter: parent.horizontalCenter
+                }
+
+                Text {
+                    text: qsTr("L'insegnante ha momentaneamente fermato le attività. Segui le indicazioni della maestra per riprendere.")
+                    wrapMode: Text.WordWrap
+                    width: parent.width
+                    horizontalAlignment: Text.AlignHCenter
+                    font.pixelSize: 14 * ApplicationInfo.ratio
+                    color: "#7F8C8D"
+                }
+            }
+        }
+    }
     /// @endcond
 }

@@ -31,6 +31,7 @@ private Q_SLOTS:
     void testSecurityHardeningAndLockout();
     void testGuestLoginAndLearnerSwitch();
     void testDiagnosticsInfoIntegrity();
+    void testRemoteCommandsAndObservationState();
     void cleanupTestCase();
 };
 
@@ -197,6 +198,23 @@ void WorkstationManagerTest::testDiagnosticsInfoIntegrity()
     QVERIFY(!diag.contains(QStringLiteral("api_token")));
     QVERIFY(!diag.contains(QStringLiteral("token")));
     QVERIFY(!diag.contains(QStringLiteral("password")));
+}
+
+void WorkstationManagerTest::testRemoteCommandsAndObservationState()
+{
+    WorkstationManager *wm = WorkstationManager::getInstance();
+    QCOMPARE(wm->isSessionPaused(), false);
+    QCOMPARE(wm->isObserved(), false);
+
+    wm->setSessionPaused(true);
+    QCOMPARE(wm->isSessionPaused(), true);
+
+    wm->setSessionPaused(false);
+    QCOMPARE(wm->isSessionPaused(), false);
+
+    // Frame capture with null window returns empty QByteArray without crash
+    QByteArray emptyFrame = wm->captureCurrentFrame();
+    QVERIFY(emptyFrame.isEmpty());
 }
 
 void WorkstationManagerTest::cleanupTestCase()
