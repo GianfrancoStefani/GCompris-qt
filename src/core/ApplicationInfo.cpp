@@ -18,7 +18,9 @@
 #include <QScreen>
 #include <QLocale>
 #include <QQuickWindow>
+#if !defined(Q_OS_WASM) && !defined(__EMSCRIPTEN__)
 #include <QSensor>
+#endif
 
 #include <QDebug>
 
@@ -99,7 +101,12 @@ ApplicationInfo::~ApplicationInfo()
 
 bool ApplicationInfo::sensorIsSupported(const QString &sensorType)
 {
+#if defined(Q_OS_WASM) || defined(__EMSCRIPTEN__)
+    Q_UNUSED(sensorType);
+    return false;
+#else
     return QSensor::sensorTypes().contains(sensorType.toUtf8());
+#endif
 }
 
 Qt::ScreenOrientation ApplicationInfo::getNativeOrientation()
@@ -129,6 +136,8 @@ QString ApplicationInfo::getFilePath(const QString &file)
 {
 #if defined(Q_OS_ANDROID)
     return QString("assets:/share/GCompris/rcc/%1").arg(file);
+#elif defined(Q_OS_WASM) || defined(__EMSCRIPTEN__)
+    return QString("/share/gcompris-qt/rcc/%1").arg(file);
 #elif defined(Q_OS_MACOS)
     return QString("%1/../Resources/rcc/%2").arg(QCoreApplication::applicationDirPath(), file);
 #elif defined(Q_OS_IOS)

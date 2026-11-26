@@ -98,7 +98,11 @@ endif()
 
 set(QT_MAJOR Qt6)
 
-set(QT_COMPONENTS Qml Quick Gui Multimedia Core Svg Network LinguistTools Sensors QuickControls2 QuickTemplates2 QmlWorkerScript Sql)
+if(EMSCRIPTEN)
+  set(QT_COMPONENTS Qml Quick Gui Multimedia Core Svg Network LinguistTools QuickControls2 QuickTemplates2 Sql)
+else()
+  set(QT_COMPONENTS Qml Quick Gui Multimedia Core Svg Network LinguistTools Sensors QuickControls2 QuickTemplates2 QmlWorkerScript Sql)
+endif()
 
 find_package(QT NAMES Qt6)
 find_package(${QT_MAJOR} ${QT_REQUIRED_VERSION} COMPONENTS
@@ -157,7 +161,7 @@ endif()
 
 find_package(OpenSSL)
 # OpenSSL will be compiled as external_project for android
-if(NOT ANDROID)
+if(NOT ANDROID AND NOT EMSCRIPTEN)
   set_package_properties(OpenSSL PROPERTIES TYPE REQUIRED)
 endif()
 
@@ -182,7 +186,11 @@ endif()
 
 option(PACKAGE_GCOMPRIS "Package GCompris (default)" ON)
 
-option(BUILD_SERVER "Build the server along the application" ON)
+if(EMSCRIPTEN)
+  option(BUILD_SERVER "Build the server along the application" OFF)
+else()
+  option(BUILD_SERVER "Build the server along the application" ON)
+endif()
 option(PACKAGE_SERVER "Package the server" OFF)
 
 if(BUILD_SERVER)
@@ -263,7 +271,11 @@ include(cmake/rcc.cmake)
 
 # Translations handling
 #skipping translations can be useful during dev builds
-option(SKIP_TRANSLATIONS "Skip building translation files" OFF)
+if(EMSCRIPTEN)
+  option(SKIP_TRANSLATIONS "Skip building translation files" ON)
+else()
+  option(SKIP_TRANSLATIONS "Skip building translation files" OFF)
+endif()
 if(NOT SKIP_TRANSLATIONS)
   include(cmake/translation.cmake)
   gcompris_create_translation_files(FILENAME gcompris_qt)

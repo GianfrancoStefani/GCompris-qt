@@ -90,7 +90,11 @@ function(GCOMPRIS_ADD_PLUGIN resource_path)
   file(GLOB activity_qml_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${_RCC_QML_FILES})
   file(GLOB activity_resources_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${_RCC_RESOURCES})
 
-  add_library(${activity} SHARED)
+  if(EMSCRIPTEN)
+    add_library(${activity} STATIC)
+  else()
+    add_library(${activity} SHARED)
+  endif()
   qt_add_qml_module(
     ${activity}
     PLUGIN_TARGET ${activity}
@@ -107,7 +111,7 @@ function(GCOMPRIS_ADD_PLUGIN resource_path)
     #ENABLE_TYPE_COMPILER # todo check if better than qmlcache https://doc.qt.io/qt-6/qt-add-qml-module.html#compiling-qml-to-c-with-qml-type-compiler
     )
 
-  target_link_libraries(${GCOMPRIS_EXECUTABLE_NAME} ${activity})
+  target_link_libraries(${GCOMPRIS_EXECUTABLE_NAME} PRIVATE ${activity})
 
   install(TARGETS ${activity} DESTINATION lib/qml)
 endfunction()

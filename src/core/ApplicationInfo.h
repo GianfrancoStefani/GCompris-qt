@@ -302,7 +302,11 @@ public:
     static QString QTVersion() { return qVersion(); }
     // Only used for the switch to QtGraphs AND for the SafeArea, can be removed after Qt 6.9 minimum
     static int QTMinorVersion() { return QVersionNumber::fromString(qVersion()).minorVersion(); }
+#if QT_CONFIG(ssl)
     static QString OpenSSLVersion() { return QSslSocket::sslLibraryVersionString(); }
+#else
+    static QString OpenSSLVersion() { return QStringLiteral("Not supported"); }
+#endif
     static QString CompressedAudio() { return COMPRESSED_AUDIO; }
     static bool isDownloadAllowed() { return QString(DOWNLOAD_ALLOWED) == "ON"; }
     bool useSoftwareRenderer() const { return m_useSoftwareRenderer; }

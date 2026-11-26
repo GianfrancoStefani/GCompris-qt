@@ -5,6 +5,9 @@
 #=============================================================================
 add_subdirectory(menu)
 
+option(BUILD_PILOT_ONLY "Build only pilot activities for fast testing" OFF)
+set(PILOT_ACTIVITIES "menu" "maze" "fifteen" "memory" "algorithm" "vertical_addition" "vertical_subtraction")
+
 # Read the activities.txt file
 file(READ activities.txt ACTIVITIES)
 # Split the output on a list containing each line
@@ -18,6 +21,9 @@ foreach(ACTIVITY ${ACTIVITIES})
   # For each line found, we remove comments
   string(FIND "${ACTIVITY}" "#" match)
   if(${match})
+    if(BUILD_PILOT_ONLY AND NOT "${ACTIVITY}" IN_LIST PILOT_ACTIVITIES)
+      continue()
+    endif()
     # Set activities as options (enabled by default)
     option("USE_${ACTIVITY}" "Enable ${ACTIVITY} activity" ON)
     if(USE_${ACTIVITY})

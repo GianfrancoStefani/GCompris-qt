@@ -408,7 +408,7 @@ Window {
                 checkBackgroundMusic();
                 DownloadManager.updateResource(GCompris.BACKGROUND_MUSIC, {});
 
-                if(changelog.isNewerVersion(ApplicationSettings.lastGCVersionRan, ApplicationInfo.GCVersionCode)) {
+                if(!ApplicationSettings.isKioskMode && changelog.isNewerVersion(ApplicationSettings.lastGCVersionRan, ApplicationInfo.GCVersionCode)) {
                     lastGCVersionRanCopy = ApplicationSettings.lastGCVersionRan;
 
                     const newDatasets = changelog.getNewDatasetsBetween(ApplicationSettings.lastGCVersionRan, ApplicationInfo.GCVersionCode);

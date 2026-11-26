@@ -85,7 +85,11 @@ elseif(CMAKE_HOST_APPLE)
   set_source_files_properties(${gcompris_RES} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 endif()
 
-set(used_qt_modules ${QT_MAJOR}::Qml ${QT_MAJOR}::Quick ${QT_MAJOR}::Gui ${QT_MAJOR}::Multimedia ${QT_MAJOR}::Core ${QT_MAJOR}::Svg ${QT_MAJOR}::Sensors ${QT_MAJOR}::QuickControls2 ${QT_MAJOR}::QuickTemplates2 ${QT_MAJOR}::QmlWorkerScript ${QT_MAJOR}::Sql ${QT_MAJOR}::Network)
+if(EMSCRIPTEN)
+  set(used_qt_modules ${QT_MAJOR}::Qml ${QT_MAJOR}::Quick ${QT_MAJOR}::Gui ${QT_MAJOR}::Multimedia ${QT_MAJOR}::Core ${QT_MAJOR}::Svg ${QT_MAJOR}::QuickControls2 ${QT_MAJOR}::QuickTemplates2 ${QT_MAJOR}::Sql ${QT_MAJOR}::Network)
+else()
+  set(used_qt_modules ${QT_MAJOR}::Qml ${QT_MAJOR}::Quick ${QT_MAJOR}::Gui ${QT_MAJOR}::Multimedia ${QT_MAJOR}::Core ${QT_MAJOR}::Svg ${QT_MAJOR}::Sensors ${QT_MAJOR}::QuickControls2 ${QT_MAJOR}::QuickTemplates2 ${QT_MAJOR}::QmlWorkerScript ${QT_MAJOR}::Sql ${QT_MAJOR}::Network)
+endif()
 
 if(ANDROID AND TARGET ${QT_MAJOR}::CorePrivate)
   set(used_qt_modules ${used_qt_modules} ${QT_MAJOR}::CorePrivate)
@@ -120,6 +124,8 @@ endif()
 
 if(ANDROID)
   add_library(${GCOMPRIS_EXECUTABLE_NAME} SHARED main.cpp)
+elseif(EMSCRIPTEN)
+  qt_add_executable(${GCOMPRIS_EXECUTABLE_NAME} ${gcompris_RES} main.cpp)
 elseif(CMAKE_HOST_APPLE)
   add_executable(${GCOMPRIS_EXECUTABLE_NAME} MACOSX_BUNDLE ${gcompris_RES} main.cpp)
 elseif(CMAKE_HOST_WIN32)
@@ -129,9 +135,19 @@ else()
 endif()
 
 add_library(gcompris_core STATIC ${gcompris_SRCS})
-target_link_libraries(gcompris_core ${used_qt_modules})
+target_link_libraries(gcompris_core PUBLIC ${used_qt_modules})
 
-target_link_libraries(${GCOMPRIS_EXECUTABLE_NAME} gcompris_core ${used_qt_modules})
+target_link_libraries(${GCOMPRIS_EXECUTABLE_NAME} PRIVATE gcompris_core ${used_qt_modules})
+
+if (EMSCRIPTEN)
+  target_link_options(${GCOMPRIS_EXECUTABLE_NAME} PRIVATE
+    "-sINITIAL_MEMORY=134217728"
+    "-sALLOW_MEMORY_GROWTH=1"
+    "-sMAXIMUM_MEMORY=1073741824"
+    "-sSTACK_SIZE=1048576"
+    "--preload-file=${CMAKE_BINARY_DIR}/share/gcompris-qt/rcc@/share/gcompris-qt/rcc"
+  )
+endif()
 
 if (USE_16KB_PAGESIZE)
   target_link_options(${GCOMPRIS_EXECUTABLE_NAME} PRIVATE "-Wl,-z,max-page-size=16384")
@@ -155,7 +171,11 @@ if(WITH_RCC)
     COPYING
   )
 else()
+if(EMSCRIPTEN)
+  add_library(core STATIC)
+else()
   add_library(core SHARED)
+endif()
   file(GLOB core_qml_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.qml *.js)
   file(GLOB core_resources_files RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} resource/*.${COMPRESSED_AUDIO} resource/*.gif resource/*.png resource/*.svg resource/*.pem resource/bonus/* resource/sounds/* resource/fonts/*.*)
 
@@ -172,7 +192,7 @@ else()
     RESOURCES
     ${core_resources_files}
     )
-  target_link_libraries(${GCOMPRIS_EXECUTABLE_NAME} core)
+  target_link_libraries(${GCOMPRIS_EXECUTABLE_NAME} PRIVATE core)
 endif()
 
 if(ANDROID)
