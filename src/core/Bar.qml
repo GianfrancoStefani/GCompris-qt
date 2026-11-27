@@ -461,6 +461,11 @@ Item {
                     telemetryManager.recordEvent('manual_level_change', actName, lvl, diff, '', { 'direction': 'previous', 'source': 'bar_button' });
                 }
                 bar.previousLevelClicked();
+                Qt.callLater(function() {
+                    if(typeof activityBackground !== "undefined" && activityBackground) {
+                        activityBackground.isManualLevelChange = false;
+                    }
+                });
             }
         }
     }
@@ -505,6 +510,11 @@ Item {
                     telemetryManager.recordEvent('manual_level_change', actName, lvl, diff, '', { 'direction': 'next', 'source': 'bar_button' });
                 }
                 bar.nextLevelClicked();
+                Qt.callLater(function() {
+                    if(typeof activityBackground !== "undefined" && activityBackground) {
+                        activityBackground.isManualLevelChange = false;
+                    }
+                });
             }
         }
     }

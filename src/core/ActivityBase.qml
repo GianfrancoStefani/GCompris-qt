@@ -236,7 +236,6 @@ Item {
     }
 
     onCurrentLevelChanged: {
-        isManualLevelChange = false;
         if (typeof telemetryManager !== 'undefined' && telemetryManager && !isMenu) {
             var rawName = (activityInfo && activityInfo.name) ? activityInfo.name : 'activity';
             var canonId = getCanonicalActivityId();
@@ -250,6 +249,11 @@ Item {
                 telemetryManager.recordEvent('level_started', canonId, currentLevel, diff, '', { 'level': currentLevel, 'source_qml': rawName });
             }
         }
+        // Defer reset to the next event loop tick so synchronous signal chains (e.g. onNextLevel)
+        // are never evaluated after a premature reset
+        Qt.callLater(function() {
+            isManualLevelChange = false;
+        });
     }
     onStopSounds: {
         if(!isMenu) {
