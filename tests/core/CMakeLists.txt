@@ -13,16 +13,35 @@ set(CORE_TEST_LIBRARIES
     ${QT_MAJOR}::Test
 )
 
-ecm_add_tests(ActivityInfoTest.cpp
-              ApplicationSettingsTest.cpp
-              DatasetTest.cpp
-              DirectoryTest.cpp
-              FileTest.cpp
-              ApplicationInfoTest.cpp
-              DownloadManagerTest.cpp
-              GImageGrabberTest.cpp
-              TelemetryManagerTest.cpp
-              WorkstationManagerTest.cpp
-              # add new test file here
-              NAME_PREFIX Core
-              LINK_LIBRARIES ${CORE_TEST_LIBRARIES})
+if(COMMAND ecm_add_tests)
+  ecm_add_tests(ActivityInfoTest.cpp
+                ApplicationSettingsTest.cpp
+                DatasetTest.cpp
+                DirectoryTest.cpp
+                FileTest.cpp
+                ApplicationInfoTest.cpp
+                DownloadManagerTest.cpp
+                GImageGrabberTest.cpp
+                TelemetryManagerTest.cpp
+                WorkstationManagerTest.cpp
+                # add new test file here
+                NAME_PREFIX Core
+                LINK_LIBRARIES ${CORE_TEST_LIBRARIES})
+else()
+  foreach(test_src
+          ActivityInfoTest.cpp
+          ApplicationSettingsTest.cpp
+          DatasetTest.cpp
+          DirectoryTest.cpp
+          FileTest.cpp
+          ApplicationInfoTest.cpp
+          DownloadManagerTest.cpp
+          GImageGrabberTest.cpp
+          TelemetryManagerTest.cpp
+          WorkstationManagerTest.cpp)
+    get_filename_component(test_name ${test_src} NAME_WE)
+    add_executable(Core${test_name} ${test_src})
+    target_link_libraries(Core${test_name} PRIVATE ${CORE_TEST_LIBRARIES})
+    add_test(NAME Core${test_name} COMMAND Core${test_name})
+  endforeach()
+endif()

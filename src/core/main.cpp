@@ -35,6 +35,7 @@
 #include "TelemetryManager.h"
 #include "SyncAgent.h"
 #include "WorkstationManager.h"
+#include "Kids4EduVersion.h"
 #include "netconst.h"
 
 int main(int argc, char *argv[])
@@ -54,7 +55,7 @@ int main(int argc, char *argv[])
     app.setOrganizationName("Kids4Edu");
     app.setApplicationName("Kids4Edu");
     app.setOrganizationDomain("kids4edu.org");
-    app.setApplicationVersion(QStringLiteral("2.1.0"));
+    app.setApplicationVersion(QStringLiteral(KIDS4EDU_VERSION_STRING));
     QGuiApplication::setDesktopFileName("org.kids4edu.desktop");
 
     // add a variable to disable default fullscreen on Mac, see below..

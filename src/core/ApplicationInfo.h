@@ -17,6 +17,7 @@
 #include "ApplicationSettings.h"
 
 #include <QObject>
+#include <QCoreApplication>
 #include <QSslSocket>
 #include <QTranslator>
 #include <QtQml/qqmlregistration.h>
@@ -108,6 +109,7 @@ class ApplicationInfo : public QObject
      * GCompris version string (compile time).
      */
     Q_PROPERTY(QString GCVersion READ GCVersion CONSTANT)
+    Q_PROPERTY(QString kids4eduVersion READ kids4eduVersion CONSTANT)
 
     /**
      * GCompris version code (compile time).
@@ -298,6 +300,7 @@ public:
     QStringList supportedLocales();
 
     static QString GCVersion() { return VERSION; }
+    static QString kids4eduVersion() { return QCoreApplication::applicationVersion(); }
     static int GCVersionCode() { return VERSION_CODE; }
     static QString QTVersion() { return qVersion(); }
     // Only used for the switch to QtGraphs AND for the SafeArea, can be removed after Qt 6.9 minimum

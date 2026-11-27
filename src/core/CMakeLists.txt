@@ -138,6 +138,11 @@ endif()
 
 add_library(gcompris_core STATIC ${gcompris_SRCS})
 target_link_libraries(gcompris_core PUBLIC ${used_qt_modules})
+if(APPLE)
+  find_library(SECURITY_FRAMEWORK Security REQUIRED)
+  find_library(COREFOUNDATION_FRAMEWORK CoreFoundation REQUIRED)
+  target_link_libraries(gcompris_core PUBLIC ${SECURITY_FRAMEWORK} ${COREFOUNDATION_FRAMEWORK})
+endif()
 
 target_link_libraries(${GCOMPRIS_EXECUTABLE_NAME} PRIVATE gcompris_core ${used_qt_modules})
 

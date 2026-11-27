@@ -2,35 +2,37 @@
  *
  * SPDX-FileCopyrightText: 2026 Kids4Edu Core Platform Team
  * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * Native OS Keyring / Credential Manager implementation.
+ * Eliminates custom file vaults, proprietary encryption, and process execution CLI token leaks.
  */
 
 #include "SecureStorage.h"
 
-#include <QDir>
-#include <QFile>
-#include <QFileInfo>
-#include <QProcess>
-#include <QStandardPaths>
-#include <QCryptographicHash>
-#include <QPasswordDigestor>
-#include <QMessageAuthenticationCode>
-#include <QRandomGenerator>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QHostInfo>
-#include <QSysInfo>
 #include <QDebug>
 #include <QMap>
+#include <QMutex>
+#include <QMutexLocker>
+
+#if defined(Q_OS_MACOS)
+#include <Security/Security.h>
+#include <CoreFoundation/CoreFoundation.h>
+#elif defined(Q_OS_WIN)
+#include <windows.h>
+#include <wincred.h>
+#endif
 
 static QMap<QString, QString> s_sessionSecrets;
+static QMutex s_sessionMutex;
 
 bool SecureStorage::isSessionOnly()
 {
-    return qEnvironmentVariableIsSet("KIDS4EDU_SESSION_ONLY");
+    return qEnvironmentVariableIsSet("KIDS4EDU_SESSION_ONLY") || !isNativeKeyringAvailable();
 }
 
 void SecureStorage::setSessionSecret(const QString &service, const QString &account, const QString &secret)
 {
+    QMutexLocker locker(&s_sessionMutex);
     QString entryKey = service + QStringLiteral(":") + account;
     if (secret.isEmpty()) {
         s_sessionSecrets.remove(entryKey);
@@ -42,9 +44,12 @@ void SecureStorage::setSessionSecret(const QString &service, const QString &acco
 bool SecureStorage::isNativeKeyringAvailable()
 {
 #if defined(Q_OS_MACOS)
-    QFileInfo secBin(QStringLiteral("/usr/bin/security"));
-    return secBin.exists() && secBin.isExecutable();
+    return true;
+#elif defined(Q_OS_WIN)
+    return true;
 #else
+    // On Linux without DBus Secret Service or in containerized headless testing,
+    // fallback gracefully to fail-closed session-only storage.
     return false;
 #endif
 }
@@ -55,30 +60,20 @@ bool SecureStorage::storeSecret(const QString &service, const QString &account, 
         return false;
     }
 
-    if (isSessionOnly()) {
+    if (qEnvironmentVariableIsSet("KIDS4EDU_SESSION_ONLY")) {
         setSessionSecret(service, account, secret);
         return true;
     }
 
 #if defined(Q_OS_MACOS)
-    if (isNativeKeyringAvailable()) {
-        QProcess proc;
-        QStringList args;
-        args << QStringLiteral("add-generic-password")
-             << QStringLiteral("-U")
-             << QStringLiteral("-s") << service
-             << QStringLiteral("-a") << account
-             << QStringLiteral("-w") << secret;
-
-        proc.start(QStringLiteral("/usr/bin/security"), args);
-        if (proc.waitForFinished(3000) && proc.exitStatus() == QProcess::NormalExit && proc.exitCode() == 0) {
-            return true;
-        }
-        qWarning() << "Kids4Edu SecureStorage: macOS security CLI failed (code" << proc.exitCode() << "), falling back to encrypted vault.";
-    }
+    return storeKeychainSecret(service, account, secret);
+#elif defined(Q_OS_WIN)
+    return storeWindowsCredSecret(service, account, secret);
+#else
+    // Fail-closed to in-memory session secret (no plaintext on disk)
+    setSessionSecret(service, account, secret);
+    return true;
 #endif
-
-    return storeVaultSecret(service, account, secret);
 }
 
 QString SecureStorage::getSecret(const QString &service, const QString &account)
@@ -87,31 +82,21 @@ QString SecureStorage::getSecret(const QString &service, const QString &account)
         return QString();
     }
 
-    if (isSessionOnly()) {
+    if (qEnvironmentVariableIsSet("KIDS4EDU_SESSION_ONLY")) {
+        QMutexLocker locker(&s_sessionMutex);
         QString entryKey = service + QStringLiteral(":") + account;
         return s_sessionSecrets.value(entryKey);
     }
 
 #if defined(Q_OS_MACOS)
-    if (isNativeKeyringAvailable()) {
-        QProcess proc;
-        QStringList args;
-        args << QStringLiteral("find-generic-password")
-             << QStringLiteral("-s") << service
-             << QStringLiteral("-a") << account
-             << QStringLiteral("-w");
-
-        proc.start(QStringLiteral("/usr/bin/security"), args);
-        if (proc.waitForFinished(3000) && proc.exitStatus() == QProcess::NormalExit && proc.exitCode() == 0) {
-            QString res = QString::fromUtf8(proc.readAllStandardOutput()).trimmed();
-            if (!res.isEmpty()) {
-                return res;
-            }
-        }
-    }
+    return getKeychainSecret(service, account);
+#elif defined(Q_OS_WIN)
+    return getWindowsCredSecret(service, account);
+#else
+    QMutexLocker locker(&s_sessionMutex);
+    QString entryKey = service + QStringLiteral(":") + account;
+    return s_sessionSecrets.value(entryKey);
 #endif
-
-    return getVaultSecret(service, account);
 }
 
 bool SecureStorage::deleteSecret(const QString &service, const QString &account)
@@ -120,307 +105,159 @@ bool SecureStorage::deleteSecret(const QString &service, const QString &account)
         return false;
     }
 
-    if (isSessionOnly()) {
-        setSessionSecret(service, account, QString());
-        return true;
+    {
+        QMutexLocker locker(&s_sessionMutex);
+        QString entryKey = service + QStringLiteral(":") + account;
+        s_sessionSecrets.remove(entryKey);
     }
-
-    bool success = false;
 
 #if defined(Q_OS_MACOS)
-    if (isNativeKeyringAvailable()) {
-        QProcess proc;
-        QStringList args;
-        args << QStringLiteral("delete-generic-password")
-             << QStringLiteral("-s") << service
-             << QStringLiteral("-a") << account;
-
-        proc.start(QStringLiteral("/usr/bin/security"), args);
-        if (proc.waitForFinished(3000) && proc.exitStatus() == QProcess::NormalExit && proc.exitCode() == 0) {
-            success = true;
-        }
-    }
+    return deleteKeychainSecret(service, account);
+#elif defined(Q_OS_WIN)
+    return deleteWindowsCredSecret(service, account);
+#else
+    return true;
 #endif
-
-    bool vaultDeleted = deleteVaultSecret(service, account);
-    return success || vaultDeleted;
 }
 
-QString SecureStorage::getVaultPath()
+#if defined(Q_OS_MACOS)
+bool SecureStorage::storeKeychainSecret(const QString &service, const QString &account, const QString &secret)
 {
-    QString dataDir;
-    QByteArray envDataDir = qgetenv("KIDS4EDU_DATA_DIR");
-    if (!envDataDir.isEmpty()) {
-        dataDir = QString::fromUtf8(envDataDir);
-    } else {
-        dataDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-        if (dataDir.isEmpty()) {
-            dataDir = QDir::homePath() + QStringLiteral("/.kids4edu");
-        }
-    }
-    QDir().mkpath(dataDir);
-    return dataDir + QStringLiteral("/.secure_vault");
-}
+    CFStringRef sService = service.toCFString();
+    CFStringRef sAccount = account.toCFString();
+    QByteArray secretData = secret.toUtf8();
+    CFDataRef sData = CFDataCreate(kCFAllocatorDefault, reinterpret_cast<const UInt8 *>(secretData.constData()), secretData.size());
 
-QString SecureStorage::getKeyFilePath()
-{
-    QString dataDir;
-    QByteArray envDataDir = qgetenv("KIDS4EDU_DATA_DIR");
-    if (!envDataDir.isEmpty()) {
-        dataDir = QString::fromUtf8(envDataDir);
-    } else {
-        dataDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
-        if (dataDir.isEmpty()) {
-            dataDir = QDir::homePath() + QStringLiteral("/.kids4edu");
-        }
-    }
-    QDir().mkpath(dataDir);
-    return dataDir + QStringLiteral("/.vault_key");
-}
+    CFMutableDictionaryRef query = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    CFDictionarySetValue(query, kSecClass, kSecClassGenericPassword);
+    CFDictionarySetValue(query, kSecAttrService, sService);
+    CFDictionarySetValue(query, kSecAttrAccount, sAccount);
+    CFDictionarySetValue(query, kSecValueData, sData);
+    CFDictionarySetValue(query, kSecAttrAccessible, kSecAttrAccessibleAfterFirstUnlock);
 
-QByteArray SecureStorage::getDerivationKey()
-{
-    // High-security key management:
-    // Generate an independent, cryptographically random master key stored in an isolated 0600 file (.vault_key).
-    // The master key is combined with host-specific material and derived via PBKDF2 (SHA-256, 50,000 iterations).
-    // This ensures that knowing the machine-id, hardware serial or OS environment ALONE is insufficient
-    // to reconstruct the encryption key.
-    QString keyFile = getKeyFilePath();
-    QByteArray randomMasterSecret;
+    OSStatus status = SecItemAdd(query, nullptr);
+    if (status == errSecDuplicateItem) {
+        // Item already exists, perform in-place update
+        CFMutableDictionaryRef updateQuery = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+        CFDictionarySetValue(updateQuery, kSecClass, kSecClassGenericPassword);
+        CFDictionarySetValue(updateQuery, kSecAttrService, sService);
+        CFDictionarySetValue(updateQuery, kSecAttrAccount, sAccount);
 
-    QFile readKey(keyFile);
-    if (readKey.open(QIODevice::ReadOnly)) {
-        randomMasterSecret = readKey.readAll();
-        readKey.close();
+        CFMutableDictionaryRef attributesToUpdate = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+        CFDictionarySetValue(attributesToUpdate, kSecValueData, sData);
+
+        status = SecItemUpdate(updateQuery, attributesToUpdate);
+        CFRelease(updateQuery);
+        CFRelease(attributesToUpdate);
     }
 
-    if (randomMasterSecret.size() < 32) {
-        randomMasterSecret.resize(32);
-        for (int i = 0; i < 32; ++i) {
-            randomMasterSecret[i] = static_cast<char>(QRandomGenerator::securelySeeded().bounded(256));
-        }
-        QFile writeKey(keyFile);
-        if (writeKey.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-            writeKey.write(randomMasterSecret);
-            writeKey.close();
-            QFile::setPermissions(keyFile, QFileDevice::ReadOwner | QFileDevice::WriteOwner);
-        }
+    CFRelease(query);
+    CFRelease(sService);
+    CFRelease(sAccount);
+    CFRelease(sData);
+
+    if (status != errSecSuccess) {
+        qWarning() << "Kids4Edu SecureStorage: Apple Keychain SecItemAdd/Update returned status:" << status;
+        // If Keychain access is denied or headless without unlock, fallback cleanly to session-only storage
+        setSessionSecret(service, account, secret);
+        return true;
     }
-
-    // Machine-specific component
-    QByteArray machineIdentity;
-    QFile machineIdFile(QStringLiteral("/etc/machine-id"));
-    if (machineIdFile.open(QIODevice::ReadOnly)) {
-        machineIdentity = machineIdFile.readAll().trimmed();
-        machineIdFile.close();
-    }
-    if (machineIdentity.isEmpty()) {
-        machineIdentity = QSysInfo::machineUniqueId();
-    }
-    if (machineIdentity.isEmpty()) {
-        machineIdentity = (QHostInfo::localHostName() + QStringLiteral("_salt_") + qgetenv("USER")).toUtf8();
-    }
-
-    // Combine random isolated master secret with machine salt
-    QByteArray combinedEntropy = randomMasterSecret + machineIdentity;
-    QByteArray masterSalt = QByteArrayLiteral("kids4edu_native_vault_salt_v2");
-
-    return QPasswordDigestor::deriveKeyPbkdf2(
-        QCryptographicHash::Sha256,
-        combinedEntropy,
-        masterSalt,
-        50000,
-        32
-    );
-}
-
-QByteArray SecureStorage::encryptData(const QByteArray &plain, const QByteArray &key)
-{
-    if (plain.isEmpty() || key.isEmpty()) {
-        return QByteArray();
-    }
-
-    // 16-byte random IV/nonce
-    QByteArray nonce(16, 0);
-    for (int i = 0; i < 16; ++i) {
-        nonce[i] = static_cast<char>(QRandomGenerator::global()->bounded(256));
-    }
-
-    // Generate keystream using HMAC-SHA256 in counter mode
-    QByteArray cipher;
-    cipher.resize(plain.size());
-    int offset = 0;
-    quint32 counter = 0;
-
-    while (offset < plain.size()) {
-        QByteArray counterBlock = nonce + QByteArray::number(counter++);
-        QByteArray streamBlock = QMessageAuthenticationCode::hash(counterBlock, key, QCryptographicHash::Sha256);
-
-        int chunk = qMin(static_cast<int>(streamBlock.size()), plain.size() - offset);
-        for (int i = 0; i < chunk; ++i) {
-            cipher[offset + i] = plain[offset + i] ^ streamBlock[i];
-        }
-        offset += chunk;
-    }
-
-    // Compute HMAC authentication tag over (nonce + cipher)
-    QByteArray payload = nonce + cipher;
-    QByteArray tag = QMessageAuthenticationCode::hash(payload, key, QCryptographicHash::Sha256);
-
-    // Final layout: [16-byte nonce][N-byte cipher][32-byte HMAC tag]
-    return payload + tag;
-}
-
-QByteArray SecureStorage::decryptData(const QByteArray &data, const QByteArray &key)
-{
-    // Minimum size: 16 (nonce) + 1 (data) + 32 (HMAC tag) = 49 bytes
-    if (data.size() < 49 || key.isEmpty()) {
-        return QByteArray();
-    }
-
-    int payloadLen = data.size() - 32;
-    QByteArray payload = data.left(payloadLen);
-    QByteArray expectedTag = data.mid(payloadLen, 32);
-
-    // Verify HMAC tag before any decryption (Encrypt-then-MAC authentication)
-    QByteArray computedTag = QMessageAuthenticationCode::hash(payload, key, QCryptographicHash::Sha256);
-    if (computedTag != expectedTag) {
-        qWarning() << "Kids4Edu SecureStorage: HMAC integrity verification failed on vault!";
-        return QByteArray();
-    }
-
-    QByteArray nonce = payload.left(16);
-    QByteArray cipher = payload.mid(16);
-
-    QByteArray plain;
-    plain.resize(cipher.size());
-    int offset = 0;
-    quint32 counter = 0;
-
-    while (offset < cipher.size()) {
-        QByteArray counterBlock = nonce + QByteArray::number(counter++);
-        QByteArray streamBlock = QMessageAuthenticationCode::hash(counterBlock, key, QCryptographicHash::Sha256);
-
-        int chunk = qMin(static_cast<int>(streamBlock.size()), cipher.size() - offset);
-        for (int i = 0; i < chunk; ++i) {
-            plain[offset + i] = cipher[offset + i] ^ streamBlock[i];
-        }
-        offset += chunk;
-    }
-
-    return plain;
-}
-
-bool SecureStorage::storeVaultSecret(const QString &service, const QString &account, const QString &secret)
-{
-    QString path = getVaultPath();
-    QByteArray key = getDerivationKey();
-
-    QJsonObject root;
-    QFile readFile(path);
-    if (readFile.open(QIODevice::ReadOnly)) {
-        QByteArray enc = readFile.readAll();
-        readFile.close();
-        QByteArray dec = decryptData(enc, key);
-        if (!dec.isEmpty()) {
-            QJsonDocument doc = QJsonDocument::fromJson(dec);
-            if (doc.isObject()) {
-                root = doc.object();
-            }
-        }
-    }
-
-    QString entryKey = service + QStringLiteral(":") + account;
-    root[entryKey] = secret;
-
-    QByteArray plainJson = QJsonDocument(root).toJson(QJsonDocument::Compact);
-    QByteArray encPayload = encryptData(plainJson, key);
-    if (encPayload.isEmpty()) {
-        return false;
-    }
-
-    QFile writeFile(path);
-    if (!writeFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        qWarning() << "Kids4Edu SecureStorage: Failed to write vault at" << path;
-        return false;
-    }
-
-    writeFile.write(encPayload);
-    writeFile.close();
-
-    // Restrict permissions to owner read/write ONLY (0600)
-    QFile::setPermissions(path, QFileDevice::ReadOwner | QFileDevice::WriteOwner);
     return true;
 }
 
-QString SecureStorage::getVaultSecret(const QString &service, const QString &account)
+QString SecureStorage::getKeychainSecret(const QString &service, const QString &account)
 {
-    QString path = getVaultPath();
-    QByteArray key = getDerivationKey();
+    CFStringRef sService = service.toCFString();
+    CFStringRef sAccount = account.toCFString();
 
-    QFile file(path);
-    if (!file.open(QIODevice::ReadOnly)) {
-        return QString();
+    CFMutableDictionaryRef query = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    CFDictionarySetValue(query, kSecClass, kSecClassGenericPassword);
+    CFDictionarySetValue(query, kSecAttrService, sService);
+    CFDictionarySetValue(query, kSecAttrAccount, sAccount);
+    CFDictionarySetValue(query, kSecReturnData, kCFBooleanTrue);
+    CFDictionarySetValue(query, kSecMatchLimit, kSecMatchLimitOne);
+
+    CFTypeRef result = nullptr;
+    OSStatus status = SecItemCopyMatching(query, &result);
+    CFRelease(query);
+    CFRelease(sService);
+    CFRelease(sAccount);
+
+    if (status == errSecSuccess && result != nullptr) {
+        CFDataRef data = static_cast<CFDataRef>(result);
+        QString secret = QString::fromUtf8(reinterpret_cast<const char *>(CFDataGetBytePtr(data)), static_cast<int>(CFDataGetLength(data)));
+        CFRelease(result);
+        return secret;
     }
 
-    QByteArray enc = file.readAll();
-    file.close();
-
-    QByteArray dec = decryptData(enc, key);
-    if (dec.isEmpty()) {
-        return QString();
-    }
-
-    QJsonDocument doc = QJsonDocument::fromJson(dec);
-    if (!doc.isObject()) {
-        return QString();
-    }
-
+    // Fallback to session secret if not found in Keychain
+    QMutexLocker locker(&s_sessionMutex);
     QString entryKey = service + QStringLiteral(":") + account;
-    return doc.object().value(entryKey).toString();
+    return s_sessionSecrets.value(entryKey);
 }
 
-bool SecureStorage::deleteVaultSecret(const QString &service, const QString &account)
+bool SecureStorage::deleteKeychainSecret(const QString &service, const QString &account)
 {
-    QString path = getVaultPath();
-    QByteArray key = getDerivationKey();
+    CFStringRef sService = service.toCFString();
+    CFStringRef sAccount = account.toCFString();
 
-    QFile readFile(path);
-    if (!readFile.open(QIODevice::ReadOnly)) {
-        return false;
+    CFMutableDictionaryRef query = CFDictionaryCreateMutable(kCFAllocatorDefault, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+    CFDictionarySetValue(query, kSecClass, kSecClassGenericPassword);
+    CFDictionarySetValue(query, kSecAttrService, sService);
+    CFDictionarySetValue(query, kSecAttrAccount, sAccount);
+
+    OSStatus status = SecItemDelete(query);
+    CFRelease(query);
+    CFRelease(sService);
+    CFRelease(sAccount);
+
+    return (status == errSecSuccess || status == errSecItemNotFound);
+}
+#elif defined(Q_OS_WIN)
+bool SecureStorage::storeWindowsCredSecret(const QString &service, const QString &account, const QString &secret)
+{
+    QString targetName = QStringLiteral("Kids4Edu:") + service + QStringLiteral(":") + account;
+    std::wstring wTarget = targetName.toStdWString();
+    std::wstring wUser = account.toStdWString();
+    QByteArray secretData = secret.toUtf8();
+
+    CREDENTIALW cred = {0};
+    cred.Type = CRED_TYPE_GENERIC;
+    cred.TargetName = const_cast<LPWSTR>(wTarget.c_str());
+    cred.CredentialBlobSize = static_cast<DWORD>(secretData.size());
+    cred.CredentialBlob = reinterpret_cast<LPBYTE>(const_cast<char *>(secretData.constData()));
+    cred.Persist = CRED_PERSIST_LOCAL_MACHINE;
+    cred.UserName = const_cast<LPWSTR>(wUser.c_str());
+
+    BOOL res = CredWriteW(&cred, 0);
+    if (!res) {
+        setSessionSecret(service, account, secret);
+        return true;
     }
-
-    QByteArray enc = readFile.readAll();
-    readFile.close();
-
-    QByteArray dec = decryptData(enc, key);
-    if (dec.isEmpty()) {
-        return false;
-    }
-
-    QJsonDocument doc = QJsonDocument::fromJson(dec);
-    if (!doc.isObject()) {
-        return false;
-    }
-
-    QJsonObject root = doc.object();
-    QString entryKey = service + QStringLiteral(":") + account;
-    if (!root.contains(entryKey)) {
-        return false;
-    }
-
-    root.remove(entryKey);
-
-    QByteArray plainJson = QJsonDocument(root).toJson(QJsonDocument::Compact);
-    QByteArray encPayload = encryptData(plainJson, key);
-
-    QFile writeFile(path);
-    if (!writeFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-        return false;
-    }
-
-    writeFile.write(encPayload);
-    writeFile.close();
-    QFile::setPermissions(path, QFileDevice::ReadOwner | QFileDevice::WriteOwner);
     return true;
 }
+
+QString SecureStorage::getWindowsCredSecret(const QString &service, const QString &account)
+{
+    QString targetName = QStringLiteral("Kids4Edu:") + service + QStringLiteral(":") + account;
+    std::wstring wTarget = targetName.toStdWString();
+
+    PCREDENTIALW pCred = nullptr;
+    if (CredReadW(wTarget.c_str(), CRED_TYPE_GENERIC, 0, &pCred)) {
+        QString secret = QString::fromUtf8(reinterpret_cast<const char *>(pCred->CredentialBlob), static_cast<int>(pCred->CredentialBlobSize));
+        CredFree(pCred);
+        return secret;
+    }
+
+    QMutexLocker locker(&s_sessionMutex);
+    QString entryKey = service + QStringLiteral(":") + account;
+    return s_sessionSecrets.value(entryKey);
+}
+
+bool SecureStorage::deleteWindowsCredSecret(const QString &service, const QString &account)
+{
+    QString targetName = QStringLiteral("Kids4Edu:") + service + QStringLiteral(":") + account;
+    std::wstring wTarget = targetName.toStdWString();
+    return CredDeleteW(wTarget.c_str(), CRED_TYPE_GENERIC, 0) == TRUE;
+}
+#endif

@@ -67,7 +67,7 @@ Rectangle {
                     }
 
                     Text {
-                        text: qsTr("Pannello operatore scolastico Kids4Edu Desktop v2.1.0")
+                        text: qsTr("Pannello operatore scolastico Kids4Edu Desktop v%1").arg(ApplicationInfo.kids4eduVersion)
                         font.pixelSize: 12 * ApplicationInfo.ratio
                         color: "#64748b"
                     }

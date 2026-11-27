@@ -480,7 +480,7 @@ void WorkstationManager::enroll(const QString &backendUrl, const QString &enroll
     payload[QStringLiteral("enrollment_token")] = enrollmentToken.trimmed();
     payload[QStringLiteral("workstation_name")] = finalWsName;
     payload[QStringLiteral("platform")] = QSysInfo::prettyProductName();
-    payload[QStringLiteral("client_version")] = QStringLiteral("2.1.0");
+    payload[QStringLiteral("client_version")] = QCoreApplication::applicationVersion();
 
     m_statusMessage = QStringLiteral("Registrazione postazione in corso...");
     Q_EMIT statusMessageChanged();
@@ -854,7 +854,7 @@ QVariantMap WorkstationManager::getDiagnosticsInfo() const
     diag[QStringLiteral("synced_events")] = SyncAgent::getInstance()->syncedCount();
     diag[QStringLiteral("in_flight_events")] = SyncAgent::getInstance()->inFlightCount();
     diag[QStringLiteral("sync_agent_running")] = SyncAgent::getInstance()->isRunning();
-    diag[QStringLiteral("client_version")] = QStringLiteral("2.1.0");
+    diag[QStringLiteral("client_version")] = QCoreApplication::applicationVersion();
     diag[QStringLiteral("operating_system")] = QSysInfo::prettyProductName();
     diag[QStringLiteral("active_session_id")] = m_activeSessionId;
     diag[QStringLiteral("active_session_title")] = m_activeSessionTitle;

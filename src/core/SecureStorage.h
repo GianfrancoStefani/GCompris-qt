@@ -2,6 +2,11 @@
  *
  * SPDX-FileCopyrightText: 2026 Kids4Edu Core Platform Team
  * SPDX-License-Identifier: GPL-3.0-or-later
+ *
+ * Native OS Keyring / Credential Manager integration.
+ * - macOS: Apple Keychain Services API (SecItemAdd, SecItemCopyMatching, SecItemDelete)
+ * - Windows: Windows Credential Manager API (CredWriteW, CredReadW, CredDeleteW)
+ * - Linux / Fallback: Session-only fail-closed in-memory storage (no plaintext on disk, no custom proprietary crypto).
  */
 
 #ifndef SECURESTORAGE_H
@@ -22,15 +27,15 @@ public:
     static void setSessionSecret(const QString &service, const QString &account, const QString &secret);
 
 private:
-    static QString getVaultPath();
-    static QString getKeyFilePath();
-    static QByteArray getDerivationKey();
-    static QByteArray encryptData(const QByteArray &plain, const QByteArray &key);
-    static QByteArray decryptData(const QByteArray &cipher, const QByteArray &key);
-
-    static bool storeVaultSecret(const QString &service, const QString &account, const QString &secret);
-    static QString getVaultSecret(const QString &service, const QString &account);
-    static bool deleteVaultSecret(const QString &service, const QString &account);
+#if defined(Q_OS_MACOS)
+    static bool storeKeychainSecret(const QString &service, const QString &account, const QString &secret);
+    static QString getKeychainSecret(const QString &service, const QString &account);
+    static bool deleteKeychainSecret(const QString &service, const QString &account);
+#elif defined(Q_OS_WIN)
+    static bool storeWindowsCredSecret(const QString &service, const QString &account, const QString &secret);
+    static QString getWindowsCredSecret(const QString &service, const QString &account);
+    static bool deleteWindowsCredSecret(const QString &service, const QString &account);
+#endif
 };
 
 #endif // SECURESTORAGE_H

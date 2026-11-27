@@ -20,6 +20,7 @@
 #include "src/core/TelemetryManager.h"
 #include "src/core/SyncAgent.h"
 #include "src/core/SecureStorage.h"
+#include "src/core/Kids4EduVersion.h"
 
 class WorkstationManagerTest : public QObject
 {
@@ -41,6 +42,7 @@ private Q_SLOTS:
 
 void WorkstationManagerTest::initTestCase()
 {
+    QCoreApplication::setApplicationVersion(QStringLiteral(KIDS4EDU_VERSION_STRING));
     WorkstationManager *wm = WorkstationManager::getInstance();
     QVERIFY(wm != nullptr);
 }
@@ -196,7 +198,7 @@ void WorkstationManagerTest::testDiagnosticsInfoIntegrity()
     QVERIFY(diag.contains(QStringLiteral("pending_events")));
     QVERIFY(diag.contains(QStringLiteral("synced_events")));
     QVERIFY(diag.contains(QStringLiteral("client_version")));
-    QCOMPARE(diag.value(QStringLiteral("client_version")).toString(), QStringLiteral("2.1.0"));
+    QCOMPARE(diag.value(QStringLiteral("client_version")).toString(), QStringLiteral(KIDS4EDU_VERSION_STRING));
 
     // Check security: api_token must NOT be exposed in diagnostics
     QVERIFY(!diag.contains(QStringLiteral("api_token")));
