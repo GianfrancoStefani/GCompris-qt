@@ -217,6 +217,7 @@ Item {
 
     Component.onCompleted: {
         page.stop.connect(stopSounds);
+        isManualLevelChange = false;
         if (typeof telemetryManager !== 'undefined' && telemetryManager && !isMenu) {
             var rawName = (activityInfo && activityInfo.name) ? activityInfo.name : 'activity';
             var canonId = getCanonicalActivityId();
@@ -235,6 +236,7 @@ Item {
     }
 
     onCurrentLevelChanged: {
+        isManualLevelChange = false;
         if (typeof telemetryManager !== 'undefined' && telemetryManager && !isMenu) {
             var rawName = (activityInfo && activityInfo.name) ? activityInfo.name : 'activity';
             var canonId = getCanonicalActivityId();
