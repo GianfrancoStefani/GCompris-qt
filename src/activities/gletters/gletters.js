@@ -507,6 +507,10 @@ function audioCrashPlay() {
     if(successRate > 0.5)
         successRate -= 0.1
     items.badAnswerSound.play()
+    if (items.telemetry) {
+        var actName = items.ourActivity ? items.ourActivity.activityName : "gletters";
+        items.telemetry.recordEvent("problem_step_failed", actName, items.currentLevel, null, "", { "reason": "letter_crash" });
+    }
 }
 
 function nextLevel() {
@@ -524,6 +528,13 @@ function previousLevel() {
 function nextSubLevel() {
     items.score.currentSubLevel += 1;
     items.score.playWinAnimation();
+    if (items.telemetry) {
+        var actName = items.ourActivity ? items.ourActivity.activityName : "gletters";
+        items.telemetry.recordProblemCompleted(actName, items.currentLevel, true, {
+            "sublevel": currentSubLevel,
+            "max_sublevel": maxSubLevel
+        });
+    }
     if(++currentSubLevel >= maxSubLevel) {
         // Stop having more words dropping once we have won
         items.wordDropTimer.stop();

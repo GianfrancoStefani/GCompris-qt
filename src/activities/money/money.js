@@ -186,6 +186,21 @@ function initLevel() {
 
     //Enable controls
     items.buttonsBlocked = false
+
+    if (items.telemetry) {
+        var actName = items.activityName || "money";
+        var diffParams = {
+            "cents_mode": centsMode,
+            "back_mode": backMode,
+            "number_of_items": data.numberOfItem
+        };
+        var stimConfig = {
+            "target_total": priceTotal,
+            "paid": backMode ? (data.paid || 0) : 0,
+            "pocket_count": data.pocket.length
+        };
+        items.telemetry.recordProblemPresented(actName, items.currentLevel, 1, "", diffParams, stimConfig);
+    }
 }
 
 // Given a price return a random object
@@ -209,6 +224,19 @@ function checkAnswer() {
     paid = paid.toFixed(2)
 
     items.buttonsBlocked = true;
+
+    var target = (!backMode) ? priceTotal.toFixed(2) : (dataset[items.currentLevel].paid - priceTotal).toFixed(2);
+    var isCorrect = (paid === target);
+
+    if (items.telemetry) {
+        var actName = items.activityName || "money";
+        items.telemetry.recordProblemCompleted(actName, items.currentLevel, isCorrect, {
+            "paid": paid,
+            "target": target,
+            "cents_mode": centsMode,
+            "back_mode": backMode
+        });
+    }
 
     if(!backMode) {
         if(paid === priceTotal.toFixed(2))

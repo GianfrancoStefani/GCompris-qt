@@ -352,7 +352,16 @@ function calculateCorrectAnswer() {
 function verifyNumberTyping(typedAnswer) {
     items.buttonsBlocked = true;
     typedAnswer = typedAnswer.replace("," , ".");
-    if(parseFloat(typedAnswer) === parseFloat(correctAnswer)) {
+    var correct = (parseFloat(typedAnswer) === parseFloat(correctAnswer));
+    if (items.telemetry) {
+        var actName = items.activityName || "learn_decimals";
+        items.telemetry.recordProblemCompleted(actName, items.currentLevel, correct, {
+            "typed_answer": typedAnswer,
+            "correct_answer": correctAnswer,
+            "sublevel": items.score.currentSubLevel
+        });
+    }
+    if(correct) {
         items.goodAnswerSound.play();
         items.client.sendToServer(true)
         items.score.currentSubLevel += 1;

@@ -117,6 +117,13 @@ Item {
     property bool isMusicalActivity: false
 
     /**
+     * Flag set to true when the level change was initiated manually by the user
+     * (e.g. via navigation arrows in the Bar), preventing fraudulent 'level_completed'
+     * or 'activity_completed' emissions.
+     */
+    property bool isManualLevelChange: false
+
+    /**
      * type:int
      * The current level for this activity.
      */
@@ -286,15 +293,22 @@ Item {
     onNextLevel: {
         var canonId = getCanonicalActivityId();
         if (typeof telemetryManager !== 'undefined' && telemetryManager && !isMenu && canonId !== 'menu') {
-            telemetryManager.recordEvent('level_completed', canonId, currentLevel, activityInfo ? activityInfo.difficulty : 1, '', {
-                'completed_level': currentLevel,
-                'number_of_levels': numberOfLevel
-            });
-            if (currentLevel + 1 >= numberOfLevel && numberOfLevel > 0) {
-                telemetryManager.recordEvent('activity_completed', canonId, currentLevel, activityInfo ? activityInfo.difficulty : 1, '', {
-                    'final_level': currentLevel
+            if (isManualLevelChange) {
+                // Manual skip from navigation bar: do NOT emit level_completed or activity_completed!
+                isManualLevelChange = false;
+            } else {
+                telemetryManager.recordEvent('level_completed', canonId, currentLevel, activityInfo ? activityInfo.difficulty : 1, '', {
+                    'completed_level': currentLevel,
+                    'number_of_levels': numberOfLevel
                 });
+                if (currentLevel + 1 >= numberOfLevel && numberOfLevel > 0) {
+                    telemetryManager.recordEvent('activity_completed', canonId, currentLevel, activityInfo ? activityInfo.difficulty : 1, '', {
+                        'final_level': currentLevel
+                    });
+                }
             }
+        } else {
+            isManualLevelChange = false;
         }
         if(ActivityInfoTree.isInSequence) {
             print(activityInfo.name, "in sequence");

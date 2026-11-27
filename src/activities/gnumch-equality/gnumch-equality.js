@@ -330,8 +330,17 @@ function checkAnswer() {
 
     items.muncher.eating = true;
     items.eatSound.play();
+    var correct = isAnswerCorrect(items.muncher.index);
+    if (items.telemetry) {
+        var actName = items.activityName || "gnumch";
+        items.telemetry.recordProblemCompleted(actName, items.currentLevel, correct, {
+            "type": activityType,
+            "goal": getGoal(),
+            "cell_index": items.muncher.index
+        });
+    }
     // Set the cell invisible if it's the correct answer.
-    if (isAnswerCorrect(items.muncher.index)) {
+    if (correct) {
         items.modelCells.get(items.muncher.index).show = false;
         if(items.gridPart.isLevelDone()) {
             stopLevel();

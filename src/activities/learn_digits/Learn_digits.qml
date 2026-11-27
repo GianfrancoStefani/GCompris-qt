@@ -77,6 +77,8 @@ ActivityBase {
 
             // Client for server version
             property alias client: client
+            property var telemetry: (typeof telemetryManager !== "undefined") ? telemetryManager : null
+            property string activityName: (activity.activityInfo ? activity.activityInfo.name : "learn_digits")
         }
         property string locale: ApplicationSettings.locale
         property bool isHorizontal: layoutArea.width >= layoutArea.height

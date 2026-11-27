@@ -73,6 +73,8 @@ ActivityBase {
             property int mode: 1 // default is automatic
             property alias errorRectangle: errorRectangle
             property bool buttonsBlocked: false
+            property var telemetry: (typeof telemetryManager !== "undefined") ? telemetryManager : null
+            property string activityName: (activity.activityInfo ? activity.activityInfo.name : "money")
         }
 
         onStart: { Activity.start(items, dataset) }

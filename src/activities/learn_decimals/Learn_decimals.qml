@@ -95,6 +95,8 @@ ActivityBase {
             property double unit: activity.isQuantityMode ? 1 : 0.1
             property bool buttonsBlocked: false
             property alias client: client
+            property var telemetry: (typeof telemetryManager !== "undefined") ? telemetryManager : null
+            property string activityName: (activity.activityInfo ? activity.activityInfo.name : "learn_decimals")
         }
 
         onStart: {

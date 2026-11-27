@@ -67,8 +67,16 @@ function displayLevel()
 
 function checkAnswer() {
     items.buttonsBlocked = true
-    if((initCompleted && items.scaleHeight == 0 && !items.question.visible)
-            || (items.question.userEntry == items.question.answer)) {
+    var correct = ((initCompleted && items.scaleHeight == 0 && !items.question.visible)
+            || (items.question.userEntry == items.question.answer));
+    if (items.telemetry) {
+        var actName = items.activityName || "scalesboard";
+        items.telemetry.recordProblemCompleted(actName, items.currentLevel, correct, {
+            "sublevel": items.score.currentSubLevel,
+            "target_weight": items.giftWeight
+        });
+    }
+    if(correct) {
         items.score.currentSubLevel++;
         items.score.playWinAnimation();
         items.goodAnswerSound.play();

@@ -71,6 +71,8 @@ ActivityBase {
             property alias numpad: numpad
             property bool rightDrop
             property bool buttonsBlocked: false
+            property var telemetry: (typeof telemetryManager !== "undefined") ? telemetryManager : null
+            property string activityName: (activity.activityInfo ? activity.activityInfo.name : "scalesboard")
         }
 
         onStart: { Activity.start(items) }

@@ -32,7 +32,18 @@ Image {
             return
         }
 
-        if(question === Activity.getCurrentTextQuestion()) {
+        var isCorrect = (question === Activity.getCurrentTextQuestion());
+        var actName = (typeof activityInfo !== 'undefined' && activityInfo) ? activityInfo.name : 'colors';
+        var lvl = items.currentLevel;
+        if (typeof telemetryManager !== 'undefined' && telemetryManager) {
+            telemetryManager.recordProblemCompleted(actName, lvl, isCorrect, {
+                'selected_item': question,
+                'target_item': Activity.getCurrentTextQuestion(),
+                'sublevel': score.currentSubLevel
+            });
+        }
+
+        if(isCorrect) {
             particles.burst(40)
             animWin.start()
             score.currentSubLevel += 1

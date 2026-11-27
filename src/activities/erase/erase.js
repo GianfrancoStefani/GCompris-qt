@@ -138,6 +138,14 @@ function blockKilled() {
         items.currentSubLevel += 1
         items.winSound.play()
         items.score.playWinAnimation()
+        if (items.telemetry) {
+            var actName = items.activityName || "erase";
+            items.telemetry.recordProblemCompleted(actName, items.currentLevel, true, {
+                "sublevel": items.currentSubLevel,
+                "total_sublevels": items.nbSubLevel,
+                "blocks_cleared": killedBlocks
+            });
+        }
         if(items.mode === 2) {
             items.okButton.levelFinished = true
         }

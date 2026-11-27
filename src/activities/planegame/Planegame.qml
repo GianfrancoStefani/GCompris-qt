@@ -100,6 +100,8 @@ ActivityBase {
             property int cloudSpeed: slowestSpeed - (accelPerLevel * currentLevel)
             // Generate new cloud around halfway of previous cloud
             property int cloudCreationSpeed: cloudSpeed * 0.5
+            property var telemetry: (typeof telemetryManager !== "undefined") ? telemetryManager : null
+            property string activityName: (activity.activityInfo ? activity.activityInfo.name : "planegame")
        }
 
        onVoiceDone: {

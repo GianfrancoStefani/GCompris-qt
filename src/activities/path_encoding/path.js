@@ -81,6 +81,17 @@ function initLevel() {
 
     items.movesGridView.currentIndex = 0
     items.buttonsBlocked = false
+
+    if (items.telemetry) {
+        var actName = items.activityName || "path";
+        items.telemetry.recordProblemPresented(actName, items.currentLevel, 1, "", {
+            "mode": items.mode,
+            "movement": items.movement
+        }, {
+            "rows": items.rows,
+            "cols": items.cols
+        });
+    }
 }
 
 function loadMoves() {
@@ -194,8 +205,16 @@ function updateTux() {
 
     items.goodAnswerSound.play()
 
-    if(map[currPos[1]][currPos[0]].toUpperCase() === 'E')
+    if(map[currPos[1]][currPos[0]].toUpperCase() === 'E') {
+        if (items.telemetry) {
+            var actName = items.activityName || "path";
+            items.telemetry.recordProblemCompleted(actName, items.currentLevel, true, {
+                "errors": items.errorsCount,
+                "moves": items.movesListModel.count
+            });
+        }
         items.bonus.good ("tux")
+    }
 }
 
 function findNextPositionAbsolute(fromX, fromY, direction) {

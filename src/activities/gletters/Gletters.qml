@@ -104,6 +104,7 @@ ActivityBase {
             property string typedText: ""
             property string missedText: ""
             property var droppedText: []
+            property var telemetry: (typeof telemetryManager !== "undefined") ? telemetryManager : null
         }
 
         onStart: {

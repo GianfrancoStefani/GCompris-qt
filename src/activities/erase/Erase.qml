@@ -59,6 +59,8 @@ ActivityBase {
             property int nbSubLevel: 6
             property int currentSubLevel: 0
             property int mode: 1 // default is automatic
+            property var telemetry: (typeof telemetryManager !== "undefined") ? telemetryManager : null
+            property string activityName: (activity.activityInfo ? activity.activityInfo.name : "erase")
         }
         onStart: Activity.start(items)
 

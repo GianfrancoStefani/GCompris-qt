@@ -65,6 +65,8 @@ ActivityBase {
             property int numberOfLevel: 0
             onNumberOfLevelChanged: activity.numberOfLevel = numberOfLevel
             property alias bonus: bonus
+            property var telemetry: (typeof telemetryManager !== "undefined") ? telemetryManager : null
+            property string activityName: (activity.activityInfo ? activity.activityInfo.name : "path")
         }
 
         onWidthChanged: {

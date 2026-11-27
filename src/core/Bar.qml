@@ -427,7 +427,15 @@ Item {
             source: "qrc:/gcompris/src/core/resource/bar_help.svg";
             width: bar.buttonSize
             visible: barRow.isHidden === false
-            onClicked: bar.helpClicked();
+            onClicked: {
+                if (typeof telemetryManager !== 'undefined' && telemetryManager) {
+                    var actName = (typeof activityInfo !== 'undefined' && activityInfo) ? activityInfo.name : 'unknown';
+                    var lvl = (typeof currentLevel !== 'undefined') ? currentLevel : (bar ? bar.level - 1 : 0);
+                    var diff = (typeof activityInfo !== 'undefined' && activityInfo) ? activityInfo.difficulty : null;
+                    telemetryManager.recordEvent('assistance_requested', actName, lvl, diff, '', { 'type': 'help_dialog', 'source': 'bar_help' });
+                }
+                bar.helpClicked();
+            }
         }
     }
     Component {
@@ -440,6 +448,18 @@ Item {
             onClicked: {
                 if(typeof bonus !== "undefined")
                     bonus.haltBonus();
+                if(typeof activityBackground !== "undefined" && activityBackground) {
+                    activityBackground.isManualLevelChange = true;
+                }
+                if (typeof telemetryManager !== 'undefined' && telemetryManager) {
+                    var actName = (typeof activityInfo !== 'undefined' && activityInfo) ? activityInfo.name : 'unknown';
+                    var lvl = (typeof currentLevel !== 'undefined') ? currentLevel : (bar ? bar.level - 1 : 0);
+                    var diff = (typeof activityInfo !== 'undefined' && activityInfo) ? activityInfo.difficulty : null;
+                    if (telemetryManager.problemInstanceId) {
+                        telemetryManager.recordProblemAbandoned(actName, lvl, 'manual_level_change', { 'direction': 'previous', 'source': 'bar_button' });
+                    }
+                    telemetryManager.recordEvent('manual_level_change', actName, lvl, diff, '', { 'direction': 'previous', 'source': 'bar_button' });
+                }
                 bar.previousLevelClicked();
             }
         }
@@ -472,6 +492,18 @@ Item {
             onClicked: {
                 if(typeof bonus !== "undefined")
                     bonus.haltBonus();
+                if(typeof activityBackground !== "undefined" && activityBackground) {
+                    activityBackground.isManualLevelChange = true;
+                }
+                if (typeof telemetryManager !== 'undefined' && telemetryManager) {
+                    var actName = (typeof activityInfo !== 'undefined' && activityInfo) ? activityInfo.name : 'unknown';
+                    var lvl = (typeof currentLevel !== 'undefined') ? currentLevel : (bar ? bar.level - 1 : 0);
+                    var diff = (typeof activityInfo !== 'undefined' && activityInfo) ? activityInfo.difficulty : null;
+                    if (telemetryManager.problemInstanceId) {
+                        telemetryManager.recordProblemAbandoned(actName, lvl, 'manual_level_change', { 'direction': 'next', 'source': 'bar_button' });
+                    }
+                    telemetryManager.recordEvent('manual_level_change', actName, lvl, diff, '', { 'direction': 'next', 'source': 'bar_button' });
+                }
                 bar.nextLevelClicked();
             }
         }
@@ -482,7 +514,15 @@ Item {
             source: "qrc:/gcompris/src/core/resource/bar_repeat.svg"
             width: bar.buttonSize
             visible: barRow.isHidden === false
-            onClicked: bar.repeatClicked();
+            onClicked: {
+                if (typeof telemetryManager !== 'undefined' && telemetryManager) {
+                    var actName = (typeof activityInfo !== 'undefined' && activityInfo) ? activityInfo.name : 'unknown';
+                    var lvl = (typeof currentLevel !== 'undefined') ? currentLevel : (bar ? bar.level - 1 : 0);
+                    var diff = (typeof activityInfo !== 'undefined' && activityInfo) ? activityInfo.difficulty : null;
+                    telemetryManager.recordEvent('activity_restarted', actName, lvl, diff, '', { 'source': 'bar_repeat' });
+                }
+                bar.repeatClicked();
+            }
         }
     }
     Component {
@@ -491,7 +531,15 @@ Item {
             source: "qrc:/gcompris/src/core/resource/bar_hint.svg"
             width: bar.buttonSize
             visible: barRow.isHidden === false
-            onClicked: bar.hintClicked();
+            onClicked: {
+                if (typeof telemetryManager !== 'undefined' && telemetryManager) {
+                    var actName = (typeof activityInfo !== 'undefined' && activityInfo) ? activityInfo.name : 'unknown';
+                    var lvl = (typeof currentLevel !== 'undefined') ? currentLevel : (bar ? bar.level - 1 : 0);
+                    var diff = (typeof activityInfo !== 'undefined' && activityInfo) ? activityInfo.difficulty : null;
+                    telemetryManager.recordEvent('assistance_requested', actName, lvl, diff, '', { 'type': 'hint', 'source': 'bar_hint' });
+                }
+                bar.hintClicked();
+            }
         }
     }
     Component {

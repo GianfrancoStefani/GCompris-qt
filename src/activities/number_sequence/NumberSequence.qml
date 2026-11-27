@@ -64,6 +64,8 @@ ActivityBase {
             property int pointIndexToClick
             property int mode: 1 // default is automatic
             property bool highlightEnabled: true // make the point to click bigger. Always true in drawletters, drawnumbers and clickanddraw
+            property var telemetry: (typeof telemetryManager !== "undefined") ? telemetryManager : null
+            property string activityName: (activity.activityInfo ? activity.activityInfo.name : "number_sequence")
         }
 
         onStart: { Activity.start(items, activity.mode, activity.dataset, activity.resourceUrl) }

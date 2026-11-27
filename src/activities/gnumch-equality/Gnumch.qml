@@ -67,6 +67,8 @@ ActivityBase {
             property alias monsters: monsters
             property alias spawningMonsters: spawningMonsters
             property alias timerActivateWarn: timerActivateWarn
+            property var telemetry: (typeof telemetryManager !== "undefined") ? telemetryManager : null
+            property string activityName: (activity.activityInfo ? activity.activityInfo.name : "gnumch")
         }
 
         onStart: {

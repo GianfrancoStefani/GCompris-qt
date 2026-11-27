@@ -108,7 +108,17 @@ function resetCircles() {
 
 function checkAnswer() {
     items.inputLocked = true
-    if(items.answer === items.question) {
+    var correct = (items.answer === items.question);
+    if (items.telemetry) {
+        var actName = items.activityName || "learn_digits";
+        items.telemetry.recordProblemCompleted(actName, items.currentLevel, correct, {
+            "answer": items.answer,
+            "question": items.question,
+            "question_text": items.questionText,
+            "sublevel": items.score.currentSubLevel
+        });
+    }
+    if(correct) {
         items.client.sendToServer(true)
         ++items.score.currentSubLevel;
         items.score.playWinAnimation();

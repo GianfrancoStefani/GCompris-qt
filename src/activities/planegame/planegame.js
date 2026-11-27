@@ -76,6 +76,14 @@ function initLevel() {
     }
 
     items.score.message = dataset[items.currentLevel].data[currentSubLevel]
+
+    if (items.telemetry) {
+        var actName = items.activityName || "planegame";
+        items.telemetry.recordProblemPresented(actName, items.currentLevel, 1, "", {}, {
+            "target": dataset[items.currentLevel].data[currentSubLevel],
+            "sublevels_count": numberOfSubLevels
+        });
+    }
     items.score.visible = dataset[items.currentLevel].showNext
 
     upPressed = false
@@ -296,6 +304,15 @@ function handleCollisionsWithCloud() {
                     clouds.splice(i, 1)
                     currentSubLevel++
 
+                    if (items.telemetry) {
+                        var actName = items.activityName || "planegame";
+                        items.telemetry.recordProblemCompleted(actName, items.currentLevel, true, {
+                            "cloud_text": cloud.text,
+                            "completed_sublevel": currentSubLevel,
+                            "total_sublevels": numberOfSubLevels
+                        });
+                    }
+
                     if(currentSubLevel === numberOfSubLevels) {
                         levelComplete = true
                         /* Try the next level */
@@ -306,6 +323,14 @@ function handleCollisionsWithCloud() {
                         }
                     } else {
                         items.score.message = dataset[items.currentLevel].data[currentSubLevel]
+
+    if (items.telemetry) {
+        var actName = items.activityName || "planegame";
+        items.telemetry.recordProblemPresented(actName, items.currentLevel, 1, "", {}, {
+            "target": dataset[items.currentLevel].data[currentSubLevel],
+            "sublevels_count": numberOfSubLevels
+        });
+    }
                     }
                 } else {
                     /* Touched the wrong cloud */

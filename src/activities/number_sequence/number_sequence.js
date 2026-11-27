@@ -133,5 +133,12 @@ function loadBackgroundImage() {
 }
 
 function won() {
+    if (items.telemetry) {
+        var actName = items.activityName || "number_sequence";
+        items.telemetry.recordProblemCompleted(actName, items.currentLevel, true, {
+            "mode": mode,
+            "points_count": items.pointImageRepeater.count
+        });
+    }
     items.bonus.good("flower")
 }
