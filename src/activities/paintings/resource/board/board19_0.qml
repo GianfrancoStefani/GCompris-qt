@@ -20,42 +20,42 @@ QtObject {
          "height": 515
       },
       {
-         "pixmapfile" : "image/kandinky_1.webp",
+         "pixmapfile" : "image/kandinky_1.png",
          "x" : "0.167",
          "y" : "0.283"
       },
       {
-         "pixmapfile" : "image/kandinky_2.webp",
+         "pixmapfile" : "image/kandinky_2.png",
          "x" : "0.405",
          "y" : "0.283"
       },
       {
-         "pixmapfile" : "image/kandinky_3.webp",
+         "pixmapfile" : "image/kandinky_3.png",
          "x" : "0.642",
          "y" : "0.228"
       },
       {
-         "pixmapfile" : "image/kandinky_4.webp",
+         "pixmapfile" : "image/kandinky_4.png",
          "x" : "0.85",
          "y" : "0.228"
       },
       {
-         "pixmapfile" : "image/kandinky_5.webp",
+         "pixmapfile" : "image/kandinky_5.png",
          "x" : "0.138",
          "y" : "0.673"
       },
       {
-         "pixmapfile" : "image/kandinky_6.webp",
+         "pixmapfile" : "image/kandinky_6.png",
          "x" : "0.376",
          "y" : "0.673"
       },
       {
-         "pixmapfile" : "image/kandinky_7.webp",
+         "pixmapfile" : "image/kandinky_7.png",
          "x" : "0.642",
          "y" : "0.618"
       },
       {
-         "pixmapfile" : "image/kandinky_8.webp",
+         "pixmapfile" : "image/kandinky_8.png",
          "x" : "0.85",
          "y" : "0.618"
       }

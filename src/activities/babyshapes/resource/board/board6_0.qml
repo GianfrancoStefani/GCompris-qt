@@ -15,36 +15,36 @@ QtObject {
    property bool glow: false
    property var levels: [
 	  {
-          "pixmapfile" : "dog2/dog.webp",
+          "pixmapfile" : "dog2/dog.jpg",
           "type" : "SHAPE_BACKGROUND_IMAGE"
       },
       {
-          "pixmapfile" : "dog2/dog3.webp",
+          "pixmapfile" : "dog2/dog3.png",
           "x" : "0.28",
           "y" : "0.303"
       },
       {
-          "pixmapfile" : "dog2/dog5.webp",
+          "pixmapfile" : "dog2/dog5.png",
           "x" : "0.568",
           "y" : "0.206"
       },
       {
-          "pixmapfile" : "dog2/dog4.webp",
+          "pixmapfile" : "dog2/dog4.png",
           "x" : "0.859",
           "y" : "0.301"
       },
       {
-          "pixmapfile" : "dog2/dog2.webp",
+          "pixmapfile" : "dog2/dog2.png",
           "x" : "0.199",
           "y" : "0.726"
       },
       {
-          "pixmapfile" : "dog2/dog6.webp",
+          "pixmapfile" : "dog2/dog6.png",
           "x" : "0.473",
           "y" : "0.692"
       },
       {
-          "pixmapfile" : "dog2/dog1.webp",
+          "pixmapfile" : "dog2/dog1.png",
           "x" : "0.74",
           "y" : "0.771"
       }

@@ -20,82 +20,82 @@ QtObject {
          "height": 515
       },
       {
-         "pixmapfile" : "image/PieterBruegel_a1.webp",
+         "pixmapfile" : "image/PieterBruegel_a1.png",
          "x" : "0.162",
          "y" : "0.163"
       },
       {
-         "pixmapfile" : "image/PieterBruegel_b1.webp",
+         "pixmapfile" : "image/PieterBruegel_b1.png",
          "x" : "0.402",
          "y" : "0.138"
       },
       {
-         "pixmapfile" : "image/PieterBruegel_c1.webp",
+         "pixmapfile" : "image/PieterBruegel_c1.png",
          "x" : "0.621",
          "y" : "0.163"
       },
       {
-         "pixmapfile" : "image/PieterBruegel_d1.webp",
+         "pixmapfile" : "image/PieterBruegel_d1.png",
          "x" : "0.835",
          "y" : "0.138"
       },
       {
-         "pixmapfile" : "image/PieterBruegel_a2.webp",
+         "pixmapfile" : "image/PieterBruegel_a2.png",
          "x" : "0.137",
          "y" : "0.4"
       },
       {
-         "pixmapfile" : "image/PieterBruegel_b2.webp",
+         "pixmapfile" : "image/PieterBruegel_b2.png",
          "x" : "0.377",
          "y" : "0.377"
       },
       {
-         "pixmapfile" : "image/PieterBruegel_c2.webp",
+         "pixmapfile" : "image/PieterBruegel_c2.png",
          "x" : "0.621",
          "y" : "0.4"
       },
       {
-         "pixmapfile" : "image/PieterBruegel_d2.webp",
+         "pixmapfile" : "image/PieterBruegel_d2.png",
          "x" : "0.835",
          "y" : "0.377"
       },
       {
-         "pixmapfile" : "image/PieterBruegel_a3.webp",
+         "pixmapfile" : "image/PieterBruegel_a3.png",
          "x" : "0.162",
          "y" : "0.643"
       },
       {
-         "pixmapfile" : "image/PieterBruegel_b3.webp",
+         "pixmapfile" : "image/PieterBruegel_b3.png",
          "x" : "0.402",
          "y" : "0.643"
       },
       {
-         "pixmapfile" : "image/PieterBruegel_c3.webp",
+         "pixmapfile" : "image/PieterBruegel_c3.png",
          "x" : "0.621",
          "y" : "0.643"
       },
       {
-         "pixmapfile" : "image/PieterBruegel_d3.webp",
+         "pixmapfile" : "image/PieterBruegel_d3.png",
          "x" : "0.835",
          "y" : "0.643"
       },
       {
-         "pixmapfile" : "image/PieterBruegel_a4.webp",
+         "pixmapfile" : "image/PieterBruegel_a4.png",
          "x" : "0.137",
          "y" : "0.854"
       },
       {
-         "pixmapfile" : "image/PieterBruegel_b4.webp",
+         "pixmapfile" : "image/PieterBruegel_b4.png",
          "x" : "0.353",
          "y" : "0.854"
       },
       {
-         "pixmapfile" : "image/PieterBruegel_c4.webp",
+         "pixmapfile" : "image/PieterBruegel_c4.png",
          "x" : "0.622",
          "y" : "0.854"
       },
       {
-         "pixmapfile" : "image/PieterBruegel_d4.webp",
+         "pixmapfile" : "image/PieterBruegel_d4.png",
          "x" : "0.859",
          "y" : "0.854"
       }

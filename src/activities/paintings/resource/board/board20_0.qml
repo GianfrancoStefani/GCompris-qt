@@ -20,32 +20,32 @@ QtObject {
          "height": 515
       },
       {
-         "pixmapfile" : "image/bazille_rampart_1.webp",
+         "pixmapfile" : "image/bazille_rampart_1.png",
          "x" : "0.212",
          "y" : "0.283"
       },
       {
-         "pixmapfile" : "image/bazille_rampart_2.webp",
+         "pixmapfile" : "image/bazille_rampart_2.png",
          "x" : "0.501",
          "y" : "0.283"
       },
       {
-         "pixmapfile" : "image/bazille_rampart_3.webp",
+         "pixmapfile" : "image/bazille_rampart_3.png",
          "x" : "0.791",
          "y" : "0.283"
       },
       {
-         "pixmapfile" : "image/bazille_rampart_4.webp",
+         "pixmapfile" : "image/bazille_rampart_4.png",
          "x" : "0.212",
          "y" : "0.634"
       },
       {
-         "pixmapfile" : "image/bazille_rampart_5.webp",
+         "pixmapfile" : "image/bazille_rampart_5.png",
          "x" : "0.501",
          "y" : "0.634"
       },
       {
-         "pixmapfile" : "image/bazille_rampart_6.webp",
+         "pixmapfile" : "image/bazille_rampart_6.png",
          "x" : "0.791",
          "y" : "0.634"
       }

@@ -24,7 +24,7 @@ var categoriesData = []
 var expertCategories = []
 var answerTable = {}
 var totalImages
-var fileName = ":/gcompris/data/words-webp/animals/camel.webp"
+var fileName = ":/gcompris/data/words-webp/animals/camel.png"
 
 function init(items_) {
     items = items_

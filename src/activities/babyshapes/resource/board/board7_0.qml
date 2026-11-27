@@ -15,23 +15,23 @@ QtObject {
    property string instruction: qsTr("Paul Gauguin, Arearea - 1892")
    property var levels: [
 	  {
-          "pixmapfile" : "image/Paul_Gauguin_006_background.webp",
+          "pixmapfile" : "image/Paul_Gauguin_006_background.jpg",
           "type" : "SHAPE_BACKGROUND_IMAGE"
       },
       {
-          "pixmapfile" : "image/Paul_Gauguin_006_statue.webp",
+          "pixmapfile" : "image/Paul_Gauguin_006_statue.png",
           "dropAreaSize" : "10",
           "x" : "0.19",
           "y" : "0.133"
       },
       {
-          "pixmapfile" : "image/Paul_Gauguin_006_jeunes_filles.webp",
+          "pixmapfile" : "image/Paul_Gauguin_006_jeunes_filles.png",
           "dropAreaSize" : "10",
           "x" : "0.666",
           "y" : "0.46"
       },
       {
-          "pixmapfile" : "image/Paul_Gauguin_006_chien.webp",
+          "pixmapfile" : "image/Paul_Gauguin_006_chien.png",
           "dropAreaSize" : "10",
           "x" : "0.278",
           "y" : "0.807"

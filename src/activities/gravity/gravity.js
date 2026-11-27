@@ -131,7 +131,7 @@ function createPlanet() {
         } else if(planetSide == 1) {
             currentPlanet = items.planet1;
         }
-        currentPlanet.source = url + "planet" + Math.floor(Math.random() * 2) + ".webp";
+        currentPlanet.source = url + "planet" + Math.floor(Math.random() * 2) + ".png";
         currentPlanet.fallDuration = levels[items.currentLevel].planetFrequency;
         currentPlanet.height = planetSize;
         currentPlanet.width = planetSize;

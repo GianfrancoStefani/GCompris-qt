@@ -20,32 +20,32 @@ QtObject {
          "height": 515
       },
       {
-         "pixmapfile" : "image/gogh_auvert_1.webp",
+         "pixmapfile" : "image/gogh_auvert_1.png",
          "x" : "0.204",
          "y" : "0.224"
       },
       {
-         "pixmapfile" : "image/gogh_auvert_2.webp",
+         "pixmapfile" : "image/gogh_auvert_2.png",
          "x" : "0.489",
          "y" : "0.224"
       },
       {
-         "pixmapfile" : "image/gogh_auvert_3.webp",
+         "pixmapfile" : "image/gogh_auvert_3.png",
          "x" : "0.774",
          "y" : "0.224"
       },
       {
-         "pixmapfile" : "image/gogh_auvert_4.webp",
+         "pixmapfile" : "image/gogh_auvert_4.png",
          "x" : "0.204",
          "y" : "0.681"
       },
       {
-         "pixmapfile" : "image/gogh_auvert_5.webp",
+         "pixmapfile" : "image/gogh_auvert_5.png",
          "x" : "0.489",
          "y" : "0.681"
       },
       {
-         "pixmapfile" : "image/gogh_auvert_6.webp",
+         "pixmapfile" : "image/gogh_auvert_6.png",
          "x" : "0.774",
          "y" : "0.681"
       }

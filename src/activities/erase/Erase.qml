@@ -30,12 +30,11 @@ ActivityBase {
 
     pageComponent: Image {
         id: activityBackground
+        anchors.fill: parent
         signal start
         signal stop
         focus: true
         fillMode: Image.PreserveAspectCrop
-        sourceSize.width: width
-        sourceSize.height: height
         horizontalAlignment: Image.AlignHCenter
         verticalAlignment: Image.AlignVCenter
 

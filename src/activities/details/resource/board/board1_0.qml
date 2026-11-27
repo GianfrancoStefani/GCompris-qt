@@ -14,17 +14,17 @@ QtObject {
    property string instruction: qsTr("Vincent van Gogh, Entrance Hall of Saint-Paul Hospital - 1889")
    property var levels: [
       {
-         "pixmapfile" : "image/VincentVanGogh0012_background.webp",
+         "pixmapfile" : "image/VincentVanGogh0012_background.png",
          "type" : "SHAPE_BACKGROUND_IMAGE"
       },
       {
-         "pixmapfile" : "image/VincentVanGogh0012_0.webp",
+         "pixmapfile" : "image/VincentVanGogh0012_0.png",
          "x" : "0.543",
          "y" : "0.102",
          "dropAreaSize" : "8"
       },
       {
-         "pixmapfile" : "image/VincentVanGogh0012_1.webp",
+         "pixmapfile" : "image/VincentVanGogh0012_1.png",
          "x" : "0.601",
          "y" : "0.468",
          "dropAreaSize" : "8"

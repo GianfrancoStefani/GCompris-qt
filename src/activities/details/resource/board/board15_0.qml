@@ -14,23 +14,23 @@ QtObject {
    property string instruction: qsTr("Courtyard of the Museum of Louvre, and its pyramid")
    property var levels: [
       {
-         "pixmapfile" : "image/Louvre_2007_02_24_c_background.webp",
+         "pixmapfile" : "image/Louvre_2007_02_24_c_background.png",
          "type" : "SHAPE_BACKGROUND_IMAGE"
       },
       {
-         "pixmapfile" : "image/Louvre_2007_02_24_c_2.webp",
+         "pixmapfile" : "image/Louvre_2007_02_24_c_2.png",
          "x" : "0.164",
          "y" : "0.437",
          "dropAreaSize" : "8"
       },
       {
-         "pixmapfile" : "image/Louvre_2007_02_24_c_0.webp",
+         "pixmapfile" : "image/Louvre_2007_02_24_c_0.png",
          "x" : "0.9",
          "y" : "0.495",
          "dropAreaSize" : "8"
       },
       {
-         "pixmapfile" : "image/Louvre_2007_02_24_c_1.webp",
+         "pixmapfile" : "image/Louvre_2007_02_24_c_1.png",
          "x" : "0.494",
          "y" : "0.509",
          "dropAreaSize" : "8"

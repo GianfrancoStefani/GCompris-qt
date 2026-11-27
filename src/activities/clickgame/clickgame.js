@@ -16,163 +16,163 @@
 
 var fishes = [
             {
-              "imgName": "blueking2.webp",
+              "imgName": "blueking2.png",
               "nbFrame": 2,
               "width": 118,
               "height": 76
             },
             {
-              "imgName": "butfish.webp",
+              "imgName": "butfish.png",
               "nbFrame": 2,
               "width": 98,
               "height": 82
             },
             {
-              "imgName": "cichlid1.webp",
+              "imgName": "cichlid1.png",
               "nbFrame": 2,
               "width": 63,
               "height": 37
             },
             {
-              "imgName": "cichlid4.webp",
+              "imgName": "cichlid4.png",
               "nbFrame": 2,
               "width": 75,
               "height": 44
             },
             {
-              "imgName": "collaris.webp",
+              "imgName": "collaris.png",
               "nbFrame": 2,
               "width": 62,
               "height": 50
             },
             {
-              "imgName": "discus2.webp",
+              "imgName": "discus2.png",
               "nbFrame": 2,
               "width": 100,
               "height": 100
             },
             {
-              "imgName": "discus3.webp",
+              "imgName": "discus3.png",
               "nbFrame": 2,
               "width": 63,
               "height": 57
             },
             {
-              "imgName": "f00.webp",
+              "imgName": "f00.png",
               "nbFrame": 2,
               "width": 66,
               "height": 59
             },
             {
-              "imgName": "f01.webp",
+              "imgName": "f01.png",
               "nbFrame": 2,
               "width": 63,
               "height": 50
             },
             {
-              "imgName": "f02.webp",
+              "imgName": "f02.png",
               "nbFrame": 2,
               "width": 73,
               "height": 44
             },
             {
-              "imgName": "f03.webp",
+              "imgName": "f03.png",
               "nbFrame": 2,
               "width": 85,
               "height": 52
             },
             {
-              "imgName": "f04.webp",
+              "imgName": "f04.png",
               "nbFrame": 2,
               "width": 95,
               "height": 62
             },
             {
-              "imgName": "f05.webp",
+              "imgName": "f05.png",
               "nbFrame": 2,
               "width": 92,
               "height": 49
             },
             {
-              "imgName": "f06.webp",
+              "imgName": "f06.png",
               "nbFrame": 2,
               "width": 95,
               "height": 44
             },
             {
-              "imgName": "f07.webp",
+              "imgName": "f07.png",
               "nbFrame": 2,
               "width": 84,
               "height": 75
             },
             {
-              "imgName": "f08.webp",
+              "imgName": "f08.png",
               "nbFrame": 2,
               "width": 93,
               "height": 70
             },
             {
-              "imgName": "f09.webp",
+              "imgName": "f09.png",
               "nbFrame": 2,
               "width": 110,
               "height": 86
             },
             {
-              "imgName": "f10.webp",
+              "imgName": "f10.png",
               "nbFrame": 2,
               "width": 99,
               "height": 60
             },
             {
-              "imgName": "f11.webp",
+              "imgName": "f11.png",
               "nbFrame": 2,
               "width": 118,
               "height": 42
             },
             {
-              "imgName": "f12.webp",
+              "imgName": "f12.png",
               "nbFrame": 2,
               "width": 102,
               "height": 35
             },
             {
-              "imgName": "f13.webp",
+              "imgName": "f13.png",
               "nbFrame": 2,
               "width": 118,
               "height": 73
             },
             {
-              "imgName": "manta.webp",
+              "imgName": "manta.png",
               "nbFrame": 2,
               "width": 266,
               "height": 91
             },
             {
-              "imgName": "newf1.webp",
+              "imgName": "newf1.png",
               "nbFrame": 2,
               "width": 118,
               "height": 81
             },
             {
-              "imgName": "QueenAngel.webp",
+              "imgName": "QueenAngel.png",
               "nbFrame": 2,
               "width": 80,
               "height": 54
             },
             {
-              "imgName": "shark1.webp",
+              "imgName": "shark1.png",
               "nbFrame": 2,
               "width": 189,
               "height": 53
             },
             {
-              "imgName": "six_barred.webp",
+              "imgName": "six_barred.png",
               "nbFrame": 2,
               "width": 78,
               "height": 63
             },
             {
-              "imgName": "teeth.webp",
+              "imgName": "teeth.png",
               "nbFrame": 8,
               "width": 64,
               "height": 64
@@ -241,7 +241,7 @@ function initLevel() {
 
     destroyFishes();
     activityBackground.source = "qrc:/gcompris/src/activities/clickgame/resource/sea" +
-            (items.currentLevel + 1) + ".webp"
+            (items.currentLevel + 1) + ".png"
     var nbFish = levelProperty[items.currentLevel].nbFish
     createdFishes = new Array(nbFish)
     for(var i = 0;  i < nbFish; ++i) {

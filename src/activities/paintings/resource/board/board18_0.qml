@@ -20,42 +20,42 @@ QtObject {
          "height": 515
       },
       {
-         "pixmapfile" : "image/renoir-filles_piano-1.webp",
+         "pixmapfile" : "image/renoir-filles_piano-1.png",
          "x" : "0.387",
          "y" : "0.125"
       },
       {
-         "pixmapfile" : "image/renoir-filles_piano-2.webp",
+         "pixmapfile" : "image/renoir-filles_piano-2.png",
          "x" : "0.608",
          "y" : "0.125"
       },
       {
-         "pixmapfile" : "image/renoir-filles_piano-3.webp",
+         "pixmapfile" : "image/renoir-filles_piano-3.png",
          "x" : "0.356",
          "y" : "0.36"
       },
       {
-         "pixmapfile" : "image/renoir-filles_piano-4.webp",
+         "pixmapfile" : "image/renoir-filles_piano-4.png",
          "x" : "0.577",
          "y" : "0.36"
       },
       {
-         "pixmapfile" : "image/renoir-filles_piano-5.webp",
+         "pixmapfile" : "image/renoir-filles_piano-5.png",
          "x" : "0.387",
          "y" : "0.595"
       },
       {
-         "pixmapfile" : "image/renoir-filles_piano-6.webp",
+         "pixmapfile" : "image/renoir-filles_piano-6.png",
          "x" : "0.608",
          "y" : "0.593"
       },
       {
-         "pixmapfile" : "image/renoir-filles_piano-7.webp",
+         "pixmapfile" : "image/renoir-filles_piano-7.png",
          "x" : "0.387",
          "y" : "0.801"
       },
       {
-         "pixmapfile" : "image/renoir-filles_piano-8.webp",
+         "pixmapfile" : "image/renoir-filles_piano-8.png",
          "x" : "0.608",
          "y" : "0.799"
       }

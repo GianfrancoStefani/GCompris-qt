@@ -17,61 +17,61 @@ QtObject{
         {
             "type": "lesson",
             "name": qsTr("Vegetables"),
-            "image": imagesPrefix + "vegetablesmix.webp",
+            "image": imagesPrefix + "vegetablesmix.png",
             "content": [
                 {
                     "instructions": qsTr("Place the VEGETABLES to the right and other objects to the left"),
-                    "image": imagesPrefix + "vegetablesmix.webp",
+                    "image": imagesPrefix + "vegetablesmix.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["vegetables/batatadoce.webp","vegetables/bittergourd.webp","vegetables/blackchillies.webp", "vegetables/aubergine.webp","vegetables/peas.webp","vegetables/carrots.webp"],
-                    "bad": ["fruits/cranberries.webp","fruits/feiji.webp","fruits/strwaberry.webp","fruits/pear.webp","food/applepie.webp","food/biryani.webp","transport/bus.webp","transport/truck.webp"]
+                    "good": ["vegetables/batatadoce.png","vegetables/bittergourd.png","vegetables/blackchillies.png", "vegetables/aubergine.png","vegetables/peas.png","vegetables/carrots.png"],
+                    "bad": ["fruits/cranberries.png","fruits/feiji.png","fruits/strwaberry.png","fruits/pear.png","food/applepie.png","food/biryani.png","transport/bus.png","transport/truck.png"]
                 },
                 {
                     "instructions": qsTr("Place the VEGETABLES to the right and other objects to the left"),
-                    "image": imagesPrefix + "vegetablesmix.webp",
+                    "image": imagesPrefix + "vegetablesmix.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["vegetables/cauliflower.webp","vegetables/chillies.webp","vegetables/chineseradish.webp","vegetables/cucumber.webp","vegetables/dahuisi.webp","vegetables/garlic.webp"],
-                    "bad": ["fruits/apple.webp","fruits/apricot.webp","fruits/banana.webp","fruits/berries.webp","transport/boat.webp","plants/plant2.webp","nature/nature6.webp","householdGoods/quilt.webp"]
+                    "good": ["vegetables/cauliflower.png","vegetables/chillies.png","vegetables/chineseradish.png","vegetables/cucumber.png","vegetables/dahuisi.png","vegetables/garlic.png"],
+                    "bad": ["fruits/apple.png","fruits/apricot.png","fruits/banana.png","fruits/berries.png","transport/boat.png","plants/plant2.png","nature/nature6.png","householdGoods/quilt.png"]
                 },
                 {
                     "instructions": qsTr("Place the VEGETABLES to the right and other objects to the left"),
-                    "image": imagesPrefix + "vegetablesmix.webp",
+                    "image": imagesPrefix + "vegetablesmix.png",
                     "maxNumberOfGood": 4,
                     "maxNumberOfBad": 5,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["vegetables/potato.webp","vegetables/radish.webp","vegetables/redchillies.webp","vegetables/spinach.webp"],
-                    "bad": ["fruits/billberries.webp","fruits/cherries.webp","food/cheese.webp","birds/bird7.webp","insects/insect2.webp"]
+                    "good": ["vegetables/potato.png","vegetables/radish.png","vegetables/redchillies.png","vegetables/spinach.png"],
+                    "bad": ["fruits/billberries.png","fruits/cherries.png","food/cheese.png","birds/bird7.png","insects/insect2.png"]
                 },
                 {
                     "instructions": qsTr("Place the VEGETABLES to the right and other objects to the left"),
-                    "image": imagesPrefix + "vegetablesmix.webp",
+                    "image": imagesPrefix + "vegetablesmix.png",
                     "maxNumberOfGood": 4,
                     "maxNumberOfBad": 5,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["vegetables/spinaches.webp","vegetables/taroroot.webp","vegetables/cauliflower.webp","vegetables/batatadoce.webp"],
-                    "bad": ["fruits/kiwi.webp","householdGoods/vacuumCleaner.webp","householdGoods/utensils.webp","food/pizza.webp","transport/tanker.webp"]
+                    "good": ["vegetables/spinaches.png","vegetables/taroroot.png","vegetables/cauliflower.png","vegetables/batatadoce.png"],
+                    "bad": ["fruits/kiwi.png","householdGoods/vacuumCleaner.png","householdGoods/utensils.png","food/pizza.png","transport/tanker.png"]
                 },
                 {
                     "instructions": qsTr("Place the VEGETABLES to the right and other objects to the left"),
-                    "image": imagesPrefix + "vegetablesmix.webp",
+                    "image": imagesPrefix + "vegetablesmix.png",
                     "maxNumberOfGood": 3,
                     "maxNumberOfBad": 3,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["vegetables/mushroom.webp","vegetables/pumpkin.webp","vegetables/sweetpotato.webp"],
-                    "bad": ["fruits/mango.webp","plants/plant6.webp","others/electricfan.webp"]
+                    "good": ["vegetables/mushroom.png","vegetables/pumpkin.png","vegetables/sweetpotato.png"],
+                    "bad": ["fruits/mango.png","plants/plant6.png","others/electricfan.png"]
                 },
                 {
                     "instructions": qsTr("Place the VEGETABLES to the right and other objects to the left"),
-                    "image": imagesPrefix + "vegetablesmix.webp",
+                    "image": imagesPrefix + "vegetablesmix.png",
                     "maxNumberOfGood": 2,
                     "maxNumberOfBad": 4,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["vegetables/zucchini.webp","vegetables/vegetablesmix.webp"],
-                    "bad": ["fruits/papaya.webp","food/sweetBread.webp","others/clock.webp","others/pepsi.webp"]
+                    "good": ["vegetables/zucchini.png","vegetables/vegetablesmix.png"],
+                    "bad": ["fruits/papaya.png","food/sweetBread.png","others/clock.png","others/pepsi.png"]
                 }
             ]
         }

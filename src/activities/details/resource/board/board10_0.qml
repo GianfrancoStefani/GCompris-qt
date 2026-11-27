@@ -14,17 +14,17 @@ QtObject {
    property string instruction: qsTr("Eilean Donan castle")
    property var levels: [
       {
-         "pixmapfile" : "image/EilanDonanCastle_background.webp",
+         "pixmapfile" : "image/EilanDonanCastle_background.jpg",
          "type" : "SHAPE_BACKGROUND_IMAGE"
       },
       {
-         "pixmapfile" : "image/EilanDonanCastle_1.webp",
+         "pixmapfile" : "image/EilanDonanCastle_1.png",
          "x" : "0.825",
          "y" : "0.174",
          "dropAreaSize" : "8"
       },
       {
-         "pixmapfile" : "image/EilanDonanCastle_0.webp",
+         "pixmapfile" : "image/EilanDonanCastle_0.png",
          "x" : "0.566",
          "y" : "0.327",
          "dropAreaSize" : "8"

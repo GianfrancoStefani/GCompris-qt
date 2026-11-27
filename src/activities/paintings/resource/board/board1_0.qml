@@ -20,32 +20,32 @@ QtObject {
          "height": 515
       },
       {
-         "pixmapfile" : "image/renoir-moulin_de_la_galette-1.webp",
+         "pixmapfile" : "image/renoir-moulin_de_la_galette-1.png",
          "x" : "0.255",
          "y" : "0.283"
       },
       {
-         "pixmapfile" : "image/renoir-moulin_de_la_galette-2.webp",
+         "pixmapfile" : "image/renoir-moulin_de_la_galette-2.png",
          "x" : "0.533",
          "y" : "0.283"
       },
       {
-         "pixmapfile" : "image/renoir-moulin_de_la_galette-3.webp",
+         "pixmapfile" : "image/renoir-moulin_de_la_galette-3.png",
          "x" : "0.782",
          "y" : "0.327"
       },
       {
-         "pixmapfile" : "image/renoir-moulin_de_la_galette-4.webp",
+         "pixmapfile" : "image/renoir-moulin_de_la_galette-4.png",
          "x" : "0.226",
          "y" : "0.651"
       },
       {
-         "pixmapfile" : "image/renoir-moulin_de_la_galette-5.webp",
+         "pixmapfile" : "image/renoir-moulin_de_la_galette-5.png",
          "x" : "0.504",
          "y" : "0.651"
       },
       {
-         "pixmapfile" : "image/renoir-moulin_de_la_galette-6.webp",
+         "pixmapfile" : "image/renoir-moulin_de_la_galette-6.png",
          "x" : "0.781",
          "y" : "0.69"
       }

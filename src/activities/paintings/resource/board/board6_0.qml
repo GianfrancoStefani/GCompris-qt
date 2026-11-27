@@ -20,62 +20,62 @@ QtObject {
          "height": 515
       },
       {
-         "pixmapfile" : "image/EjiriSuruga_a1.webp",
+         "pixmapfile" : "image/EjiriSuruga_a1.png",
          "x" : "0.174",
          "y" : "0.212"
       },
       {
-         "pixmapfile" : "image/EjiriSuruga_b1.webp",
+         "pixmapfile" : "image/EjiriSuruga_b1.png",
          "x" : "0.405",
          "y" : "0.212"
       },
       {
-         "pixmapfile" : "image/EjiriSuruga_c1.webp",
+         "pixmapfile" : "image/EjiriSuruga_c1.png",
          "x" : "0.616",
          "y" : "0.212"
       },
       {
-         "pixmapfile" : "image/EjiriSuruga_d1.webp",
+         "pixmapfile" : "image/EjiriSuruga_d1.png",
          "x" : "0.823",
          "y" : "0.242"
       },
       {
-         "pixmapfile" : "image/EjiriSuruga_a2.webp",
+         "pixmapfile" : "image/EjiriSuruga_a2.png",
          "x" : "0.174",
          "y" : "0.498"
       },
       {
-         "pixmapfile" : "image/EjiriSuruga_b2.webp",
+         "pixmapfile" : "image/EjiriSuruga_b2.png",
          "x" : "0.405",
          "y" : "0.468"
       },
       {
-         "pixmapfile" : "image/EjiriSuruga_c2.webp",
+         "pixmapfile" : "image/EjiriSuruga_c2.png",
          "x" : "0.616",
          "y" : "0.468"
       },
       {
-         "pixmapfile" : "image/EjiriSuruga_d2.webp",
+         "pixmapfile" : "image/EjiriSuruga_d2.png",
          "x" : "0.823",
          "y" : "0.497"
       },
       {
-         "pixmapfile" : "image/EjiriSuruga_a3.webp",
+         "pixmapfile" : "image/EjiriSuruga_a3.png",
          "x" : "0.174",
          "y" : "0.782"
       },
       {
-         "pixmapfile" : "image/EjiriSuruga_b3.webp",
+         "pixmapfile" : "image/EjiriSuruga_b3.png",
          "x" : "0.38",
          "y" : "0.752"
       },
       {
-         "pixmapfile" : "image/EjiriSuruga_c3.webp",
+         "pixmapfile" : "image/EjiriSuruga_c3.png",
          "x" : "0.618",
          "y" : "0.752"
       },
       {
-         "pixmapfile" : "image/EjiriSuruga_d3.webp",
+         "pixmapfile" : "image/EjiriSuruga_d3.png",
          "x" : "0.846",
          "y" : "0.752"
       }

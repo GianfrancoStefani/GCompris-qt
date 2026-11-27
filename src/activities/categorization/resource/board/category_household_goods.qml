@@ -17,134 +17,134 @@ QtObject{
         {
             "type": "lesson",
             "name": qsTr("Household goods"),
-            "image": imagesPrefix + "utensils.webp",
+            "image": imagesPrefix + "utensils.png",
             "content": [
                 {
                     "instructions": qsTr("Place the HOUSEHOLD GOODS to the right and other objects to the left"),
-                    "image":imagesPrefix + "oven.webp",
+                    "image":imagesPrefix + "oven.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["householdGoods/bedsheet.webp","householdGoods/blender.webp","householdGoods/breadtoaster.webp", "householdGoods/canOpener.webp","householdGoods/bathtub.webp","householdGoods/bed.webp"],
-                    "bad": ["food/eggs.webp","food/milk.webp","food/riceBeans.webp","transport/metro.webp","transport/plane.webp","fruits/apple.webp"]
+                    "good": ["householdGoods/bedsheet.png","householdGoods/blender.png","householdGoods/breadtoaster.png", "householdGoods/canOpener.png","householdGoods/bathtub.png","householdGoods/bed.png"],
+                    "bad": ["food/eggs.png","food/milk.png","food/riceBeans.png","transport/metro.png","transport/plane.png","fruits/apple.png"]
                 },
                 {
                     "instructions": qsTr("Place the HOUSEHOLD GOODS to the right and other objects to the left"),
-                     "image": imagesPrefix + "dressingtable.webp",
+                     "image": imagesPrefix + "dressingtable.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": [ "householdGoods/almirah.webp","householdGoods/coffeeMaker.webp","householdGoods/laptop.webp","householdGoods/bookshelf.webp","householdGoods/chair.webp","householdGoods/chest.webp"],
-                    "bad": ["transport/ship1.webp","nature/nature5.webp","fruits/papaya.webp","food/hamburger.webp","transport/ship.webp","others/street.webp"]
+                    "good": [ "householdGoods/almirah.png","householdGoods/coffeeMaker.png","householdGoods/laptop.png","householdGoods/bookshelf.png","householdGoods/chair.png","householdGoods/chest.png"],
+                    "bad": ["transport/ship1.png","nature/nature5.png","fruits/papaya.png","food/hamburger.png","transport/ship.png","others/street.png"]
                 },
                 {
                     "instructions": qsTr("Place the HOUSEHOLD GOODS to the right and other objects to the left"),
-                    "image":imagesPrefix + "radio.webp",
+                    "image":imagesPrefix + "radio.png",
                     "maxNumberOfGood": 7,
                     "maxNumberOfBad": 5,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["householdGoods/curtains.webp","householdGoods/heater.webp","householdGoods/stool.webp","householdGoods/couch.webp","householdGoods/crib.webp","householdGoods/oven.webp","householdGoods/almirah.webp"],
-                    "bad": ["others/house.webp","transport/rocket1.webp","transport/train4.webp","insects/insect16.webp","birds/bird14.webp"]
+                    "good": ["householdGoods/curtains.png","householdGoods/heater.png","householdGoods/stool.png","householdGoods/couch.png","householdGoods/crib.png","householdGoods/oven.png","householdGoods/almirah.png"],
+                    "bad": ["others/house.png","transport/rocket1.png","transport/train4.png","insects/insect16.png","birds/bird14.png"]
                 },
                 {
                     "instructions": qsTr("Place the HOUSEHOLD GOODS to the right and other objects to the left"),
-                    "image":imagesPrefix + "sewingMachine.webp",
+                    "image":imagesPrefix + "sewingMachine.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["householdGoods/quilt.webp","householdGoods/iron.webp","householdGoods/bed2.webp","householdGoods/couch2.webp","householdGoods/diningtable.webp","householdGoods/coffeeMaker1.webp"],
-                    "bad": ["transport/ferry1.webp","vegetables/mushroom.webp","insects/insect22.webp","birds/bird5.webp","food/friedEggs.webp","food/MaozVegetariano.webp"]
+                    "good": ["householdGoods/quilt.png","householdGoods/iron.png","householdGoods/bed2.png","householdGoods/couch2.png","householdGoods/diningtable.png","householdGoods/coffeeMaker1.png"],
+                    "bad": ["transport/ferry1.png","vegetables/mushroom.png","insects/insect22.png","birds/bird5.png","food/friedEggs.png","food/MaozVegetariano.png"]
                 },
                 {
                     "instructions": qsTr("Place the HOUSEHOLD GOODS to the right and other objects to the left"),
-                     "image": imagesPrefix + "bed.webp",
+                     "image": imagesPrefix + "bed.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["householdGoods/almirah1.webp","householdGoods/radio.webp","householdGoods/chair2.webp","householdGoods/stool2.webp","householdGoods/electricBlanket.webp","householdGoods/refrigerator1.webp"],
-                    "bad": ["birds/bird2.webp","birds/bird5.webp","food/macroni.webp","transport/exchanger.webp","vegetables/potato.webp","others/pepsi.webp"]
+                    "good": ["householdGoods/almirah1.png","householdGoods/radio.png","householdGoods/chair2.png","householdGoods/stool2.png","householdGoods/electricBlanket.png","householdGoods/refrigerator1.png"],
+                    "bad": ["birds/bird2.png","birds/bird5.png","food/macroni.png","transport/exchanger.png","vegetables/potato.png","others/pepsi.png"]
                 },
                 {
                     "instructions": qsTr("Place the HOUSEHOLD GOODS to the right and other objects to the left"),
-                    "image":imagesPrefix + "heater.webp",
+                    "image":imagesPrefix + "heater.png",
                     "maxNumberOfGood": 5,
                     "maxNumberOfBad": 4,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["householdGoods/television.webp","householdGoods/toaster.webp","householdGoods/curtains1.webp","householdGoods/coffeeMaker2.webp","householdGoods/iron1.webp"],
-                    "bad": ["nature/nature14.webp","food/pizza1.webp","fruits/mango.webp","vegetables/spinach.webp"]
+                    "good": ["householdGoods/television.png","householdGoods/toaster.png","householdGoods/curtains1.png","householdGoods/coffeeMaker2.png","householdGoods/iron1.png"],
+                    "bad": ["nature/nature14.png","food/pizza1.png","fruits/mango.png","vegetables/spinach.png"]
                 },
                 {
                     "instructions": qsTr("Place the HOUSEHOLD GOODS to the right and other objects to the left"),
-                    "image":imagesPrefix + "ac.webp",
+                    "image":imagesPrefix + "ac.png",
                     "maxNumberOfGood": 5,
                     "maxNumberOfBad": 4,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["householdGoods/heater1.webp","householdGoods/oven1.webp","householdGoods/radio1.webp","householdGoods/electricBlanket.webp","householdGoods/bathtub.webp"],
-                    "bad": ["vegetables/zucchini.webp","others/street.webp","transport/helicopter.webp","plants/tree2.webp"]
+                    "good": ["householdGoods/heater1.png","householdGoods/oven1.png","householdGoods/radio1.png","householdGoods/electricBlanket.png","householdGoods/bathtub.png"],
+                    "bad": ["vegetables/zucchini.png","others/street.png","transport/helicopter.png","plants/tree2.png"]
                 },
                 {
                     "instructions": qsTr("Place the HOUSEHOLD GOODS to the right and other objects to the left"),
-                    "image":imagesPrefix + "breadtoaster.webp",
+                    "image":imagesPrefix + "breadtoaster.png",
                     "maxNumberOfGood": 5,
                     "maxNumberOfBad": 4,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["householdGoods/ac.webp","householdGoods/iron2.webp","householdGoods/toaster.webp", "householdGoods/sewingMachine1.webp", "householdGoods/vacuumCleaner.webp"],
-                    "bad": ["food/hotdog.webp","animals/cow.webp","birds/bird25.webp","insects/insect14.webp"]
+                    "good": ["householdGoods/ac.png","householdGoods/iron2.png","householdGoods/toaster.png", "householdGoods/sewingMachine1.png", "householdGoods/vacuumCleaner.png"],
+                    "bad": ["food/hotdog.png","animals/cow.png","birds/bird25.png","insects/insect14.png"]
                 },
                 {
                     "instructions": qsTr("Place the HOUSEHOLD GOODS to the right and other objects to the left"),
-                     "image": imagesPrefix + "bathtub.webp",
+                     "image": imagesPrefix + "bathtub.png",
                     "maxNumberOfGood": 5,
                     "maxNumberOfBad": 4,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["householdGoods/bed1.webp","householdGoods/lamp.webp","householdGoods/chair3.webp",
-                            "householdGoods/refrigerator2.webp","householdGoods/towels.webp"],
-                    "bad": ["transport/bus.webp","animals/elephant.webp","insects/insect5.webp","others/street.webp"]
+                    "good": ["householdGoods/bed1.png","householdGoods/lamp.png","householdGoods/chair3.png",
+                            "householdGoods/refrigerator2.png","householdGoods/towels.png"],
+                    "bad": ["transport/bus.png","animals/elephant.png","insects/insect5.png","others/street.png"]
                 },
                 {
                     "instructions": qsTr("Place the HOUSEHOLD GOODS to the right and other objects to the left"),
-                     "image": imagesPrefix + "stool.webp",
+                     "image": imagesPrefix + "stool.png",
                     "maxNumberOfGood": 4,
                     "maxNumberOfBad": 5,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["householdGoods/chest1.webp","householdGoods/diningtable1.webp","householdGoods/laptop.webp","householdGoods/sewingMachine.webp"],
-                    "bad": ["animals/kodiak-bear.webp","animals/sealion.webp","transport/plane.webp","food/frenchFries.webp","others/house.webp"]
+                    "good": ["householdGoods/chest1.png","householdGoods/diningtable1.png","householdGoods/laptop.png","householdGoods/sewingMachine.png"],
+                    "bad": ["animals/kodiak-bear.png","animals/sealion.png","transport/plane.png","food/frenchFries.png","others/house.png"]
                 },
                 {
                     "instructions": qsTr("Place the HOUSEHOLD GOODS to the right and other objects to the left"),
-                     "image": imagesPrefix + "almirah.webp",
+                     "image": imagesPrefix + "almirah.png",
                     "maxNumberOfGood": 3,
                     "maxNumberOfBad": 3,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["householdGoods/couch2.webp","householdGoods/refrigerator.webp","householdGoods/ac1.webp"],
-                    "bad": ["insects/insect18.webp","transport/car1.webp","animals/dog.webp"]
+                    "good": ["householdGoods/couch2.png","householdGoods/refrigerator.png","householdGoods/ac1.png"],
+                    "bad": ["insects/insect18.png","transport/car1.png","animals/dog.png"]
                 },
                 {
                     "instructions": qsTr("Place the HOUSEHOLD GOODS to the right and other objects to the left"),
-                    "image":imagesPrefix + "coffeeMaker2.webp",
+                    "image":imagesPrefix + "coffeeMaker2.png",
                     "maxNumberOfGood": 3,
                     "maxNumberOfBad": 3,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["householdGoods/heater2.webp","householdGoods/dressingtable.webp","householdGoods/stool2.webp"],
-                    "bad": ["animals/lion.webp","vegetables/aubergine.webp","nature/nature12.webp"]
+                    "good": ["householdGoods/heater2.png","householdGoods/dressingtable.png","householdGoods/stool2.png"],
+                    "bad": ["animals/lion.png","vegetables/aubergine.png","nature/nature12.png"]
                 },
                 {
                     "instructions": qsTr("Place the HOUSEHOLD GOODS to the right and other objects to the left"),
-                     "image": imagesPrefix + "chest.webp",
+                     "image": imagesPrefix + "chest.png",
                     "maxNumberOfGood": 2,
                     "maxNumberOfBad": 4,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["householdGoods/chair5.webp","householdGoods/lamp1.webp"],
-                    "bad": ["vegetables/fid.webp","animals/koala.webp","transport/ferry.webp","others/broom1.webp"]
+                    "good": ["householdGoods/chair5.png","householdGoods/lamp1.png"],
+                    "bad": ["vegetables/fid.png","animals/koala.png","transport/ferry.png","others/broom1.png"]
                 },
                 {
                     "instructions": qsTr("Place the HOUSEHOLD GOODS to the right and other objects to the left"),
-                    "image":imagesPrefix + "heater1.webp",
+                    "image":imagesPrefix + "heater1.png",
                     "maxNumberOfGood": 3,
                     "maxNumberOfBad": 3,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["householdGoods/ac2.webp","householdGoods/vacuumCleaner.webp","householdGoods/sewingMachine2.webp"],
-                    "bad": ["insects/insect15.webp","vegetables/potato.webp","nature/nature13.webp"]
+                    "good": ["householdGoods/ac2.png","householdGoods/vacuumCleaner.png","householdGoods/sewingMachine2.png"],
+                    "bad": ["insects/insect15.png","vegetables/potato.png","nature/nature13.png"]
                 }
             ]
         }

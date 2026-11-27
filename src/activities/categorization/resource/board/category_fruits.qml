@@ -17,79 +17,79 @@ QtObject{
         {
             "type": "lesson",
             "name": qsTr("Fruits"),
-            "image": "qrc:/gcompris/data/words-webp/fruits/fruitsalad.webp",
+            "image": "qrc:/gcompris/data/words-webp/fruits/fruitsalad.png",
             "content": [
                 {
                     "instructions": qsTr("Place the FRUITS to the right and other objects to the left"),
-                    "image": imagesPrefix + "fruit.webp",
+                    "image": imagesPrefix + "fruit.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["fruits/apple.webp","fruits/apricot.webp","fruits/banana.webp","fruits/berries.webp","fruits/billberries.webp","fruits/cherries.webp"],
-                    "bad": ["vegetables/batatadoce.webp","vegetables/bittergourd.webp","vegetables/blackchillies.webp","vegetables/aubergine.webp","others/house.webp","others/street.webp"],
+                    "good": ["fruits/apple.png","fruits/apricot.png","fruits/banana.png","fruits/berries.png","fruits/billberries.png","fruits/cherries.png"],
+                    "bad": ["vegetables/batatadoce.png","vegetables/bittergourd.png","vegetables/blackchillies.png","vegetables/aubergine.png","others/house.png","others/street.png"],
                 },
                 {
                     "instructions": qsTr("Place the FRUITS to the right and other objects to the left"),
-                    "image": imagesPrefix + "fruit.webp",
+                    "image": imagesPrefix + "fruit.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["fruits/cranberries.webp","fruits/feiji.webp","fruits/kiwi.webp","fruits/lemon.webp","fruits/litchi.webp","fruits/mango.webp"],
-                    "bad": ["vegetables/garlic.webp","vegetables/carrots.webp","vegetables/cauliflower.webp","vegetables/chillies.webp","others/spoon.webp","others/fork.webp"]
+                    "good": ["fruits/cranberries.png","fruits/feiji.png","fruits/kiwi.png","fruits/lemon.png","fruits/litchi.png","fruits/mango.png"],
+                    "bad": ["vegetables/garlic.png","vegetables/carrots.png","vegetables/cauliflower.png","vegetables/chillies.png","others/spoon.png","others/fork.png"]
                 },
                 {
                     "instructions": qsTr("Place the FRUITS to the right and other objects to the left"),
-                    "image": imagesPrefix + "fruit.webp",
+                    "image": imagesPrefix + "fruit.png",
                     "maxNumberOfGood": 5,
                     "maxNumberOfBad": 7,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["fruits/mirabellen.webp","fruits/nectarine.webp","fruits/papaya.webp","fruits/peach.webp","fruits/pineapple.webp"],
-                    "bad": ["vegetables/chineseradish.webp","vegetables/cucumber.webp","food/cereal.webp","food/macroni.webp","food/hamburger.webp","transport/cycle.webp","transport/car1.webp"]
+                    "good": ["fruits/mirabellen.png","fruits/nectarine.png","fruits/papaya.png","fruits/peach.png","fruits/pineapple.png"],
+                    "bad": ["vegetables/chineseradish.png","vegetables/cucumber.png","food/cereal.png","food/macroni.png","food/hamburger.png","transport/cycle.png","transport/car1.png"]
                 },
                 {
                     "instructions": qsTr("Place the FRUITS to the right and other objects to the left"),
-                    "image": imagesPrefix + "fruit.webp",
+                    "image": imagesPrefix + "fruit.png",
                     "maxNumberOfGood": 4,
                     "maxNumberOfBad": 5,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["fruits/plum.webp","fruits/stackelberry.webp","fruits/tyttberries.webp","fruits/strwaberry.webp"],
-                    "bad": ["vegetables/dahuisi.webp","others/mobile.webp","vegetables/fid.webp","food/eggs.webp","food/icecream.webp"]
+                    "good": ["fruits/plum.png","fruits/stackelberry.png","fruits/tyttberries.png","fruits/strwaberry.png"],
+                    "bad": ["vegetables/dahuisi.png","others/mobile.png","vegetables/fid.png","food/eggs.png","food/icecream.png"]
                 },
                 {
                     "instructions": qsTr("Place the FRUITS to the right and other objects to the left"),
-                    "image": imagesPrefix + "fruit.webp",
+                    "image": imagesPrefix + "fruit.png",
                     "maxNumberOfGood": 4,
                     "maxNumberOfBad": 5,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["fruits/fruitsalad.webp","fruits/guava.webp","fruits/grapes.webp","fruits/litchi.webp"],
-                    "bad": ["vegetables/pumpkin.webp","transport/bus.webp","food/milk.webp","food/cheese.webp","food/butter.webp"]
+                    "good": ["fruits/fruitsalad.png","fruits/guava.png","fruits/grapes.png","fruits/litchi.png"],
+                    "bad": ["vegetables/pumpkin.png","transport/bus.png","food/milk.png","food/cheese.png","food/butter.png"]
                 },
                 {
                     "instructions": qsTr("Place the FRUITS to the right and other objects to the left"),
-                    "image": imagesPrefix + "fruit.webp",
+                    "image": imagesPrefix + "fruit.png",
                     "maxNumberOfGood": 3,
                     "maxNumberOfBad": 3,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["fruits/pear.webp","fruits/pyrusmalus.webp","fruits/pineapple.webp"],
-                    "bad": ["vegetables/radish.webp","food/popcorn.webp","others/street.webp"]
+                    "good": ["fruits/pear.png","fruits/pyrusmalus.png","fruits/pineapple.png"],
+                    "bad": ["vegetables/radish.png","food/popcorn.png","others/street.png"]
                 },
                 {
                     "instructions": qsTr("Place the FRUITS to the right and other objects to the left"),
-                    "image": imagesPrefix + "fruit.webp",
+                    "image": imagesPrefix + "fruit.png",
                     "maxNumberOfGood": 3 ,
                     "maxNumberOfBad": 3,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["fruits/peach.webp","fruits/tyttberries.webp","fruits/papaya.webp"],
-                    "bad": ["vegetables/spinach.webp","food/hotdog.webp", "food/milk.webp"]
+                    "good": ["fruits/peach.png","fruits/tyttberries.png","fruits/papaya.png"],
+                    "bad": ["vegetables/spinach.png","food/hotdog.png", "food/milk.png"]
                 },
                 {
                     "instructions": qsTr("Place the FRUITS to the right and other objects to the left"),
-                    "image": imagesPrefix + "fruit.webp",
+                    "image": imagesPrefix + "fruit.png",
                     "maxNumberOfGood": 2,
                     "maxNumberOfBad": 4,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["fruits/mango.webp","fruits/strwaberry.webp"],
-                    "bad": ["others/pencil.webp","vegetables/onion.webp","food/cheese.webp","food/water.webp"]
+                    "good": ["fruits/mango.png","fruits/strwaberry.png"],
+                    "bad": ["others/pencil.png","vegetables/onion.png","food/cheese.png","food/water.png"]
                 }
             ]
         }

@@ -17,79 +17,79 @@ QtObject{
         {
             "type": "lesson",
             "name": qsTr("Nature"),
-            "image": imagesPrefix + "nature7.webp",
+            "image": imagesPrefix + "nature7.png",
             "content": [
                 {
                     "instructions": qsTr("Place the NATURE images to the right and other objects to the left"),
-                    "image": imagesPrefix + "nature25.webp",
+                    "image": imagesPrefix + "nature25.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["nature/nature1.webp","nature/nature2.webp","nature/nature3.webp","nature/nature4.webp","nature/nature5.webp","nature/nature6.webp"],
-                    "bad": ["transport/train3.webp","others/spoon.webp","transport/bus.webp","others/clock.webp","food/hamburger.webp","food/macroni.webp"]
+                    "good": ["nature/nature1.png","nature/nature2.png","nature/nature3.png","nature/nature4.png","nature/nature5.png","nature/nature6.png"],
+                    "bad": ["transport/train3.png","others/spoon.png","transport/bus.png","others/clock.png","food/hamburger.png","food/macroni.png"]
                 },
                 {
                     "instructions": qsTr("Place the NATURE images to the right and other objects to the left"),
-                    "image": imagesPrefix + "nature28.webp",
+                    "image": imagesPrefix + "nature28.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["nature/nature7.webp","nature/nature8.webp","nature/nature9.webp","nature/nature10.webp", "nature/nature11.webp","nature/nature12.webp"],
-                    "bad": ["fruits/mango.webp","vegetables/onion.webp","transport/cycle.webp","others/fork.webp","food/riceBeans.webp","others/pepsi.webp"]
+                    "good": ["nature/nature7.png","nature/nature8.png","nature/nature9.png","nature/nature10.png", "nature/nature11.png","nature/nature12.png"],
+                    "bad": ["fruits/mango.png","vegetables/onion.png","transport/cycle.png","others/fork.png","food/riceBeans.png","others/pepsi.png"]
                 },
                 {
                     "instructions": qsTr("Place the NATURE images to the right and other objects to the left"),
-                    "image": imagesPrefix + "nature22.webp",
+                    "image": imagesPrefix + "nature22.png",
                     "maxNumberOfGood": 5,
                     "maxNumberOfBad": 4,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["nature/nature13.webp","nature/nature14.webp","nature/nature15.webp","nature/nature16.webp","nature/nature17.webp"],
-                    "bad": ["transport/autorickshaw.webp","transport/bulletTrain.webp","householdGoods/chest.webp","others/broom1.webp"]
+                    "good": ["nature/nature13.png","nature/nature14.png","nature/nature15.png","nature/nature16.png","nature/nature17.png"],
+                    "bad": ["transport/autorickshaw.png","transport/bulletTrain.png","householdGoods/chest.png","others/broom1.png"]
                 },
                 {
                     "instructions": qsTr("Place the NATURE images to the right and other objects to the left"),
-                    "image": imagesPrefix + "nature2.webp",
+                    "image": imagesPrefix + "nature2.png",
                     "maxNumberOfGood": 5,
                     "maxNumberOfBad": 4,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["nature/nature18.webp","nature/nature19.webp","nature/nature20.webp","nature/nature21.webp","nature/nature22.webp"],
-                    "bad": ["transport/train5.webp","transport/tram1.webp","others/mobile.webp","others/electricfan.webp"]
+                    "good": ["nature/nature18.png","nature/nature19.png","nature/nature20.png","nature/nature21.png","nature/nature22.png"],
+                    "bad": ["transport/train5.png","transport/tram1.png","others/mobile.png","others/electricfan.png"]
                 },
                 {
                     "instructions": qsTr("Place the NATURE images to the right and other objects to the left"),
-                    "image": imagesPrefix + "nature2.webp",
+                    "image": imagesPrefix + "nature2.png",
                     "maxNumberOfGood": 5,
                     "maxNumberOfBad": 4,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["nature/nature29.webp","nature/nature30.webp","nature/nature31.webp","nature/nature32.webp","nature/nature33.webp"],
-                    "bad": ["fruits/pineapple.webp","food/pitaBread.webp","householdGoods/bed.webp","others/house.webp"]
+                    "good": ["nature/nature29.png","nature/nature30.png","nature/nature31.png","nature/nature32.png","nature/nature33.png"],
+                    "bad": ["fruits/pineapple.png","food/pitaBread.png","householdGoods/bed.png","others/house.png"]
                 },
                 {
                     "instructions": qsTr("Place the NATURE images to the right and other objects to the left"),
-                    "image": imagesPrefix + "nature6.webp",
+                    "image": imagesPrefix + "nature6.png",
                     "maxNumberOfGood": 3,
                     "maxNumberOfBad": 3,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["nature/nature23.webp","nature/nature24.webp","nature/nature25.webp"],
-                    "bad": ["vegetables/zucchini.webp","others/street.webp","householdGoods/couch.webp"]
+                    "good": ["nature/nature23.png","nature/nature24.png","nature/nature25.png"],
+                    "bad": ["vegetables/zucchini.png","others/street.png","householdGoods/couch.png"]
                 },
                 {
                     "instructions": qsTr("Place the NATURE images to the right and other objects to the left"),
-                    "image": imagesPrefix + "nature14.webp",
+                    "image": imagesPrefix + "nature14.png",
                     "maxNumberOfGood": 3,
                     "maxNumberOfBad": 3,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["nature/nature26.webp","nature/nature27.webp","nature/nature28.webp"],
-                    "bad": ["food/MaozVegetariano.webp","transport/rickshaw2.webp","others/electricfan.webp"]
+                    "good": ["nature/nature26.png","nature/nature27.png","nature/nature28.png"],
+                    "bad": ["food/MaozVegetariano.png","transport/rickshaw2.png","others/electricfan.png"]
                 },
                 {
                     "instructions": qsTr("Place the NATURE images to the right and other objects to the left"),
-                    "image": imagesPrefix + "nature14.webp",
+                    "image": imagesPrefix + "nature14.png",
                     "maxNumberOfGood": 2,
                     "maxNumberOfBad": 4,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["nature/nature34.webp","nature/nature35.webp"],
-                    "bad": ["householdGoods/chair2.webp","food/milk.webp","others/weighingmachine.webp","others/pencil.webp"]
+                    "good": ["nature/nature34.png","nature/nature35.png"],
+                    "bad": ["householdGoods/chair2.png","food/milk.png","others/weighingmachine.png","others/pencil.png"]
                 }
             ]
         }

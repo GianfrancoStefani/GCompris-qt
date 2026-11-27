@@ -11,7 +11,7 @@ var dataset = [
             {
                  "text": qsTr("Born on January 4th 1809 in Coupvray near Paris in France."),
                  "year": "1809",
-                 "img": baseUrl + "louis.webp"
+                 "img": baseUrl + "louis.png"
              },
              {
                  "text": qsTr("Louis Braille injured his right eye with a stitching awl from his father's workshop."),

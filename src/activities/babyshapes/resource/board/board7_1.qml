@@ -14,29 +14,29 @@ QtObject {
    property string instruction: qsTr("Pieter Bruegel the Elder, The peasants wedding - 1568")
    property var levels: [
 	  {
-          "pixmapfile" : "image/Pieter_Bruegel_background.webp",
+          "pixmapfile" : "image/Pieter_Bruegel_background.jpg",
           "type" : "SHAPE_BACKGROUND_IMAGE"
       },
       {
-          "pixmapfile" : "image/Pieter_Bruegel_mur.webp",
+          "pixmapfile" : "image/Pieter_Bruegel_mur.png",
           "dropAreaSize" : "10",
           "x" : "0.866",
           "y" : "0.143"
       },
       {
-          "pixmapfile" : "image/Pieter_Bruegel_musicien.webp",
+          "pixmapfile" : "image/Pieter_Bruegel_musicien.png",
           "dropAreaSize" : "10",
           "x" : "0.257",
           "y" : "0.453"
       },
       {
-          "pixmapfile" : "image/Pieter_Bruegel_service.webp",
+          "pixmapfile" : "image/Pieter_Bruegel_service.png",
           "dropAreaSize" : "10",
           "x" : "0.684",
           "y" : "0.628"
       },
       {
-          "pixmapfile" : "image/Pieter_Bruegel_fillette.webp",
+          "pixmapfile" : "image/Pieter_Bruegel_fillette.png",
           "dropAreaSize" : "10",
           "x" : "0.354",
           "y" : "0.87"

@@ -19,7 +19,7 @@ QtObject{
         {
             "type": "lesson",
             "name": qsTr("Shapes"),
-            "image": imagesPrefix + "cube.webp",
+            "image": imagesPrefix + "cube.png",
             "content": [
                 {
                     "instructions": qsTr("Place the objects matching a CIRCLE to the right and others to the left"),
@@ -45,7 +45,7 @@ QtObject{
                     "maxNumberOfGood": 4,
                     "maxNumberOfBad": 5,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["shapes/football.svg","shapes/globe.svg","ball.webp","shapes/watermelon.svg"],
+                    "good": ["shapes/football.svg","shapes/globe.svg","ball.png","shapes/watermelon.svg"],
                     "bad": ["shapes/cone.svg","shapes/halforange.svg","shapes/sunrise.svg","shapes/juice2.svg","shapes/icecube.svg"]
                 },
                 {
@@ -99,7 +99,7 @@ QtObject{
                     "maxNumberOfGood": 4,
                     "maxNumberOfBad": 5,
                     "prefix": "qrc:/gcompris/data/words-webp/shapes/",
-                    "good": ["ice_cream.webp","icecone.svg","icecream.svg","conehat.svg"],
+                    "good": ["ice_cream.png","icecone.svg","icecream.svg","conehat.svg"],
                     "bad": ["semicircle.svg","glass.svg","bowl3.svg","halforange.svg","dice.svg"]
                 },
                 {
@@ -180,7 +180,7 @@ QtObject{
                     "maxNumberOfGood": 5,
                     "maxNumberOfBad": 4,
                     "prefix": "qrc:/gcompris/data/words-webp/shapes/",
-                    "good": ["rolling_pin.webp","tin.webp","can1.svg","can.svg", "trash.svg"],
+                    "good": ["rolling_pin.png","tin.png","can1.svg","can.svg", "trash.svg"],
                     "bad": ["halforange.svg","decagon3.svg","wcone.svg","juice2.svg"]
                 },
                 {

@@ -649,7 +649,7 @@ ActivityBase {
         GCCreationHandler {
             id: creationHandler
             imageMode: true
-            fileExtensions: ["*.svg", "*.png", "*.jpg", "*.jpeg", "*.webp"]
+            fileExtensions: ["*.svg", "*.png", "*.jpg", "*.jpeg", "*.png"]
             onSaved: {
                 items.isSaved = true;
             }

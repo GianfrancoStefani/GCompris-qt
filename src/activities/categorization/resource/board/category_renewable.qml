@@ -17,79 +17,79 @@ QtObject {
         {
             "type": "lesson",
             "name": qsTr("Renewable"),
-            "image": imagesPrefix + "windmill12.webp",
+            "image": imagesPrefix + "windmill12.png",
             "content": [
                 {
                     "instructions": qsTr("Place the RENEWABLE energy sources to the right and other objects to the left"),
-                    "image": imagesPrefix + "windmill12.webp",
+                    "image": imagesPrefix + "windmill12.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/src/activities/categorization/resource/images/",
-                    "good": ["renewable/windmill.webp","renewable/windmill1.webp","renewable/windmill2.webp","renewable/windmill3.webp","renewable/windmill4.webp","renewable/windmill5.webp"],
-                    "bad": ["fishes/fish20.webp","others/volleyball.webp","monuments/burj.webp","tools/plier1.webp","others/pillow.webp","fishes/fish10.webp"]
+                    "good": ["renewable/windmill.png","renewable/windmill1.png","renewable/windmill2.png","renewable/windmill3.png","renewable/windmill4.png","renewable/windmill5.png"],
+                    "bad": ["fishes/fish20.png","others/volleyball.png","monuments/burj.png","tools/plier1.png","others/pillow.png","fishes/fish10.png"]
                 },
                 {
                     "instructions": qsTr("Place the RENEWABLE energy sources to the right and other objects to the left"),
-                    "image": imagesPrefix + "solar8.webp",
+                    "image": imagesPrefix + "solar8.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/src/activities/categorization/resource/images/",
-                    "good": ["renewable/solar1.webp","renewable/solar2.webp","renewable/solar3.webp","renewable/solar4.webp","renewable/solar5.webp","renewable/solar6.webp"],
-                    "bad": ["others/plate.webp","fishes/fish25.webp","tools/scissors1.webp","monuments/christTheRedeemer.webp","others/bucket.webp","monuments/jucheTower.webp"]
+                    "good": ["renewable/solar1.png","renewable/solar2.png","renewable/solar3.png","renewable/solar4.png","renewable/solar5.png","renewable/solar6.png"],
+                    "bad": ["others/plate.png","fishes/fish25.png","tools/scissors1.png","monuments/christTheRedeemer.png","others/bucket.png","monuments/jucheTower.png"]
                 },
                 {
                     "instructions": qsTr("Place the RENEWABLE energy sources to the right and other objects to the left"),
-                    "image": imagesPrefix + "dam2.webp",
+                    "image": imagesPrefix + "dam2.png",
                     "maxNumberOfGood": 4,
                     "maxNumberOfBad": 5,
                     "prefix": "qrc:/gcompris/src/activities/categorization/resource/images/",
-                    "good": ["renewable/dam1.webp","renewable/dam2.webp","renewable/dam3.webp","renewable/dam4.webp"],
-                    "bad": ["fishes/fish14.webp","tools/wrench.webp","tools/plier3.webp","others/baseball.webp","monuments/arcDeTriomphe.webp"]
+                    "good": ["renewable/dam1.png","renewable/dam2.png","renewable/dam3.png","renewable/dam4.png"],
+                    "bad": ["fishes/fish14.png","tools/wrench.png","tools/plier3.png","others/baseball.png","monuments/arcDeTriomphe.png"]
                 },
                 {
                     "instructions": qsTr("Place the RENEWABLE energy sources to the right and other objects to the left"),
-                    "image": imagesPrefix + "dam5.webp",
+                    "image": imagesPrefix + "dam5.png",
                     "maxNumberOfGood": 4,
                     "maxNumberOfBad": 5,
                     "prefix": "qrc:/gcompris/src/activities/categorization/resource/images/",
-                    "good": ["renewable/windmill2.webp","renewable/windmill13.webp","renewable/solar7.webp","renewable/solar3.webp"],
-                    "bad": ["monuments/greatPyramid.webp","others/buffetset.webp","others/weighingMachine.webp","tools/spray.webp","monuments/arcDeTriomphe.webp"]
+                    "good": ["renewable/windmill2.png","renewable/windmill13.png","renewable/solar7.png","renewable/solar3.png"],
+                    "bad": ["monuments/greatPyramid.png","others/buffetset.png","others/weighingMachine.png","tools/spray.png","monuments/arcDeTriomphe.png"]
                 },
                 {
                     "instructions": qsTr("Place the RENEWABLE energy sources to the right and other objects to the left"),
-                    "image": imagesPrefix + "geothermal.webp",
+                    "image": imagesPrefix + "geothermal.png",
                     "maxNumberOfGood": 5,
                     "maxNumberOfBad": 4,
                     "prefix": "qrc:/gcompris/src/activities/categorization/resource/images/",
-                    "good": ["renewable/dam5.webp","renewable/geothermal.webp","renewable/windmill6.webp","renewable/windmill7.webp","renewable/windmill8.webp"],
-                    "bad": ["fishes/fish6.webp","fishes/fish3.webp","others/pan.webp","others/spoons.webp"]
+                    "good": ["renewable/dam5.png","renewable/geothermal.png","renewable/windmill6.png","renewable/windmill7.png","renewable/windmill8.png"],
+                    "bad": ["fishes/fish6.png","fishes/fish3.png","others/pan.png","others/spoons.png"]
                 },
                 {
                     "instructions": qsTr("Place the RENEWABLE energy sources to the right and other objects to the left"),
-                    "image": imagesPrefix + "dam3.webp",
+                    "image": imagesPrefix + "dam3.png",
                     "maxNumberOfGood": 3,
                     "maxNumberOfBad": 3,
                     "prefix": "qrc:/gcompris/src/activities/categorization/resource/images/",
-                    "good": ["renewable/windmill9.webp","renewable/windmill12.webp","renewable/solar7.webp"],
-                    "bad": ["others/blackslate.webp","monuments/IndiaGate.webp","tools/multimeter2.webp"]
+                    "good": ["renewable/windmill9.png","renewable/windmill12.png","renewable/solar7.png"],
+                    "bad": ["others/blackslate.png","monuments/IndiaGate.png","tools/multimeter2.png"]
                 },
                 {
                     "instructions": qsTr("Place the RENEWABLE energy sources to the right and other objects to the left"),
-                    "image": imagesPrefix + "solar2.webp",
+                    "image": imagesPrefix + "solar2.png",
                     "maxNumberOfGood": 3,
                     "maxNumberOfBad": 3,
                     "prefix": "qrc:/gcompris/src/activities/categorization/resource/images/",
-                    "good": ["renewable/solar8.webp","renewable/dam5.webp","renewable/windmill11.webp"],
-                    "bad": ["others/plate.webp","others/chair.webp","monuments/eiffelTower.webp"]
+                    "good": ["renewable/solar8.png","renewable/dam5.png","renewable/windmill11.png"],
+                    "bad": ["others/plate.png","others/chair.png","monuments/eiffelTower.png"]
                 },
                 {
                     "instructions": qsTr("Place the RENEWABLE energy sources to the right and other objects to the left"),
-                    "image": imagesPrefix + "solar4.webp",
+                    "image": imagesPrefix + "solar4.png",
                     "maxNumberOfGood": 3,
                     "maxNumberOfBad": 3,
                     "prefix": "qrc:/gcompris/src/activities/categorization/resource/images/",
-                    "good": ["renewable/windmill14.webp","renewable/windmill15.webp","renewable/dam5.webp"],
-                    "bad": ["others/plate.webp","fishes/fish18.webp","monuments/leMusee.webp"]
+                    "good": ["renewable/windmill14.png","renewable/windmill15.png","renewable/dam5.png"],
+                    "bad": ["others/plate.png","fishes/fish18.png","monuments/leMusee.png"]
                 }
             ]
         }

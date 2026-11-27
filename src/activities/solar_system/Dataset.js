@@ -10,7 +10,7 @@
 function get() {
     return [
                 {
-                    "realImg": "qrc:/gcompris/src/activities/solar_system/resource/sun.webp",
+                    "realImg": "qrc:/gcompris/src/activities/solar_system/resource/sun.png",
                     "bodyName": qsTr("Sun"),
                     "bodySize": 1.3,
                     "levels": [
@@ -47,7 +47,7 @@ function get() {
                     ]
                 },
                 {
-                    "realImg": "qrc:/gcompris/src/activities/solar_system/resource/mercury.webp",
+                    "realImg": "qrc:/gcompris/src/activities/solar_system/resource/mercury.png",
                     "bodyName": qsTr("Mercury"),
                     "bodySize": 0.12,
                     "temperatureHint": qsTr("The maximum temperature on Earth is 58 °C."),
@@ -92,7 +92,7 @@ function get() {
                     ]
                 },
                 {
-                    "realImg": "qrc:/gcompris/src/activities/solar_system/resource/venus.webp",
+                    "realImg": "qrc:/gcompris/src/activities/solar_system/resource/venus.png",
                     "bodyName": qsTr("Venus"),
                     "bodySize": 0.22,
                     "temperatureHint": qsTr("The maximum temperature on Earth is 58 °C."),
@@ -143,7 +143,7 @@ function get() {
                     ]
                 },
                 {
-                    "realImg": "qrc:/gcompris/src/activities/solar_system/resource/earth.webp",
+                    "realImg": "qrc:/gcompris/src/activities/solar_system/resource/earth.png",
                     "bodyName": qsTr("Earth"),
                     "bodySize": 0.3,
                     "temperatureHint": qsTr("The maximum temperature on Mars is 20 °C."),
@@ -194,7 +194,7 @@ function get() {
                     ]
                 },
                 {
-                    "realImg": "qrc:/gcompris/src/activities/solar_system/resource/mars.webp",
+                    "realImg": "qrc:/gcompris/src/activities/solar_system/resource/mars.png",
                     "bodyName": qsTr("Mars"),
                     "bodySize": 0.15,
                     "temperatureHint": qsTr("The maximum temperature on Earth is 58 °C."),
@@ -245,7 +245,7 @@ function get() {
                     ]
                 },
                 {
-                    "realImg": "qrc:/gcompris/src/activities/solar_system/resource/jupiter.webp",
+                    "realImg": "qrc:/gcompris/src/activities/solar_system/resource/jupiter.png",
                     "bodyName": qsTr("Jupiter"),
                     "bodySize": 1,
                     "temperatureHint": qsTr("The maximum temperature on Mars is 20 °C."),
@@ -290,7 +290,7 @@ function get() {
                     ]
                 },
                 {
-                    "realImg": "qrc:/gcompris/src/activities/solar_system/resource/saturn.webp",
+                    "realImg": "qrc:/gcompris/src/activities/solar_system/resource/saturn.png",
                     "bodyName": qsTr("Saturn"),
                     "bodySize": 1.2,
                     "temperatureHint": qsTr("The minimum temperature on Jupiter is -145 °C."),
@@ -335,7 +335,7 @@ function get() {
                     ]
                 },
                 {
-                    "realImg": "qrc:/gcompris/src/activities/solar_system/resource/uranus.webp",
+                    "realImg": "qrc:/gcompris/src/activities/solar_system/resource/uranus.png",
                     "bodyName": qsTr("Uranus"),
                     "bodySize": 0.5,
                     "temperatureHint": qsTr("The temperature on Saturn is -178 °C."),
@@ -380,7 +380,7 @@ function get() {
                     ]
                 },
                 {
-                    "realImg": "qrc:/gcompris/src/activities/solar_system/resource/neptune.webp",
+                    "realImg": "qrc:/gcompris/src/activities/solar_system/resource/neptune.png",
                     "bodyName": qsTr("Neptune"),
                     "bodySize": 0.4,
                     "temperatureHint": qsTr("The maximum temperature on Saturn is -178 °C."),

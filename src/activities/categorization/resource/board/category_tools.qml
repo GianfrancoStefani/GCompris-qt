@@ -17,97 +17,97 @@ QtObject {
         {
             "type": "lesson",
             "name": qsTr("Tools"),
-            "image": imagesPrefix + "measuringTape6.webp",
+            "image": imagesPrefix + "measuringTape6.png",
             "content": [
                 {
                     "instructions": qsTr("Place the TOOLS to the right and other objects to the left"),
-                    "image": imagesPrefix + "wrench.webp",
+                    "image": imagesPrefix + "wrench.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/src/activities/categorization/resource/images/",
-                    "good": ["tools/hammer8.webp", "tools/hammer9.webp","tools/hammer6.webp","tools/hammer7.webp","tools/hammer1.webp","tools/hammer2.webp"],
-                    "bad": ["monuments/arcDeTriomphe.webp","others/buffetset.webp","monuments/cathedral.webp","others/pillow.webp","renewable/windmill1.webp", "renewable/geothermal.webp"]
+                    "good": ["tools/hammer8.png", "tools/hammer9.png","tools/hammer6.png","tools/hammer7.png","tools/hammer1.png","tools/hammer2.png"],
+                    "bad": ["monuments/arcDeTriomphe.png","others/buffetset.png","monuments/cathedral.png","others/pillow.png","renewable/windmill1.png", "renewable/geothermal.png"]
                 },
                 {
                     "instructions": qsTr("Place the TOOLS to the right and other objects to the left"),
-                    "image": imagesPrefix + "sideCutter1.webp",
+                    "image": imagesPrefix + "sideCutter1.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/src/activities/categorization/resource/images/",
-                    "good": ["tools/measuringTape5.webp","tools/measuringTape1.webp","tools/plier3.webp","tools/plier1.webp","tools/measuringTape3.webp","tools/measuringTape4.webp"],
-                    "bad": ["others/pan.webp","others/blackslate.webp","monuments/colosseum.webp","fishes/fish10.webp","renewable/dam1.webp","monuments/monument3.webp"]
+                    "good": ["tools/measuringTape5.png","tools/measuringTape1.png","tools/plier3.png","tools/plier1.png","tools/measuringTape3.png","tools/measuringTape4.png"],
+                    "bad": ["others/pan.png","others/blackslate.png","monuments/colosseum.png","fishes/fish10.png","renewable/dam1.png","monuments/monument3.png"]
                 },
                 {
                     "instructions": qsTr("Place the TOOLS to the right and other objects to the left"),
-                    "image": imagesPrefix + "scissors4.webp",
+                    "image": imagesPrefix + "scissors4.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/src/activities/categorization/resource/images/",
-                    "good": ["tools/scissors1.webp","tools/scissors2.webp","tools/scissors3.webp","tools/spray.webp","tools/tweezer.webp","tools/wrench1.webp"],
-                    "bad": ["others/buffetset.webp","monuments/brandenburgGate.webp","monuments/parthenon.webp","fishes/fish12.webp","fishes/fish16.webp","others/plate.webp"]
+                    "good": ["tools/scissors1.png","tools/scissors2.png","tools/scissors3.png","tools/spray.png","tools/tweezer.png","tools/wrench1.png"],
+                    "bad": ["others/buffetset.png","monuments/brandenburgGate.png","monuments/parthenon.png","fishes/fish12.png","fishes/fish16.png","others/plate.png"]
                 },
                 {
                     "instructions": qsTr("Place the TOOLS to the right and other objects to the left"),
-                    "image": imagesPrefix + "spray.webp",
+                    "image": imagesPrefix + "spray.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/src/activities/categorization/resource/images/",
-                    "good": ["tools/spray.webp","tools/screwDriver.webp","tools/screwDriver1.webp","tools/screwDriver2.webp","tools/screwDriver3.webp","tools/plier1.webp"],
-                    "bad": ["others/baseball.webp","others/igloo.webp","monuments/mountRushmore.webp","renewable/dam3.webp","monuments/greatWall.webp","renewable/windmill7.webp"]
+                    "good": ["tools/spray.png","tools/screwDriver.png","tools/screwDriver1.png","tools/screwDriver2.png","tools/screwDriver3.png","tools/plier1.png"],
+                    "bad": ["others/baseball.png","others/igloo.png","monuments/mountRushmore.png","renewable/dam3.png","monuments/greatWall.png","renewable/windmill7.png"]
                 },
                 {
                     "instructions": qsTr("Place the TOOLS to the right and other objects to the left"),
-                    "image": imagesPrefix + "plier1.webp",
+                    "image": imagesPrefix + "plier1.png",
                     "maxNumberOfGood": 5,
                     "maxNumberOfBad": 4,
                     "prefix": "qrc:/gcompris/src/activities/categorization/resource/images/",
-                    "good": ["tools/multimeter1.webp","tools/screwDriver.webp","tools/hammer3.webp","tools/measuringTape6.webp","tools/plier3.webp"],
-                    "bad": ["fishes/fish25.webp","fishes/fish18.webp","monuments/monument1.webp","monuments/monument2.webp"]
+                    "good": ["tools/multimeter1.png","tools/screwDriver.png","tools/hammer3.png","tools/measuringTape6.png","tools/plier3.png"],
+                    "bad": ["fishes/fish25.png","fishes/fish18.png","monuments/monument1.png","monuments/monument2.png"]
                 },
                 {
                     "instructions": qsTr("Place the TOOLS to the right and other objects to the left"),
-                    "image": imagesPrefix + "plier1.webp",
+                    "image": imagesPrefix + "plier1.png",
                     "maxNumberOfGood": 5,
                     "maxNumberOfBad": 4,
                     "prefix": "qrc:/gcompris/src/activities/categorization/resource/images/",
-                    "good": ["tools/wrench.webp","tools/tweezer1.webp","tools/sickle.webp","tools/plier2.webp","tools/sideCutter1.webp"],
-                    "bad": ["renewable/solar5.webp","others/bulb.webp","renewable/dam3.webp","monuments/operaHouse.webp"]
+                    "good": ["tools/wrench.png","tools/tweezer1.png","tools/sickle.png","tools/plier2.png","tools/sideCutter1.png"],
+                    "bad": ["renewable/solar5.png","others/bulb.png","renewable/dam3.png","monuments/operaHouse.png"]
                 },
                 {
                     "instructions": qsTr("Place the TOOLS to the right and other objects to the left"),
-                    "image": imagesPrefix + "multimeter2.webp",
+                    "image": imagesPrefix + "multimeter2.png",
                     "maxNumberOfGood": 4,
                     "maxNumberOfBad": 5,
                     "prefix": "qrc:/gcompris/src/activities/categorization/resource/images/",
-                    "good": ["tools/plier3.webp","tools/scissors1.webp","tools/plier2.webp","tools/sideCutter1.webp"],
-                    "bad": ["fishes/fish3.webp","others/chair.webp","monuments/operaHouse.webp","renewable/windmill12.webp","monuments/IndiaGate.webp"]
+                    "good": ["tools/plier3.png","tools/scissors1.png","tools/plier2.png","tools/sideCutter1.png"],
+                    "bad": ["fishes/fish3.png","others/chair.png","monuments/operaHouse.png","renewable/windmill12.png","monuments/IndiaGate.png"]
                 },
                 {
                     "instructions": qsTr("Place the TOOLS to the right and other objects to the left"),
-                    "image": imagesPrefix + "nailCutter.webp",
+                    "image": imagesPrefix + "nailCutter.png",
                     "maxNumberOfGood": 3,
                     "maxNumberOfBad": 3,
                     "prefix": "qrc:/gcompris/src/activities/categorization/resource/images/",
-                    "good": ["tools/measuringTape2.webp","tools/hammer5.webp","tools/plier1.webp"],
-                    "bad": ["fishes/fish6.webp","monuments/tajMahal.webp","renewable/solar3.webp"]
+                    "good": ["tools/measuringTape2.png","tools/hammer5.png","tools/plier1.png"],
+                    "bad": ["fishes/fish6.png","monuments/tajMahal.png","renewable/solar3.png"]
                 },
                 {
                     "instructions": qsTr("Place the TOOLS to the right and other objects to the left"),
-                    "image": imagesPrefix + "screwDriver.webp",
+                    "image": imagesPrefix + "screwDriver.png",
                     "maxNumberOfGood": 3,
                     "maxNumberOfBad": 3,
                     "prefix": "qrc:/gcompris/src/activities/categorization/resource/images/",
-                    "good": ["tools/plier3.webp","tools/multimeter3.webp","tools/nailCutter.webp"],
-                    "bad": ["fishes/fish10.webp","others/pan.webp","others/igloo.webp"]
+                    "good": ["tools/plier3.png","tools/multimeter3.png","tools/nailCutter.png"],
+                    "bad": ["fishes/fish10.png","others/pan.png","others/igloo.png"]
                 },
                 {
                     "instructions": qsTr("Place the TOOLS to the right and other objects to the left"),
-                    "image": imagesPrefix + "scissors2.webp",
+                    "image": imagesPrefix + "scissors2.png",
                     "maxNumberOfGood": 3,
                     "maxNumberOfBad": 3,
                     "prefix": "qrc:/gcompris/src/activities/categorization/resource/images/",
-                    "good": ["tools/hammer4.webp","tools/screwDriver.webp","tools/multimeter2.webp"],
-                    "bad": ["renewable/dam2.webp","monuments/leaningTowerOfPisa.webp", "others/pillow.webp"]
+                    "good": ["tools/hammer4.png","tools/screwDriver.png","tools/multimeter2.png"],
+                    "bad": ["renewable/dam2.png","monuments/leaningTowerOfPisa.png", "others/pillow.png"]
                 }
             ]
         }

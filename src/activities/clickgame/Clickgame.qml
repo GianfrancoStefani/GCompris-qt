@@ -34,7 +34,7 @@ ActivityBase {
         signal animTrigger
         focus: true
         fillMode: Image.PreserveAspectCrop
-        source: "qrc:/gcompris/src/activities/clickgame/resource/sea1.webp"
+        source: "qrc:/gcompris/src/activities/clickgame/resource/sea1.jpg"
         sourceSize.width: width
         sourceSize.height: height
 

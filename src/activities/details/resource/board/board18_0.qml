@@ -14,35 +14,35 @@ QtObject {
    property string instruction: qsTr("Nagoya Castle, Aichi Prefecture, Japan.")
    property var levels: [
       {
-         "pixmapfile" : "image/Nagoya_background.webp",
+         "pixmapfile" : "image/Nagoya_background.png",
          "type" : "SHAPE_BACKGROUND_IMAGE"
       },
       {
-         "pixmapfile" : "image/Nagoya_3.webp",
+         "pixmapfile" : "image/Nagoya_3.png",
          "x" : "0.669",
          "y" : "0.117",
          "dropAreaSize" : "8"
       },
       {
-         "pixmapfile" : "image/Nagoya_0.webp",
+         "pixmapfile" : "image/Nagoya_0.png",
          "x" : "0.731",
          "y" : "0.35",
          "dropAreaSize" : "8"
       },
       {
-         "pixmapfile" : "image/Nagoya_4.webp",
+         "pixmapfile" : "image/Nagoya_4.png",
          "x" : "0.515",
          "y" : "0.522",
          "dropAreaSize" : "8"
       },
       {
-         "pixmapfile" : "image/Nagoya_2.webp",
+         "pixmapfile" : "image/Nagoya_2.png",
          "x" : "0.213",
          "y" : "0.543",
          "dropAreaSize" : "8"
       },
       {
-         "pixmapfile" : "image/Nagoya_1.webp",
+         "pixmapfile" : "image/Nagoya_1.png",
          "x" : "0.76",
          "y" : "0.721",
          "dropAreaSize" : "8"

@@ -17,98 +17,98 @@ QtObject{
         {
             "type": "lesson",
             "name": qsTr("Transport"),
-            "image": imagesPrefix + "balloon.webp",
+            "image": imagesPrefix + "balloon.png",
             "content": [
                 {
                     "instructions": qsTr("Place the MEANS OF TRANSPORTATION to the right and other objects to the left"),
-                    "image":imagesPrefix + "tucker.webp",
+                    "image":imagesPrefix + "tucker.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["transport/autorickshaw.webp","transport/balloon.webp","transport/bicycle2.webp","transport/boat.webp","transport/bulletTrain.webp","transport/bullockcart.webp"],
-                    "bad": ["householdGoods/ac.webp","householdGoods/heater.webp","householdGoods/quilt.webp","food/kathiRoll.webp","food/icecream.webp","vegetables/carrots.webp"]
+                    "good": ["transport/autorickshaw.png","transport/balloon.png","transport/bicycle2.png","transport/boat.png","transport/bulletTrain.png","transport/bullockcart.png"],
+                    "bad": ["householdGoods/ac.png","householdGoods/heater.png","householdGoods/quilt.png","food/kathiRoll.png","food/icecream.png","vegetables/carrots.png"]
                 },
                 {
                     "instructions": qsTr("Place the MEANS OF TRANSPORTATION to the right and other objects to the left"),
-                    "image":imagesPrefix + "train1.webp",
+                    "image":imagesPrefix + "train1.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["transport/bus.webp","transport/camel.webp","transport/car1.webp","transport/exchanger.webp","transport/ferry.webp","transport/flight.webp"],
-                    "bad": ["householdGoods/coffeeMaker.webp","householdGoods/curtains.webp","nature/nature6.webp","insects/insect10.webp","householdGoods/lamp.webp","others/fork.webp"]
+                    "good": ["transport/bus.png","transport/camel.png","transport/car1.png","transport/exchanger.png","transport/ferry.png","transport/flight.png"],
+                    "bad": ["householdGoods/coffeeMaker.png","householdGoods/curtains.png","nature/nature6.png","insects/insect10.png","householdGoods/lamp.png","others/fork.png"]
                 },
                 {
                     "instructions": qsTr("Place the MEANS OF TRANSPORTATION to the right and other objects to the left"),
-                    "image":imagesPrefix + "ship.webp",
+                    "image":imagesPrefix + "ship.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["transport/helicopter.webp","transport/metro.webp","transport/plane.webp","transport/train5.webp","transport/rickshaw.webp","transport/rocket.webp"],
-                    "bad": ["nature/nature5.webp","nature/nature8.webp","food/biryani.webp","food/skimmedMilk.webp","fruits/grapes.webp","fruits/apple.webp"]
+                    "good": ["transport/helicopter.png","transport/metro.png","transport/plane.png","transport/train5.png","transport/rickshaw.png","transport/rocket.png"],
+                    "bad": ["nature/nature5.png","nature/nature8.png","food/biryani.png","food/skimmedMilk.png","fruits/grapes.png","fruits/apple.png"]
                 },
                 {
                     "instructions": qsTr("Place the MEANS OF TRANSPORTATION to the right and other objects to the left"),
-                    "image":imagesPrefix + "plane.webp",
+                    "image":imagesPrefix + "plane.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["transport/bus2.webp","transport/car2.webp","transport/ferry1.webp","transport/ship.webp","transport/rotorShip.webp","transport/cycle.webp"],
-                    "bad": ["vegetables/pumpkin.webp","householdGoods/oven.webp","householdGoods/radio1.webp","food/riceBeans.webp","fruits/guava.webp","plants/plant2.webp","nature/nature14.webp"]
+                    "good": ["transport/bus2.png","transport/car2.png","transport/ferry1.png","transport/ship.png","transport/rotorShip.png","transport/cycle.png"],
+                    "bad": ["vegetables/pumpkin.png","householdGoods/oven.png","householdGoods/radio1.png","food/riceBeans.png","fruits/guava.png","plants/plant2.png","nature/nature14.png"]
                 },
                 {
                     "tags": ["transport"],
                     "instructions": qsTr("Place the MEANS OF TRANSPORTATION to the right and other objects to the left"),
-                    "image":imagesPrefix + "train2.webp",
+                    "image":imagesPrefix + "train2.png",
                     "maxNumberOfGood": 5,
                     "maxNumberOfBad": 4,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["transport/tram.webp","transport/tucker.webp","transport/bus1.webp","transport/car1.webp", "transport/ferry1.webp"],
-                    "bad": ["insects/insect15.webp","birds/bird18.webp","animals/giraffe.webp","others/street.webp"]
+                    "good": ["transport/tram.png","transport/tucker.png","transport/bus1.png","transport/car1.png", "transport/ferry1.png"],
+                    "bad": ["insects/insect15.png","birds/bird18.png","animals/giraffe.png","others/street.png"]
                 },
                 {
                     "instructions": qsTr("Place the MEANS OF TRANSPORTATION to the right and other objects to the left"),
-                    "image":imagesPrefix + "roadTrain.webp",
+                    "image":imagesPrefix + "roadTrain.png",
                     "maxNumberOfGood": 5,
                     "maxNumberOfBad": 4,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["transport/cycle.webp","transport/helicopter1.webp","transport/plane1.webp","transport/train2.webp","animals/horse.webp"],
-                    "bad": ["food/hamburger.webp","householdGoods/electricBlanket.webp","householdGoods/bed.webp","vegetables/spinach.webp"]
+                    "good": ["transport/cycle.png","transport/helicopter1.png","transport/plane1.png","transport/train2.png","animals/horse.png"],
+                    "bad": ["food/hamburger.png","householdGoods/electricBlanket.png","householdGoods/bed.png","vegetables/spinach.png"]
                 },
                 {
                     "instructions": qsTr("Place the MEANS OF TRANSPORTATION to the right and other objects to the left"),
-                    "image":imagesPrefix + "car2.webp",
+                    "image":imagesPrefix + "car2.png",
                     "maxNumberOfGood": 4,
                     "maxNumberOfBad": 5,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["transport/plane2.webp","transport/roadTrain.webp","transport/rocket1.webp","transport/train4.webp"],
-                    "bad": ["food/pizza.webp","householdGoods/toaster.webp","animals/koala.webp","birds/bird21.webp","insects/insect12.webp"]
+                    "good": ["transport/plane2.png","transport/roadTrain.png","transport/rocket1.png","transport/train4.png"],
+                    "bad": ["food/pizza.png","householdGoods/toaster.png","animals/koala.png","birds/bird21.png","insects/insect12.png"]
                 },
                 {
                     "instructions": qsTr("Place the MEANS OF TRANSPORTATION to the right and other objects to the left"),
-                    "image":imagesPrefix + "ferry.webp",
+                    "image":imagesPrefix + "ferry.png",
                     "maxNumberOfGood": 3,
                     "maxNumberOfBad": 3,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["transport/car3.webp","transport/train3.webp","transport/ship1.webp"],
-                    "bad": ["householdGoods/almirah.webp","plants/tree3.webp","nature/nature17.webp"]
+                    "good": ["transport/car3.png","transport/train3.png","transport/ship1.png"],
+                    "bad": ["householdGoods/almirah.png","plants/tree3.png","nature/nature17.png"]
                 },
                 {
                     "instructions": qsTr("Place the MEANS OF TRANSPORTATION to the right and other objects to the left"),
-                    "image":imagesPrefix + "rocket1.webp",
+                    "image":imagesPrefix + "rocket1.png",
                     "maxNumberOfGood": 2,
                     "maxNumberOfBad": 4,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["transport/car5.webp","transport/tanker.webp"],
-                    "bad": ["food/milk.webp","householdGoods/vacuumCleaner.webp","insects/insect9.webp","birds/bird23.webp"]
+                    "good": ["transport/car5.png","transport/tanker.png"],
+                    "bad": ["food/milk.png","householdGoods/vacuumCleaner.png","insects/insect9.png","birds/bird23.png"]
                 },
                 {
                     "instructions": qsTr("Place the MEANS OF TRANSPORTATION to the right and other objects to the left"),
-                    "image":imagesPrefix + "cycle.webp",
+                    "image":imagesPrefix + "cycle.png",
                     "maxNumberOfGood": 3,
                     "maxNumberOfBad": 3,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["transport/plane3.webp","transport/rickshaw2.webp","transport/train1.webp"],
-                    "bad": ["insects/insect18.webp","vegetables/cauliflower.webp","nature/nature24.webp"]
+                    "good": ["transport/plane3.png","transport/rickshaw2.png","transport/train1.png"],
+                    "bad": ["insects/insect18.png","vegetables/cauliflower.png","nature/nature24.png"]
                 }
             ]
         }

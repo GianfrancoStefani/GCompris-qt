@@ -20,47 +20,47 @@ QtObject {
          "height": 515
       },
       {
-         "pixmapfile" : "image/PalaDiPesaro_a1.webp",
+         "pixmapfile" : "image/PalaDiPesaro_a1.png",
          "x" : "0.182",
          "y" : "0.264"
       },
       {
-         "pixmapfile" : "image/PalaDiPesaro_b1.webp",
+         "pixmapfile" : "image/PalaDiPesaro_b1.png",
          "x" : "0.466",
          "y" : "0.264"
       },
       {
-         "pixmapfile" : "image/PalaDiPesaro_c1.webp",
+         "pixmapfile" : "image/PalaDiPesaro_c1.png",
          "x" : "0.781",
          "y" : "0.264"
       },
       {
-         "pixmapfile" : "image/PalaDiPesaro_a2.webp",
+         "pixmapfile" : "image/PalaDiPesaro_a2.png",
          "x" : "0.215",
          "y" : "0.474"
       },
       {
-         "pixmapfile" : "image/PalaDiPesaro_b2.webp",
+         "pixmapfile" : "image/PalaDiPesaro_b2.png",
          "x" : "0.532",
          "y" : "0.498"
       },
       {
-         "pixmapfile" : "image/PalaDiPesaro_c2.webp",
+         "pixmapfile" : "image/PalaDiPesaro_c2.png",
          "x" : "0.814",
          "y" : "0.474"
       },
       {
-         "pixmapfile" : "image/PalaDiPesaro_a3.webp",
+         "pixmapfile" : "image/PalaDiPesaro_a3.png",
          "x" : "0.182",
          "y" : "0.705"
       },
       {
-         "pixmapfile" : "image/PalaDiPesaro_b3.webp",
+         "pixmapfile" : "image/PalaDiPesaro_b3.png",
          "x" : "0.499",
          "y" : "0.727"
       },
       {
-         "pixmapfile" : "image/PalaDiPesaro_c3.webp",
+         "pixmapfile" : "image/PalaDiPesaro_c3.png",
          "x" : "0.814",
          "y" : "0.705"
       }

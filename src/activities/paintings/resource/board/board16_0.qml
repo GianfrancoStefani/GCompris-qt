@@ -20,82 +20,82 @@ QtObject {
          "height": 515
       },
       {
-         "pixmapfile" : "image/AlbrechtDurer_a1.webp",
+         "pixmapfile" : "image/AlbrechtDurer_a1.png",
          "x" : "0.156",
          "y" : "0.138"
       },
       {
-         "pixmapfile" : "image/AlbrechtDurer_b1.webp",
+         "pixmapfile" : "image/AlbrechtDurer_b1.png",
          "x" : "0.4",
          "y" : "0.163"
       },
       {
-         "pixmapfile" : "image/AlbrechtDurer_c1.webp",
+         "pixmapfile" : "image/AlbrechtDurer_c1.png",
          "x" : "0.647",
          "y" : "0.163"
       },
       {
-         "pixmapfile" : "image/AlbrechtDurer_d1.webp",
+         "pixmapfile" : "image/AlbrechtDurer_d1.png",
          "x" : "0.864",
          "y" : "0.163"
       },
       {
-         "pixmapfile" : "image/AlbrechtDurer_a2.webp",
+         "pixmapfile" : "image/AlbrechtDurer_a2.png",
          "x" : "0.156",
          "y" : "0.377"
       },
       {
-         "pixmapfile" : "image/AlbrechtDurer_b2.webp",
+         "pixmapfile" : "image/AlbrechtDurer_b2.png",
          "x" : "0.374",
          "y" : "0.4"
       },
       {
-         "pixmapfile" : "image/AlbrechtDurer_c2.webp",
+         "pixmapfile" : "image/AlbrechtDurer_c2.png",
          "x" : "0.623",
          "y" : "0.376"
       },
       {
-         "pixmapfile" : "image/AlbrechtDurer_d2.webp",
+         "pixmapfile" : "image/AlbrechtDurer_d2.png",
          "x" : "0.864",
          "y" : "0.4"
       },
       {
-         "pixmapfile" : "image/AlbrechtDurer_a3.webp",
+         "pixmapfile" : "image/AlbrechtDurer_a3.png",
          "x" : "0.13",
          "y" : "0.617"
       },
       {
-         "pixmapfile" : "image/AlbrechtDurer_b3.webp",
+         "pixmapfile" : "image/AlbrechtDurer_b3.png",
          "x" : "0.349",
          "y" : "0.643"
       },
       {
-         "pixmapfile" : "image/AlbrechtDurer_c3.webp",
+         "pixmapfile" : "image/AlbrechtDurer_c3.png",
          "x" : "0.597",
          "y" : "0.594"
       },
       {
-         "pixmapfile" : "image/AlbrechtDurer_d3.webp",
+         "pixmapfile" : "image/AlbrechtDurer_d3.png",
          "x" : "0.839",
          "y" : "0.617"
       },
       {
-         "pixmapfile" : "image/AlbrechtDurer_a4.webp",
+         "pixmapfile" : "image/AlbrechtDurer_a4.png",
          "x" : "0.13",
          "y" : "0.831"
       },
       {
-         "pixmapfile" : "image/AlbrechtDurer_b4.webp",
+         "pixmapfile" : "image/AlbrechtDurer_b4.png",
          "x" : "0.349",
          "y" : "0.854"
       },
       {
-         "pixmapfile" : "image/AlbrechtDurer_c4.webp",
+         "pixmapfile" : "image/AlbrechtDurer_c4.png",
          "x" : "0.623",
          "y" : "0.831"
       },
       {
-         "pixmapfile" : "image/AlbrechtDurer_d4.webp",
+         "pixmapfile" : "image/AlbrechtDurer_d4.png",
          "x" : "0.864",
          "y" : "0.831"
       }

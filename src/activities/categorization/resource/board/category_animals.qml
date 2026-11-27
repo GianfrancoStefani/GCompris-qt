@@ -17,88 +17,88 @@ QtObject{
         {
             "type": "lesson",
             "name": qsTr("Animals"),
-            "image": imagesPrefix + "animalsherd.webp",
+            "image": imagesPrefix + "animalsherd.png",
             "content": [
                 {
                     "instructions": qsTr("Place the ANIMALS to the right and other objects to the left"),
-                    "image": imagesPrefix + "tiger.webp",
+                    "image": imagesPrefix + "tiger.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["animals/baboon.webp","animals/bosmutus.webp","animals/camel.webp","animals/cow.webp","animals/dog.webp","birds/bird10.webp"],
-                    "bad": ["nature/nature5.webp","householdGoods/chair.webp","food/biryani.webp","others/electricfan.webp","others/clock.webp","nature/nature10.webp"]
+                    "good": ["animals/baboon.png","animals/bosmutus.png","animals/camel.png","animals/cow.png","animals/dog.png","birds/bird10.png"],
+                    "bad": ["nature/nature5.png","householdGoods/chair.png","food/biryani.png","others/electricfan.png","others/clock.png","nature/nature10.png"]
                 },
                 {
                     "instructions": qsTr("Place the ANIMALS to the right and other objects to the left"),
-                    "image": imagesPrefix + "tiger.webp",
+                    "image": imagesPrefix + "tiger.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["animals/lion.webp","birds/bird7.webp","birds/bird8.webp","animals/mouse1.webp","animals/opossum.webp","animals/pig.webp"],
-                    "bad": ["nature/nature3.webp","food/milk.webp","food/butter.webp","fruits/apple.webp","transport/rickshaw.webp","transport/bus.webp"]
+                    "good": ["animals/lion.png","birds/bird7.png","birds/bird8.png","animals/mouse1.png","animals/opossum.png","animals/pig.png"],
+                    "bad": ["nature/nature3.png","food/milk.png","food/butter.png","fruits/apple.png","transport/rickshaw.png","transport/bus.png"]
                 },
                 {
                     "instructions": qsTr("Place the ANIMALS to the right and other objects to the left"),
-                    "image": imagesPrefix + "opossum.webp",
+                    "image": imagesPrefix + "opossum.png",
                     "maxNumberOfGood": 6,
                     "maxNumberOfBad": 6,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["animals/snowcat.webp","animals/spidermonkey.webp","animals/squirrel.webp","animals/squirrel1.webp","animals/tasmaniandevil.webp","birds/bird22.webp"],
-                    "bad": ["transport/helicopter.webp","nature/nature2.webp","others/house.webp","transport/plane2.webp","plants/plant4.webp","nature/nature5.webp"]
+                    "good": ["animals/snowcat.png","animals/spidermonkey.png","animals/squirrel.png","animals/squirrel1.png","animals/tasmaniandevil.png","birds/bird22.png"],
+                    "bad": ["transport/helicopter.png","nature/nature2.png","others/house.png","transport/plane2.png","plants/plant4.png","nature/nature5.png"]
                 },
                 {
                     "instructions": qsTr("Place the ANIMALS to the right and other objects to the left"),
-                    "image": imagesPrefix + "tortoise.webp",
+                    "image": imagesPrefix + "tortoise.png",
                     "maxNumberOfGood": 5,
                     "maxNumberOfBad": 4,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["animals/redeyedfrog.webp","animals/scorpian.webp","animals/sealion.webp","animals/sheep.webp","animals/snake.webp"],
-                    "bad": ["fruits/grapes.webp","others/broom1.webp","transport/car1.webp","food/icecream.webp"]
+                    "good": ["animals/redeyedfrog.png","animals/scorpian.png","animals/sealion.png","animals/sheep.png","animals/snake.png"],
+                    "bad": ["fruits/grapes.png","others/broom1.png","transport/car1.png","food/icecream.png"]
                 },
                 {
                     "instructions": qsTr("Place the ANIMALS to the right and other objects to the left"),
-                    "image": imagesPrefix + "koala.webp",
+                    "image": imagesPrefix + "koala.png",
                     "maxNumberOfGood": 5,
                     "maxNumberOfBad": 4,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["animals/donkey.webp","animals/elephant.webp","insects/insect20.webp","animals/tiger.webp","animals/zebra.webp"],
-                    "bad": ["vegetables/pumpkin.webp","vegetables/carrots.webp","transport/cycle.webp","plants/tree3.webp"]
+                    "good": ["animals/donkey.png","animals/elephant.png","insects/insect20.png","animals/tiger.png","animals/zebra.png"],
+                    "bad": ["vegetables/pumpkin.png","vegetables/carrots.png","transport/cycle.png","plants/tree3.png"]
                 },
                 {
                     "instructions": qsTr("Place the ANIMALS to the right and other objects to the left"),
-                    "image": imagesPrefix + "hedgehog.webp",
+                    "image": imagesPrefix + "hedgehog.png",
                     "maxNumberOfGood": 4,
                     "maxNumberOfBad": 5,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["animals/giraffe.webp","birds/bird25.webp","animals/hedgehog.webp","insects/insect7.webp"],
-                    "bad": ["vegetables/potato.webp","transport/balloon.webp","food/cheese.webp","others/mobile.webp","transport/bus1.webp"]
+                    "good": ["animals/giraffe.png","birds/bird25.png","animals/hedgehog.png","insects/insect7.png"],
+                    "bad": ["vegetables/potato.png","transport/balloon.png","food/cheese.png","others/mobile.png","transport/bus1.png"]
                 },
                 {
                     "instructions": qsTr("Place the ANIMALS to the right and other objects to the left"),
-                    "image": imagesPrefix + "lion.webp",
+                    "image": imagesPrefix + "lion.png",
                     "maxNumberOfGood": 3 ,
                     "maxNumberOfBad": 3,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["animals/koala.webp","animals/kodiak-bear.webp","birds/bird27.webp"],
-                    "bad": ["nature/nature6.webp","transport/ferry.webp","food/eggs.webp","food/hamburger.webp"]
+                    "good": ["animals/koala.png","animals/kodiak-bear.png","birds/bird27.png"],
+                    "bad": ["nature/nature6.png","transport/ferry.png","food/eggs.png","food/hamburger.png"]
                 },
                 {
                     "instructions": qsTr("Place the ANIMALS to the right and other objects to the left"),
-                    "image": imagesPrefix + "pig.webp",
+                    "image": imagesPrefix + "pig.png",
                     "maxNumberOfGood": 3,
                     "maxNumberOfBad": 3,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["animals/tiger.webp","animals/tortoise.webp","animals/tortoise1.webp"],
-                    "bad": ["transport/car1.webp","fruits/papaya.webp","food/hotdog.webp"]
+                    "good": ["animals/tiger.png","animals/tortoise.png","animals/tortoise1.png"],
+                    "bad": ["transport/car1.png","fruits/papaya.png","food/hotdog.png"]
                 },
                 {
                     "instructions": qsTr("Place the ANIMALS to the right and other objects to the left"),
-                    "image": imagesPrefix + "snowcat.webp",
+                    "image": imagesPrefix + "snowcat.png",
                     "maxNumberOfGood": 3,
                     "maxNumberOfBad": 3,
                     "prefix": "qrc:/gcompris/data/words-webp/",
-                    "good": ["animals/porcupine.webp","animals/cow.webp","birds/bird29.webp"],
-                    "bad": ["nature/nature8.webp","food/macroni.webp","others/house.webp"]
+                    "good": ["animals/porcupine.png","animals/cow.png","birds/bird29.png"],
+                    "bad": ["nature/nature8.png","food/macroni.png","others/house.png"]
                 }
             ]
         }

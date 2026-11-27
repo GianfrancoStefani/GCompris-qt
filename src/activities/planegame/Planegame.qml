@@ -129,7 +129,7 @@ ActivityBase {
         // Tutorial section starts
         Image {
             id: tutorialImage
-            source: "../digital_electricity/resource/texture01.webp"
+            source: "../digital_electricity/resource/texture01.png"
             anchors.fill: parent
             fillMode: Image.Tile
             z: 1

@@ -14,23 +14,23 @@ QtObject {
    property string instruction: qsTr("Panorama of Château de Chenonceau, Indre-et-Loire, France.")
    property var levels: [
       {
-         "pixmapfile" : "image/Chenonceau_background.webp",
+         "pixmapfile" : "image/Chenonceau_background.png",
          "type" : "SHAPE_BACKGROUND_IMAGE"
       },
       {
-         "pixmapfile" : "image/Chenonceau_1.webp",
+         "pixmapfile" : "image/Chenonceau_1.png",
          "x" : "0.318",
          "y" : "0.421",
          "dropAreaSize" : "8"
       },
       {
-         "pixmapfile" : "image/Chenonceau_0.webp",
+         "pixmapfile" : "image/Chenonceau_0.png",
          "x" : "0.199",
          "y" : "0.459",
          "dropAreaSize" : "8"
       },
       {
-         "pixmapfile" : "image/Chenonceau_2.webp",
+         "pixmapfile" : "image/Chenonceau_2.png",
          "x" : "0.469",
          "y" : "0.579",
          "dropAreaSize" : "8"
