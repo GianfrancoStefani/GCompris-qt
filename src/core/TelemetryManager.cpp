@@ -13,6 +13,10 @@
 #include <QDebug>
 #include <QSysInfo>
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
+
 TelemetryManager* TelemetryManager::m_instance = nullptr;
 
 TelemetryManager* TelemetryManager::getInstance()
@@ -425,7 +429,11 @@ void TelemetryManager::recordEvent(const QString &eventType,
     QString clientVersion = QStringLiteral("26.2.0-k4e-1.0.0");
     QString activityVersion = QStringLiteral("26.2.0");
     QString datasetVersion = QStringLiteral("1.0");
+#ifdef __EMSCRIPTEN__
+    QString runtimeType = QStringLiteral("wasm_browser");
+#else
     QString runtimeType = QStringLiteral("desktop_native");
+#endif
     QString deliveryMode = QStringLiteral("offline_local");
     QString platformName = QSysInfo::prettyProductName();
 
@@ -434,6 +442,60 @@ void TelemetryManager::recordEvent(const QString &eventType,
     QJsonObject payloadObj = QJsonObject::fromVariantMap(payload);
     QJsonDocument payloadDoc(payloadObj);
     QString payloadJson = QString::fromUtf8(payloadDoc.toJson(QJsonDocument::Compact));
+
+#ifdef __EMSCRIPTEN__
+    // Centralized WebAssembly telemetry bridge (Phase 3B-B)
+    QJsonObject webEvt;
+    webEvt[QStringLiteral("schema_version")] = schemaVersion;
+    webEvt[QStringLiteral("event_id")] = eventId;
+    webEvt[QStringLiteral("session_id")] = m_sessionId;
+    webEvt[QStringLiteral("attempt_id")] = m_attemptId;
+    if (!m_teachingSessionId.isEmpty()) {
+        webEvt[QStringLiteral("teaching_session_id")] = m_teachingSessionId;
+    }
+    if (!effProblemId.isEmpty()) {
+        webEvt[QStringLiteral("problem_instance_id")] = effProblemId;
+    }
+    webEvt[QStringLiteral("pseudonymous_user_id")] = m_userId;
+    webEvt[QStringLiteral("organization_id")] = m_organizationId;
+    webEvt[QStringLiteral("activity_id")] = activityId;
+    webEvt[QStringLiteral("activity_version")] = activityVersion;
+    if (!datasetId.isEmpty()) {
+        webEvt[QStringLiteral("dataset_id")] = datasetId;
+    }
+    webEvt[QStringLiteral("dataset_version")] = datasetVersion;
+    webEvt[QStringLiteral("native_level")] = nativeLevel;
+    if (normalizedDifficulty.isValid() && !normalizedDifficulty.isNull()) {
+        webEvt[QStringLiteral("normalized_difficulty")] = normalizedDifficulty.toDouble();
+    }
+    webEvt[QStringLiteral("runtime_type")] = runtimeType;
+    webEvt[QStringLiteral("delivery_mode")] = deliveryMode;
+    webEvt[QStringLiteral("platform")] = platformName;
+    webEvt[QStringLiteral("client_version")] = clientVersion;
+    webEvt[QStringLiteral("event_type")] = eventType;
+    webEvt[QStringLiteral("sequence_number")] = (qint64)m_sequenceNumber;
+    webEvt[QStringLiteral("occurred_at")] = occurredAt;
+    webEvt[QStringLiteral("elapsed_ms")] = (qint64)elapsedMs;
+    webEvt[QStringLiteral("payload")] = payloadObj;
+
+    QJsonDocument webDoc(webEvt);
+    QByteArray webUtf8 = webDoc.toJson(QJsonDocument::Compact);
+
+    MAIN_THREAD_EM_ASM({
+        try {
+            var raw = UTF8ToString($0);
+            var eventObj = JSON.parse(raw);
+            if (typeof window !== 'undefined' && window.parent) {
+                window.parent.postMessage({
+                    type: 'K4E_TELEMETRY_EVENT',
+                    event: eventObj
+                }, window.location.origin);
+            }
+        } catch (e) {
+            console.error('[Kids4Edu-Telemetry] Web bridge postMessage error:', e);
+        }
+    }, webUtf8.constData());
+#endif
 
     // Async thread-safe write to SQLite
     QMutexLocker locker(&m_dbMutex);

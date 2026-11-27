@@ -78,6 +78,8 @@ ActivityBase {
         // Add here the QML items you need to access in javascript
         QtObject {
             id: items
+            property var telemetry: typeof telemetryManager !== 'undefined' ? telemetryManager : null
+            property string activityId: activity.getCanonicalActivityId()
 
             property GCAudio audioVoices: activity.audioVoices
             property alias goodAnswerSound: goodAnswerSound
@@ -231,6 +233,13 @@ ActivityBase {
             descriptionPanel.imageSource = animal.imageSource
             descriptionPanel.visible = true
             descriptionPanel.showDescriptionPanel()
+            if (typeof telemetryManager !== 'undefined' && telemetryManager) {
+                var actId = activity.getCanonicalActivityId();
+                telemetryManager.recordAction(actId, activity.currentLevel, "stimulus_explored", {
+                    "item_title": String(animal.title || ""),
+                    "sublevel": items.score.currentSubLevel
+                });
+            }
         }
 
         AnimalDescriptionLevels {

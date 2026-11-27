@@ -284,6 +284,18 @@ Item {
     signal nextLevel
 
     onNextLevel: {
+        var canonId = getCanonicalActivityId();
+        if (typeof telemetryManager !== 'undefined' && telemetryManager && !isMenu && canonId !== 'menu') {
+            telemetryManager.recordEvent('level_completed', canonId, currentLevel, activityInfo ? activityInfo.difficulty : 1, '', {
+                'completed_level': currentLevel,
+                'number_of_levels': numberOfLevel
+            });
+            if (currentLevel + 1 >= numberOfLevel && numberOfLevel > 0) {
+                telemetryManager.recordEvent('activity_completed', canonId, currentLevel, activityInfo ? activityInfo.difficulty : 1, '', {
+                    'final_level': currentLevel
+                });
+            }
+        }
         if(ActivityInfoTree.isInSequence) {
             print(activityInfo.name, "in sequence");
             if(currentLevel+1 >= numberOfLevel) {

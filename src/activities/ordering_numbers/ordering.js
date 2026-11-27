@@ -96,6 +96,17 @@ function initGrids() {
             "borderColor" : "#808080"
         })
     }
+
+    if (items && items.telemetry) {
+        var actId = items.activityId || "ordering";
+        items.telemetry.recordProblemPresented(actId, items.currentLevel, 1, "", {
+            "mode": mode,
+            "elements_count": num.length
+        }, {
+            "initial_items": num.map(function(n) { return String(n); }),
+            "instruction": items.instruction.text
+        });
+    }
 }
 
 function generateNumbers() {
@@ -180,6 +191,24 @@ function checkOrder() {
 
     items.targetPlaceholder.colorResetRequired = true
 
+    if (items && items.telemetry) {
+        var actId = items.activityId || "ordering";
+        var submitted = [];
+        for(var j = 0 ; j < items.targetListModel.count; j++) {
+            submitted.push(items.targetListModel.get(j).elementValue);
+        }
+        items.telemetry.recordAnswerEvaluated(actId, items.currentLevel, success, submitted, values, {
+            "mode": mode,
+            "target_count": items.targetListModel.count
+        });
+        if (success) {
+            items.telemetry.recordProblemCompleted(actId, items.currentLevel, true, {
+                "elements_ordered": values.length,
+                "mode": mode
+            });
+        }
+    }
+
     if(success)
         items.bonus.good("lion")
     else
@@ -201,5 +230,11 @@ function dropElement(element_, fromListName_) {
     } else { // "origin" case
         items.originListModel.append(modelObj)
         items.targetListModel.remove(element_.index)
+    }
+    if (items && items.telemetry) {
+        items.telemetry.recordAction(items.activityId || "ordering", items.currentLevel, "element_placed", {
+            "value": String(element_.elementValue),
+            "destination": fromListName_ === "target" ? "target_list" : "origin_list"
+        });
     }
 }

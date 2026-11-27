@@ -152,8 +152,8 @@ Flipable {
         items.selectionCount++
         animationTimer.start()
         items.flipSound.play()
-        if (items && items.telemetry) {
-            items.telemetry.recordAction("memory", items.currentLevel, "card_flipped", {
+        if (items && items.telemetry && !items.tuxTurn) {
+            items.telemetry.recordAction(items.activityId || "memory", items.currentLevel, "card_flipped", {
                 "match_code": card.pairData ? card.pairData.matchCode : -1,
                 "image": card.pairData ? card.pairData.image : "",
                 "text": card.pairData ? card.pairData.text : "",

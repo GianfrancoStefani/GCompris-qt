@@ -47,6 +47,8 @@ ActivityBase {
         // Add here the QML items you need to access in javascript
         QtObject {
             id: items
+            property var telemetry: typeof telemetryManager !== 'undefined' ? telemetryManager : null
+            property string activityId: activity.getCanonicalActivityId()
             property Item main: activity.main
             readonly property string resourceUrl: activity.resourceUrl
             readonly property var levels: activity.datasets

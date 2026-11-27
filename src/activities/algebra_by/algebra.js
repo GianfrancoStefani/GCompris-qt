@@ -208,7 +208,18 @@ function run() {
 function checkAnswer() {
     items.buttonsBlocked = true
     items.balloon.startMoving(100000)
-    if(validateAnswer(parseInt(items.numpad.answer))) {
+    var isCorrect = validateAnswer(parseInt(items.numpad.answer))
+    if (items && items.telemetry) {
+        var actId = items.activityId || "algebra";
+        items.telemetry.recordAnswerEvaluated(actId, items.currentLevel, isCorrect,
+            parseInt(items.numpad.answer), items.result, {
+                "first_operand": firstOperandVal,
+                "second_operand": secondOperandVal,
+                "sublevel": items.score.currentSubLevel
+            }
+        );
+    }
+    if(isCorrect) {
         items.client.sendToServer(true)
         items.score.currentSubLevel++
         items.score.playWinAnimation()
@@ -227,6 +238,12 @@ function nextQuestion() {
 
 function questionsLeft() {
     if(items.score.currentSubLevel >= items.score.numberOfSubLevels) {
+        if (items && items.telemetry) {
+            var actId = items.activityId || "algebra";
+            items.telemetry.recordProblemCompleted(actId, items.currentLevel, true, {
+                "total_questions": items.score.numberOfSubLevels
+            });
+        }
         items.bonus.good("smiley")
     } else {
         nextQuestion();

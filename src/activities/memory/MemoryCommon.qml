@@ -60,6 +60,7 @@ ActivityBase {
         QtObject {
             id: items
             property var telemetry: typeof telemetryManager !== 'undefined' ? telemetryManager : null
+            property string activityId: activity.getCanonicalActivityId()
             property int currentLevel: activity.currentLevel
             onCurrentLevelChanged: activity.currentLevel = currentLevel
             property int numberOfLevel: 0

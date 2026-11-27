@@ -107,6 +107,12 @@ function isComplete() {
 
 function initSubSubLevel() {
     if(items.progressbar.currentSubLevel >= items.dataModel.count) {
+        if (items && items.telemetry) {
+            var actId = items.activityId || "explore";
+            items.telemetry.recordProblemCompleted(actId, items.currentLevel, true, {
+                "explored_items": items.dataModel.count
+            });
+        }
         items.bonus.good("smiley");
         return
     }

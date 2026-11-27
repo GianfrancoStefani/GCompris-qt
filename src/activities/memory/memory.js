@@ -101,6 +101,7 @@ function initLevel() {
     }
 
     if (items && items.telemetry) {
+        var actId = items.activityId || "memory";
         var stimCards = [];
         for (var c = 0; c < cardList.length; ++c) {
             stimCards.push({
@@ -116,7 +117,7 @@ function initLevel() {
             "total_cards": rows * columns,
             "pairs_count": nbOfPair
         };
-        items.telemetry.recordProblemPresented("memory", items.currentLevel, 1, "", diffParams, { "cards": stimCards });
+        items.telemetry.recordProblemPresented(actId, items.currentLevel, 1, "", diffParams, { "cards": stimCards });
     }
 
     if(items.withTux || items.playerCount === 2) {
@@ -191,8 +192,9 @@ function reverseCardsIfNeeded() {
         var tuxTurn = item1.tuxTurn
 
         var isMatch = (item1.card.pairData.matchCode === item2.card.pairData.matchCode);
-        if (items && items.telemetry) {
-            items.telemetry.recordAnswerEvaluated("memory", items.currentLevel, isMatch,
+        if (items && items.telemetry && !tuxTurn) {
+            var actId = items.activityId || "memory";
+            items.telemetry.recordAnswerEvaluated(actId, items.currentLevel, isMatch,
                 [item1.card.pairData.matchCode, item2.card.pairData.matchCode],
                 [item1.card.pairData.matchCode, item1.card.pairData.matchCode],
                 { "card1_code": item1.card.pairData.matchCode, "card2_code": item2.card.pairData.matchCode }
@@ -289,7 +291,8 @@ function tuxPlay() {
 function youWon() {
     items.blockClicks = true
     if (items && items.telemetry) {
-        items.telemetry.recordProblemCompleted("memory", items.currentLevel, true, {
+        var actId = items.activityId || "memory";
+        items.telemetry.recordProblemCompleted(actId, items.currentLevel, true, {
             "total_pairs": nbOfPair,
             "player_score": items.player1Score ? items.player1Score.playerScore : 0
         });
@@ -300,7 +303,8 @@ function youWon() {
 function youLoose() {
     items.blockClicks = true
     if (items && items.telemetry) {
-        items.telemetry.recordProblemCompleted("memory", items.currentLevel, false, {
+        var actId = items.activityId || "memory";
+        items.telemetry.recordProblemCompleted(actId, items.currentLevel, false, {
             "total_pairs": nbOfPair,
             "player_score": items.player1Score ? items.player1Score.playerScore : 0
         });

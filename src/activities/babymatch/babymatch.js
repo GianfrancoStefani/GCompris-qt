@@ -177,6 +177,12 @@ function hideInstructions() {
 
 function nextSubLevel() {
     if(items.score.currentSubLevel >= items.score.numberOfSubLevels) {
+        if (items && items.telemetry) {
+            var actId = items.activityId || "babymatch";
+            items.telemetry.recordProblemCompleted(actId, items.currentLevel, true, {
+                "sublevels_completed": items.score.currentSubLevel
+            });
+        }
         items.bonus.good("flower");
     }
     else {
@@ -205,6 +211,17 @@ function win() {
         items.score.playWinAnimation();
     } else {
         items.bonus.good("flower");
+    }
+    if (items && items.telemetry) {
+        var actId = items.activityId || "babymatch";
+        items.telemetry.recordAnswerEvaluated(actId, items.currentLevel, true, "piece_matched", "piece_matched", {
+            "sublevel": items.score.visible ? items.score.currentSubLevel : 1
+        });
+        if (!items.score.visible || items.score.currentSubLevel >= items.score.numberOfSubLevels) {
+            items.telemetry.recordProblemCompleted(actId, items.currentLevel, true, {
+                "sublevels_completed": items.score.currentSubLevel
+            });
+        }
     }
 }
 

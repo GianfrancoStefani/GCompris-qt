@@ -40,6 +40,8 @@ ActivityBase {
 
         Item {
             id: items
+            property var telemetry: typeof telemetryManager !== 'undefined' ? telemetryManager : null
+            property string activityId: activity.getCanonicalActivityId()
             property alias activityBackground: activityBackground
             property int currentLevel: activity.currentLevel
             onCurrentLevelChanged: activity.currentLevel = currentLevel
