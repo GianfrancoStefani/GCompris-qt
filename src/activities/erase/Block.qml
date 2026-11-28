@@ -45,6 +45,7 @@ Image {
     onEnter: {
         if(opacity == 1.0) {
             playSound()
+            mouseArea.enabled = false
             block.opacity = 0
         }
     }
@@ -55,7 +56,7 @@ Image {
         }
     }
 
-    Behavior on opacity { PropertyAnimation { duration: 200 } }
+    Behavior on opacity { PropertyAnimation { duration: 100 } }
 
     onOpacityChanged: {
         if (opacity == 0) {
@@ -68,24 +69,19 @@ Image {
     MouseArea {
         id: mouseArea
         anchors.fill: parent
-        enabled: block.type !== "erase" || !ApplicationInfo.isMobile
-        hoverEnabled: block.type === "erase" && !ApplicationInfo.isMobile
+        enabled: true
+        hoverEnabled: !ApplicationInfo.isMobile
+        onPressed: {
+            block.enter()
+        }
         onClicked: {
-            if(block.type === "click") {
-                enabled = false
-                block.enter()
-            }
+            block.enter()
         }
         onDoubleClicked: {
-            if(block.type === "double_click") {
-                enabled = false
-                block.enter()
-            }
+            block.enter()
         }
         onEntered: {
-            if(block.type === "erase") {
-                block.enter()
-            }
+            block.enter()
         }
         onExited: {
             if(block.type === "erase") {

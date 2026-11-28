@@ -181,8 +181,8 @@ var fishes = [
 
 var levelProperty = [
             {
-                "nbFish": 5,
-                "minDuration": 2000
+                "nbFish": 1,
+                "minDuration": 5000
             },
             {
                 "nbFish": 7,
@@ -273,8 +273,8 @@ function createFish(minDuration) {
                     "bar": bar,
                     "y": (Math.random() * (maxY - minY + 1)) + minY,
                     "x": (Math.random() * (maxX + 1)),
-                    "width": fishSource.width * 1.1 * GCompris.ApplicationInfo.ratio,
-                    "height": fishSource.height * 1.1 * GCompris.ApplicationInfo.ratio,
+                    "width": Math.max(fishSource.width * 1.1 * GCompris.ApplicationInfo.ratio, 180),
+                    "height": Math.max(fishSource.height * 1.1 * GCompris.ApplicationInfo.ratio, 140),
                     "source": "qrc:/gcompris/src/activities/clickgame/resource/" +
                               fishSource.imgName,
                     "frameCount": fishSource.nbFrame,

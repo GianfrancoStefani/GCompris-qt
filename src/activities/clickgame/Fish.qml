@@ -66,15 +66,22 @@ AnimatedSprite {
     Behavior on opacity { PropertyAnimation { duration: 500 } }
 
     MouseArea {
+        id: fishMouseArea
         anchors.fill: parent
-        onClicked: {
-            activityBackground.animTrigger.disconnect(animTrigger)
-            parent.opacity = 0
-            enabled = false
-            activityBackground.dripSound.play()
-            Activity.fishKilled()
-            particles.burst(40);
+        hoverEnabled: true
+        function killFish() {
+            if (fishMouseArea.enabled) {
+                activityBackground.animTrigger.disconnect(animTrigger)
+                fish.opacity = 0
+                fishMouseArea.enabled = false
+                activityBackground.dripSound.play()
+                Activity.fishKilled()
+                particles.burst(40)
+            }
         }
+        onPressed: killFish()
+        onClicked: killFish()
+        onEntered: killFish()
     }
 
     Loader {
