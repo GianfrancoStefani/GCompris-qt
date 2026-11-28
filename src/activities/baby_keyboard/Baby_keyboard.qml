@@ -113,6 +113,18 @@ ActivityBase {
             styleColor: "white"
         }
 
+        GCText {
+            id: promptText
+            anchors.centerIn: parent
+            visible: typedText.text == ""
+            text: "Premi un tasto o tocca una lettera!"
+            fontSize: 28
+            font.bold: true
+            color: "#ffffff"
+            style: Text.Outline
+            styleColor: "#1e293b"
+        }
+
         states: [
             State {
                 name: "regularKeyboard"
@@ -177,7 +189,7 @@ ActivityBase {
             anchors.bottom: parent.bottom
             anchors.horizontalCenter: parent.horizontalCenter
             width: parent.width
-            visible: ApplicationSettings.isVirtualKeyboard && !ApplicationInfo.isMobile
+            visible: true
             onKeypress: (text) => {
                 if(text == backspace || text == newline)
                     Activity.playSound();

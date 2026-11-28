@@ -10,6 +10,8 @@ GCOMPRIS_ADD_RESOURCE(activities/erase
   RESOURCES
   *.svg
   resource/*.webp
+  resource/*.jpg
+  resource/*.png
   resource/*.wav
   resource/*.svg
 )
