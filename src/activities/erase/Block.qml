@@ -69,19 +69,24 @@ Image {
     MouseArea {
         id: mouseArea
         anchors.fill: parent
-        enabled: true
-        hoverEnabled: !ApplicationInfo.isMobile
-        onPressed: {
-            block.enter()
-        }
+        enabled: block.type !== "erase" || !ApplicationInfo.isMobile
+        hoverEnabled: block.type === "erase" && !ApplicationInfo.isMobile
         onClicked: {
-            block.enter()
+            if(block.type === "click") {
+                enabled = false
+                block.enter()
+            }
         }
         onDoubleClicked: {
-            block.enter()
+            if(block.type === "double_click") {
+                enabled = false
+                block.enter()
+            }
         }
         onEntered: {
-            block.enter()
+            if(block.type === "erase") {
+                block.enter()
+            }
         }
         onExited: {
             if(block.type === "erase") {

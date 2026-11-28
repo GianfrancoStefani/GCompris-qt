@@ -55,7 +55,7 @@ ActivityBase {
             property alias score: score
             property alias okButton: okButton
             property alias winSound: winSound
-            property int nbSubLevel: 1
+            property int nbSubLevel: 6
             property int currentSubLevel: 0
             property int mode: 1 // default is automatic
             property var telemetry: (typeof telemetryManager !== "undefined") ? telemetryManager : null
@@ -92,7 +92,7 @@ ActivityBase {
                     var touch = touchPoints[i]
 
                     var newBlock = rootItem.childAt(touch.x, touch.y)
-                    if(newBlock && (activity.type === "erase" || activity.type === "click"))
+                    if(newBlock && activity.type === "erase")
                         newBlock.enter()
 
                     var previousBlock = rootItem.childAt(touch.previousX, touch.previousY)
